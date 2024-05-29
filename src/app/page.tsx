@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -17,31 +17,31 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Icons } from '@/components/ui/icons';
-import { Input } from '@/components/ui/input';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+} from "@/components/ui/form";
+import { Icons } from "@/components/ui/icons";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const formSchema = z.object({
   email: z
     .string()
-    .email({ message: 'Please enter a valid email address.' })
-    .min(2, { message: 'Email must be at least 2 characters long.' })
-    .max(50, { message: 'Email must be at most 50 characters long.' }),
+    .email({ message: "Please enter a valid email address." })
+    .min(2, { message: "Email must be at least 2 characters long." })
+    .max(50, { message: "Email must be at most 50 characters long." }),
   password: z
     .string()
-    .min(2, { message: 'Password must be at least 8 characters long.' })
-    .max(50, { message: 'Password must be at most 50 characters long.' }),
+    .min(2, { message: "Password must be at least 8 characters long." })
+    .max(50, { message: "Password must be at most 50 characters long." }),
 });
 
 export default function Home() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
@@ -63,11 +63,18 @@ export default function Home() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <CardContent className="grid gap-4">
               <div className="grid grid-cols-2 gap-6">
-                <Button variant="outline">
-                  <Icons.gitHub className="mr-2 h-4 w-4" />
-                  GitHub
-                </Button>
-                <Button variant="outline">
+                <form
+                  action={async () => {
+                    "use server";
+                    // await signIn("github");
+                  }}
+                >
+                  <Button type="submit" variant="outline">
+                    <Icons.gitHub className="mr-2 h-4 w-4" />
+                    GitHub
+                  </Button>
+                </form>
+                <Button type="button" variant="outline">
                   <Icons.google className="mr-2 h-4 w-4" />
                   Google
                 </Button>
