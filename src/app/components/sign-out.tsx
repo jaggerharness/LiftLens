@@ -1,4 +1,4 @@
-import { signOut } from '@/auth';
+import { signOut } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/ui/icons';
 
