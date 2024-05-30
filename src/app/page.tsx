@@ -1,6 +1,4 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -8,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -17,38 +15,40 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Icons } from "@/components/ui/icons";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+} from '@/components/ui/form';
+import { Icons } from '@/components/ui/icons';
+import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signIn } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { SignIn } from './components/sign-in';
 
-const formSchema = z.object({
-  email: z
-    .string()
-    .email({ message: "Please enter a valid email address." })
-    .min(2, { message: "Email must be at least 2 characters long." })
-    .max(50, { message: "Email must be at most 50 characters long." }),
-  password: z
-    .string()
-    .min(2, { message: "Password must be at least 8 characters long." })
-    .max(50, { message: "Password must be at most 50 characters long." }),
-});
+// const formSchema = z.object({
+//   email: z
+//     .string()
+//     .email({ message: 'Please enter a valid email address.' })
+//     .min(2, { message: 'Email must be at least 2 characters long.' })
+//     .max(50, { message: 'Email must be at most 50 characters long.' }),
+//   password: z
+//     .string()
+//     .min(2, { message: 'Password must be at least 8 characters long.' })
+//     .max(50, { message: 'Password must be at most 50 characters long.' }),
+// });
 
 export default function Home() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  // const form = useForm<z.infer<typeof formSchema>>({
+  //   resolver: zodResolver(formSchema),
+  //   defaultValues: {
+  //     email: '',
+  //     password: '',
+  //   },
+  // });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  // function onSubmit(values: z.infer<typeof formSchema>) {
+  //   console.log(values);
+  // }
 
   return (
     <main className="flex h-screen items-center justify-center">
@@ -59,37 +59,27 @@ export default function Home() {
             Enter your email below to create your account
           </CardDescription>
         </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <CardContent className="grid gap-4">
-              <div className="grid grid-cols-2 gap-6">
-                <form
-                  action={async () => {
-                    "use server";
-                    // await signIn("github");
-                  }}
-                >
-                  <Button type="submit" variant="outline">
-                    <Icons.gitHub className="mr-2 h-4 w-4" />
-                    GitHub
-                  </Button>
-                </form>
-                <Button type="button" variant="outline">
-                  <Icons.google className="mr-2 h-4 w-4" />
-                  Google
-                </Button>
-              </div>
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
-                    Or continue with
-                  </span>
-                </div>
-              </div>
-              <FormField
+        {/* <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8"> */}
+        <CardContent className="grid gap-4">
+          <div className="grid grid-cols-2 gap-6">
+            <SignIn />
+            <Button type="button" variant="outline">
+              <Icons.google className="mr-2 h-4 w-4" />
+              Google
+            </Button>
+          </div>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+          {/* <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
@@ -105,8 +95,8 @@ export default function Home() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
-              <FormField
+              /> */}
+          {/* <FormField
                 control={form.control}
                 name="password"
                 render={({ field }) => (
@@ -121,15 +111,15 @@ export default function Home() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" className="w-full">
-                Create account
-              </Button>
-            </CardFooter>
-          </form>
-        </Form>
+              /> */}
+        </CardContent>
+        <CardFooter>
+          <Button type="submit" className="w-full">
+            Create account
+          </Button>
+        </CardFooter>
+        {/* </form>
+        </Form> */}
       </Card>
     </main>
   );
