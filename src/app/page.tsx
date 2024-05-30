@@ -7,10 +7,16 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Icons } from '@/components/ui/icons';
-import { SignIn } from './components/sign-in';
+import { GitHubSignIn } from './components/github-sign-in';
+import { GoogleSignIn } from './components/google-sign-in';
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+    if(session){
+        redirect('/dashboard');
+    }
   return (
     <main className="flex h-screen items-center justify-center">
       <Card>
@@ -21,8 +27,9 @@ export default function Home() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <div className="flex flex-row justify-center items-center">
-            <SignIn />
+          <div className="flex flex-row justify-evenly items-center">
+            <GitHubSignIn />
+            <GoogleSignIn />
           </div>
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
