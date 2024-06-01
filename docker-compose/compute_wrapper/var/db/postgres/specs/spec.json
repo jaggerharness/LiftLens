@@ -16,6 +16,10 @@
             }
         ],
         "databases": [
+            {
+                "name": "cloud_admin",
+                "owner": "cloud_admin"
+            }
         ],
         "settings": [
             {

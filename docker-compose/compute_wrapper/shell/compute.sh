@@ -9,7 +9,7 @@ generate_id() {
     printf -v resvar '%08x%08x%08x%08x' $SRANDOM $SRANDOM $SRANDOM $SRANDOM
 }
 
-PG_VERSION=${PG_VERSION:-14}
+PG_VERSION=${PG_VERSION:-15}
 
 SPEC_FILE_ORG=/var/db/postgres/specs/spec.json
 SPEC_FILE=/tmp/spec.json
@@ -54,3 +54,5 @@ echo "Start compute node"
      -C "postgresql://cloud_admin@localhost:55433/postgres"  \
      -b /usr/local/bin/postgres                              \
      -S ${SPEC_FILE}
+     
+echo "STARTEDDDDDDDD"

@@ -1,5 +1,4 @@
 import { Metadata } from 'next'
-import Image from 'next/image'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -15,17 +14,17 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui/tabs'
-import { MainNav } from '../components/main-nav'
-import TeamSwitcher from '../components/team-switcher'
-import { RecentSales } from '../components/recent-sales'
-import { Overview } from '../components/overview'
-import { Search } from '../components/search'
-import { UserNav } from '../components/user-nav'
-import { CalendarDateRangePicker } from '../components/date-range-picker'
-import { SignOut } from '../components/sign-out'
-import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import { CalendarDateRangePicker } from '../components/date-range-picker'
+import { MainNav } from '../components/main-nav'
 import { ModeToggle } from '../components/mode-toggle'
+import { Overview } from '../components/overview'
+import { RecentSales } from '../components/recent-sales'
+import { Search } from '../components/search'
+import { SignOut } from '../components/sign-out'
+import TeamSwitcher from '../components/team-switcher'
+import { UserNav } from '../components/user-nav'
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -39,23 +38,7 @@ export default async function DashboardPage() {
     }
   return (
     <>
-      <div className="md:hidden">
-        <Image
-          src="/examples/dashboard-light.png"
-          width={1280}
-          height={866}
-          alt="Dashboard"
-          className="block dark:hidden"
-        />
-        <Image
-          src="/examples/dashboard-dark.png"
-          width={1280}
-          height={866}
-          alt="Dashboard"
-          className="hidden dark:block"
-        />
-      </div>
-      <div className="hidden flex-col md:flex">
+      <div className="flex-col flex">
         <div className="border-b">
           <div className="flex h-16 items-center px-4">
             <TeamSwitcher />
