@@ -7,16 +7,20 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { GitHubSignIn } from './components/github-sign-in';
-import { GoogleSignIn } from './components/google-sign-in';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { GitHubSignIn } from './components/github-sign-in';
+import { GoogleSignIn } from './components/google-sign-in';
 
 export default async function Home() {
   const session = await auth();
-    if(session){
-        redirect('/dashboard');
-    }
+
+  if (session) {
+    redirect('/dashboard');
+  }
+
   return (
     <main className="flex h-screen items-center justify-center">
       <Card>
@@ -27,26 +31,40 @@ export default async function Home() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <div className="flex flex-row justify-evenly items-center">
-            <GitHubSignIn />
-            <GoogleSignIn />
-          </div>
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+          <div className="grid gap-6">
+            <div className="grid gap-2">
+              <div className="grid gap-1">
+                <Label className="sr-only" htmlFor="email">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  placeholder="name@example.com"
+                  type="email"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  autoCorrect="off"
+                />
+              </div>
+              <Button>Sign In with Email</Button>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">
-                Or continue with
-              </span>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <div className='flex flex-col gap-2'>
+              <GitHubSignIn />
+              <GoogleSignIn />
             </div>
           </div>
         </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full">
-            Create account
-          </Button>
-        </CardFooter>
+        <CardFooter></CardFooter>
       </Card>
     </main>
   );
