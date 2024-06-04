@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { registerUser } from './actions';
 import { GitHubSignIn } from './components/github-sign-in';
 import { GoogleSignIn } from './components/google-sign-in';
 
@@ -34,19 +35,38 @@ export default async function Home() {
           <div className="grid gap-6">
             <div className="grid gap-2">
               <div className="grid gap-1">
-                <Label className="sr-only" htmlFor="email">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  placeholder="name@example.com"
-                  type="email"
-                  autoCapitalize="none"
-                  autoComplete="email"
-                  autoCorrect="off"
-                />
+                <form
+                  action={async (formData) => {
+                    'use server';
+                    await registerUser({formData});
+                  }}
+                >
+                  <Label className="sr-only" htmlFor="email">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    placeholder="name@example.com"
+                    type="email"
+                    autoCapitalize="none"
+                    autoComplete="email"
+                    autoCorrect="off"
+                  />
+                  <Label className="sr-only" htmlFor="password">
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    placeholder="password1"
+                    type="password"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                  />
+                  <Button>Register</Button>
+                </form>
               </div>
-              <Button>Sign In with Email</Button>
             </div>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -58,7 +78,7 @@ export default async function Home() {
                 </span>
               </div>
             </div>
-            <div className='flex flex-col gap-2'>
+            <div className="flex flex-col gap-2">
               <GitHubSignIn />
               <GoogleSignIn />
             </div>

@@ -1,43 +1,51 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
 import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
 import github from 'next-auth/providers/github';
 import google from 'next-auth/providers/google';
+import { signInSchema } from './zod';
 
 const prisma = new PrismaClient();
+
+const fetchUser = async (email: string, password: string) => {
+  return await prisma.user.findFirst({
+    where: {
+      email,
+      password,
+    },
+  });
+};
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   debug: true,
   adapter: PrismaAdapter(prisma),
-  providers: [github, google],
-  callbacks: {
-    async signIn({ user, account }) {
-      const email = user.email;
-      if (email) {
-        const existingUser = await prisma.user.findUnique({ where: { email } });
-        if (existingUser) {
-          const existingAccountProvider = await prisma.account.findFirst({
-            where: {
-              userId: existingUser.id,
-              providerAccountId: account?.providerAccountId.toString() ?? '',
-            },
-          });
-          if (!existingAccountProvider) {
-            await prisma.account.create({
-              data: {
-                userId: existingUser.id,
-                provider: account?.provider ?? '',
-                type: account?.type ?? '',
-                providerAccountId: account?.providerAccountId.toString() ?? '',
-              },
-            });
-          }
+  providers: [
+    github({
+      clientId: process.env.AUTH_GITHUB_ID,
+      clientSecret: process.env.AUTH_GITHUB_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    Credentials({
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        const { email, password } = await signInSchema.parseAsync(credentials);
+        const user = await fetchUser(email, password);
 
-          return true;
+        if (!user) {
+          throw new Error('User not found.');
         }
-      }
-      // If no existing user is found, proceed with normal sign in
-      return true;
-    },
-  },
+
+        return user;
+      },
+    }),
+  ],
 });

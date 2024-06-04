@@ -54,5 +54,3 @@ echo "Start compute node"
      -C "postgresql://cloud_admin@localhost:55433/postgres"  \
      -b /usr/local/bin/postgres                              \
      -S ${SPEC_FILE}
-     
-echo "STARTEDDDDDDDD"
