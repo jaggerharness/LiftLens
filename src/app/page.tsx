@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { registerUser } from './actions';
+import { CredSignIn } from './components/creds-sign-in';
 import { GitHubSignIn } from './components/github-sign-in';
 import { GoogleSignIn } from './components/google-sign-in';
 
@@ -38,7 +39,7 @@ export default async function Home() {
                 <form
                   action={async (formData) => {
                     'use server';
-                    await registerUser({formData});
+                    await registerUser({ formData });
                   }}
                 >
                   <Label className="sr-only" htmlFor="email">
@@ -66,6 +67,27 @@ export default async function Home() {
                   />
                   <Button>Register</Button>
                 </form>
+              </div>
+              <div className="grid gap-1">
+                <CredSignIn />
+                {/* <form
+                  action={async (formData) => {
+                    'use server';
+                    await signIn('credentials', formData, {
+                      redirectTo: '/dashboard',
+                    });
+                  }}
+                >
+                  <label>
+                    Email
+                    <input name="email" type="email" />
+                  </label>
+                  <label>
+                    Password
+                    <input name="password" type="password" />
+                  </label>
+                  <Button>Login</Button>
+                </form> */}
               </div>
             </div>
             <div className="relative">

@@ -10,7 +10,7 @@ export function GitHubSignIn() {
         await signIn('github', { redirectTo: '/dashboard' });
       }}
     >
-      <Button type="submit" variant={'secondary'} className='w-full'>
+      <Button type="submit" variant={'secondary'} className="w-full">
         <Icons.gitHub className="mr-2 h-4 w-4" />
         GitHub
       </Button>
