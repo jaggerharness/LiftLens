@@ -19,6 +19,8 @@ import { GoogleSignIn } from './components/google-sign-in';
 export default async function Home() {
   const session = await auth();
 
+  console.log({session});
+
   if (session) {
     redirect('/dashboard');
   }
@@ -70,24 +72,6 @@ export default async function Home() {
               </div>
               <div className="grid gap-1">
                 <CredSignIn />
-                {/* <form
-                  action={async (formData) => {
-                    'use server';
-                    await signIn('credentials', formData, {
-                      redirectTo: '/dashboard',
-                    });
-                  }}
-                >
-                  <label>
-                    Email
-                    <input name="email" type="email" />
-                  </label>
-                  <label>
-                    Password
-                    <input name="password" type="password" />
-                  </label>
-                  <Button>Login</Button>
-                </form> */}
               </div>
             </div>
             <div className="relative">

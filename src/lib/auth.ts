@@ -33,6 +33,9 @@ const fetchUser = async (email: string, password: string) => {
 export const { auth, handlers, signIn, signOut } = NextAuth({
   debug: true,
   adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: 'jwt'
+  },
   providers: [
     github({
       clientId: process.env.AUTH_GITHUB_ID,
@@ -66,10 +69,30 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           if (error instanceof ZodError) {
             return null;
           } else {
-            return null;
+            throw new Error('Unexpected error.');
           }
         }
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.email = token.email ?? '';
+      }
+      return session;
+    },
+    async authorized({ auth, request }) {
+      if (auth?.user) {
+        return Response.redirect(new URL('/dashboard', request.nextUrl));
+      }
+      return true;
+    },
+  },
 });
