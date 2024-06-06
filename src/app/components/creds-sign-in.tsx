@@ -1,11 +1,14 @@
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { signIn } from '@/lib/auth';
 import { AuthError } from '@auth/core/errors';
-import { isRedirectError } from 'next/dist/client/components/redirect'
+import { isRedirectError } from 'next/dist/client/components/redirect';
 
 export function CredSignIn() {
   return (
     <form
+      className="grid gap-2"
       action={async (formData) => {
         'use server';
         try {
@@ -28,15 +31,30 @@ export function CredSignIn() {
         }
       }}
     >
-      <label>
+      <Label className="sr-only" htmlFor="email">
         Email
-        <input name="email" type="email" />
-      </label>
-      <label>
+      </Label>
+      <Input
+        id="email"
+        name="email"
+        placeholder="Email"
+        type="email"
+        autoCapitalize="none"
+        autoComplete="email"
+        autoCorrect="off"
+      />
+      <Label className="sr-only" htmlFor="password">
         Password
-        <input name="password" type="password" />
-      </label>
-      <Button>Login</Button>
+      </Label>
+      <Input
+        id="password"
+        name="password"
+        placeholder="Password"
+        type="password"
+        autoCapitalize="none"
+        autoCorrect="off"
+      />
+      <Button>Sign In</Button>
     </form>
   );
 }

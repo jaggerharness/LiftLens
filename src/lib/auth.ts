@@ -34,7 +34,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   debug: true,
   adapter: PrismaAdapter(prisma),
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
   },
   providers: [
     github({
@@ -59,6 +59,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           );
 
           const user = await fetchUser(email, password);
+
+          console.log({ user });
 
           if (user === null) {
             throw new Error('User not found.');
@@ -89,6 +91,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return session;
     },
     async authorized({ auth, request }) {
+      console.log({ auth });
       if (auth?.user) {
         return Response.redirect(new URL('/dashboard', request.nextUrl));
       }
