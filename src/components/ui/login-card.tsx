@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/shad-ui/card';
 import { CredSignIn } from './creds-sign-in';
 import { GitHubSignIn } from './github-sign-in';
 import { GoogleSignIn } from './google-sign-in';

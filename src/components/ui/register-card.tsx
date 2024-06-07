@@ -1,14 +1,14 @@
-import { Button } from '@/components/ui/button';
+import { registerUser } from '@/app/actions';
+import { Button } from '@/components/shad-ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { registerUser } from '../actions';
+} from '@/components/shad-ui/card';
+import { Input } from '@/components/shad-ui/input';
+import { Label } from '@/components/shad-ui/label';
 import { GitHubSignIn } from './github-sign-in';
 import { GoogleSignIn } from './google-sign-in';
 

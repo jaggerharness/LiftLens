@@ -1,5 +1,9 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/components/shad-ui/avatar';
+import { Button } from '@/components/shad-ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/shad-ui/dropdown-menu';
 import { auth, signOut } from '@/lib/auth';
 
 export async function UserNav() {

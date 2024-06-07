@@ -1,7 +1,10 @@
 'use server';
 
+import { SES } from '@aws-sdk/client-ses';
 import { PrismaClient } from '@prisma/client';
+import { render } from '@react-email/render';
 import bcrypt from 'bcrypt';
+import EmailVerificationEmail from '../../emails/email-verification';
 
 export async function registerUser({ formData }: { formData: FormData }) {
   const prisma = new PrismaClient();
@@ -19,6 +22,47 @@ export async function registerUser({ formData }: { formData: FormData }) {
       emailVerified: new Date(),
     },
   });
+
+  const region = process.env.AWS_REGION;
+  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+
+  if (!region || !accessKeyId || !secretAccessKey) {
+    throw new Error('AWS credentials or region are not set');
+  }
+
+  const ses = new SES({
+    region,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
+  });
+
+  const emailHtml = render(
+    EmailVerificationEmail({ inviteLink: 'http://localhost:3000' })
+  );
+
+  const params = {
+    Source: 'jagger.dev@gmail.com',
+    Destination: {
+      ToAddresses: [user.email],
+    },
+    Message: {
+      Body: {
+        Html: {
+          Charset: 'UTF-8',
+          Data: emailHtml,
+        },
+      },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: 'Welcome to LiftLens',
+      },
+    },
+  };
+
+  await ses.sendEmail(params);
 
   return user;
 }

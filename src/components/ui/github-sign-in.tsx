@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { Icons } from '@/components/ui/icons';
+import { Button } from '@/components/shad-ui/button';
+import { Icons } from '@/components/shad-ui/icons';
 import { signIn } from '@/lib/auth';
 
 export function GitHubSignIn() {

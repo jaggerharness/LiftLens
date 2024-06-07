@@ -2,7 +2,6 @@ import {
   Body,
   Button,
   Container,
-  Column,
   Head,
   Heading,
   Hr,
@@ -10,31 +9,20 @@ import {
   Img,
   Link,
   Preview,
-  Row,
   Section,
-  Text,
   Tailwind,
+  Text,
 } from '@react-email/components';
-import * as React from 'react';
 
-interface VercelInviteUserEmailProps {
-  username?: string;
-  userImage?: string;
-  invitedByUsername?: string;
-  invitedByEmail?: string;
-  teamName?: string;
-  teamImage?: string;
+interface EmailVerificationEmailProps {
   inviteLink?: string;
-  inviteFromIp?: string;
-  inviteFromLocation?: string;
 }
 
 const baseUrl = process.env.AUTH_URL ? `https://${process.env.AUTH_URL}` : '';
 
-export const VercelInviteUserEmail = ({
-  username,
+export const EmailVerificationEmail = ({
   inviteLink,
-}: VercelInviteUserEmailProps) => {
+}: EmailVerificationEmailProps) => {
   const previewText = `Verify LiftLens Email`;
 
   return (
@@ -54,16 +42,17 @@ export const VercelInviteUserEmail = ({
               />
             </Section>
             <Heading className="text-black text-[24px] font-normal text-center p-0 mt-[30px] mb-0 mx-0">
-              <strong>LiftLens</strong> 
+              <strong>LiftLens</strong>
             </Heading>
             <Heading className="text-black text-[24px] font-normal text-center">
               Email Verification
             </Heading>
             <Text className="text-black text-[14px] leading-[24px]">
-              Hello {username},
+              Hello lifter,
             </Text>
             <Text className="text-black text-[14px] leading-[24px]">
-              To continue creating your account with LiftLens, please verify your email by selecting the link below.
+              To continue creating your account with LiftLens, please verify
+              your email by selecting the link below.
             </Text>
             <Section className="text-center mt-[32px] mb-[32px]">
               <Button
@@ -92,9 +81,8 @@ export const VercelInviteUserEmail = ({
   );
 };
 
-VercelInviteUserEmail.PreviewProps = {
-  username: 'alanturing',
+EmailVerificationEmail.PreviewProps = {
   inviteLink: 'https://vercel.com/teams/invite/foo',
-} as VercelInviteUserEmailProps;
+} as EmailVerificationEmailProps;
 
-export default VercelInviteUserEmail;
+export default EmailVerificationEmail;

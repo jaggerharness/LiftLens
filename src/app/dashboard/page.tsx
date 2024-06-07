@@ -1,41 +1,41 @@
-import { Metadata } from 'next'
+import { Metadata } from 'next';
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/shad-ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/shad-ui/card';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '@/components/ui/tabs'
-import { auth } from '@/lib/auth'
-import { redirect } from 'next/navigation'
-import { CalendarDateRangePicker } from '../components/date-range-picker'
-import { MainNav } from '../components/main-nav'
-import { ModeToggle } from '../components/mode-toggle'
-import { Overview } from '../components/overview'
-import { RecentSales } from '../components/recent-sales'
-import { Search } from '../components/search'
-import { SignOut } from '../components/sign-out'
-import TeamSwitcher from '../components/team-switcher'
-import { UserNav } from '../components/user-nav'
+} from '@/components/shad-ui/tabs';
+import { CalendarDateRangePicker } from '@/components/ui/date-range-picker';
+import { MainNav } from '@/components/ui/main-nav';
+import { ModeToggle } from '@/components/ui/mode-toggle';
+import { Overview } from '@/components/ui/overview';
+import { RecentSales } from '@/components/ui/recent-sales';
+import { SignOut } from '@/components/ui/sign-out';
+import TeamSwitcher from '@/components/ui/team-switcher';
+import { UserNav } from '@/components/ui/user-nav';
+import { auth } from '@/lib/auth';
+import { Search } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
   description: 'LiftLens Dashboard',
-}
+};
 
 export default async function DashboardPage() {
-    const session = await auth();
-    if(!session){
-        redirect('/');
-    }
+  const session = await auth();
+  if (!session) {
+    redirect('/');
+  }
   return (
     <>
       <div className="flex-col flex">
@@ -202,5 +202,5 @@ export default async function DashboardPage() {
       </div>
       <SignOut />
     </>
-  )
+  );
 }
