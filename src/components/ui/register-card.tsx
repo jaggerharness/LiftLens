@@ -1,4 +1,3 @@
-import { registerUser } from '@/app/actions';
 import { Button } from '@/components/shad-ui/button';
 import {
   Card,
@@ -9,6 +8,7 @@ import {
 } from '@/components/shad-ui/card';
 import { Input } from '@/components/shad-ui/input';
 import { Label } from '@/components/shad-ui/label';
+import { registerUser } from '@/server/actions/actions';
 import { GitHubSignIn } from './github-sign-in';
 import { GoogleSignIn } from './google-sign-in';
 

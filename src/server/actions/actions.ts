@@ -6,7 +6,7 @@ import { render } from '@react-email/render';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { JWT } from 'next-auth/jwt';
-import EmailVerificationEmail from '../../emails/email-verification';
+import EmailVerificationEmail from '../../../emails/email-verification';
 
 export async function registerUser({ formData }: { formData: FormData }) {
   const prisma = new PrismaClient();
