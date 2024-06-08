@@ -1,5 +1,5 @@
+import prisma from '@/lib/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
@@ -8,7 +8,17 @@ import google from 'next-auth/providers/google';
 import { ZodError } from 'zod';
 import { signInSchema } from './zod';
 
-const prisma = new PrismaClient();
+declare module 'next-auth' {
+  interface User {
+    emailVerified?: Date | null;
+  }
+}
+
+declare module '@auth/core/adapters' {
+  interface AdapterUser {
+    emailVerified: Date | null;
+  }
+}
 
 const fetchUser = async (email: string, password: string) => {
   const userObj = await prisma.user.findFirst({
@@ -35,6 +45,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: 'jwt',
+    updateAge: 0,
+    maxAge: 30 * 24 * 60 * 60,
   },
   providers: [
     github({
@@ -60,8 +72,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
           const user = await fetchUser(email, password);
 
-          console.log({ user });
-
           if (user === null) {
             throw new Error('User not found.');
           }
@@ -81,17 +91,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.email = user.email;
+        token.emailVerified = user.emailVerified;
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.email = token.email ?? '';
+        session.user.emailVerified = token.emailVerified as Date | null;
       }
       return session;
     },
     async authorized({ auth, request }) {
-      console.log({ auth });
       if (auth?.user) {
         return Response.redirect(new URL('/dashboard', request.nextUrl));
       }

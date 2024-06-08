@@ -1,30 +1,18 @@
 'use server';
 
+import prisma from '@/lib/prisma';
 import { SES } from '@aws-sdk/client-ses';
-import { PrismaClient } from '@prisma/client';
 import { render } from '@react-email/render';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { JWT } from 'next-auth/jwt';
 import EmailVerificationEmail from '../../../emails/email-verification';
 
-export async function registerUser({ formData }: { formData: FormData }) {
-  const prisma = new PrismaClient();
+async function hashPassword(password: string) {
+  return await bcrypt.hash(password, 10);
+}
 
-  const email = formData.get('email');
-  const password = formData.get('password');
-
-  const hashedPassword = await bcrypt.hash(password?.toString() ?? '', 10);
-
-  const user = await prisma.user.create({
-    data: {
-      name: email?.toString() ?? '',
-      password: hashedPassword,
-      email: email?.toString() ?? '',
-      emailVerified: new Date(),
-    },
-  });
-
+async function generateJWT(user: any) {
   const jwtPayload: JWT = {
     id: user.id,
     email: user.email,
@@ -35,30 +23,15 @@ export async function registerUser({ formData }: { formData: FormData }) {
     throw new Error('JWT secret is not set');
   }
 
-  const token = jwt.sign(jwtPayload, jwtSecret, { expiresIn: '1h' });
+  return jwt.sign(jwtPayload, jwtSecret, { expiresIn: '1h' });
+}
 
-  console.log(token);
-
-  const validToken = await new Promise<boolean>((resolve) => {
-    jwt.verify(token, jwtSecret, (err, decoded) => {
-      if (err) {
-        resolve(false);
-      } else {
-        const jwtPayload = decoded as JWT;
-        console.log(jwtPayload.id);
-        console.log(jwtPayload.email);
-        resolve(true);
-      }
-    });
-  });
-
-  console.log(validToken);
-
+async function sendEmail(user: any, inviteLink: string) {
   const region = process.env.AWS_REGION;
   const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
   const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
-  if (!region || !accessKeyId || !secretAccessKey) {
+  if (!(region && accessKeyId && secretAccessKey)) {
     throw new Error('AWS credentials or region are not set');
   }
 
@@ -70,9 +43,7 @@ export async function registerUser({ formData }: { formData: FormData }) {
     },
   });
 
-  const emailHtml = render(
-    EmailVerificationEmail({ inviteLink: 'http://localhost:3000' })
-  );
+  const emailHtml = render(EmailVerificationEmail({ inviteLink }));
 
   const params = {
     Source: 'jagger.dev@gmail.com',
@@ -94,6 +65,64 @@ export async function registerUser({ formData }: { formData: FormData }) {
   };
 
   await ses.sendEmail(params);
+}
+
+async function createVerificationToken(user: any, token: string) {
+  await prisma.verificationToken.create({
+    data: {
+      identifier: user.id,
+      token: token,
+      expires: new Date(Date.now() + 60 * 60 * 1000), // 1 hour from now
+    },
+  });
+}
+
+async function validateToken(token: string) {
+  const jwtSecret = process.env.AUTH_SECRET;
+  if (!jwtSecret) {
+    throw new Error('JWT secret is not set');
+  }
+  return await new Promise<boolean>((resolve) => {
+    jwt.verify(token, jwtSecret, (err, decoded) => {
+      if (err) {
+        resolve(false);
+        return;
+      }
+      // const jwtPayload = decoded as JWT;
+      resolve(true);
+    });
+  });
+}
+
+export async function registerUser({ formData }: { formData: FormData }) {
+  const email = formData.get('email');
+  const password = formData.get('password');
+
+  const hashedPassword = await hashPassword(password?.toString() ?? '');
+
+  const user = await prisma.user.create({
+    data: {
+      name: email?.toString() ?? '',
+      password: hashedPassword,
+      email: email?.toString() ?? '',
+    },
+  });
+
+  const token = await generateJWT(user);
+
+  await sendEmail(user, 'http://localhost:3000');
+
+  await createVerificationToken(user, token);
 
   return user;
+}
+
+export async function validateUserEmail({ token }: { token: string }) {
+  const validToken = await validateToken(token);
+  if (validToken) {
+    // process token data
+    // validate user here
+  } else {
+    // display error, resend verification email?
+  }
 }
