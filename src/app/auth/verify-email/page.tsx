@@ -7,21 +7,39 @@ import {
   CardTitle,
 } from '@/components/shad-ui/card';
 import prisma from '@/lib/prisma';
-import { validateUserEmail } from '@/server/actions/actions';
+import { validateToken } from '@/server/actions/actions';
 import { LoaderIcon, MailCheck, MailQuestion } from 'lucide-react';
 
-export default async function VerifyEmailPage() {
+interface VerifyEmailPageProps {
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default async function VerifyEmailPage({
+  searchParams,
+}: VerifyEmailPageProps) {
+  const token = searchParams.verifyToken;
   let message: string = 'Verifying email...';
   let verified: boolean | null = null;
-  let token: string = '1234';
 
-  const validateToken = validateUserEmail({ token });
+  console.log({ token });
 
-  await prisma.verificationToken.findFirst({
-    where: {
-      identifier: 'user_id',
-    },
-  });
+  if (typeof token === 'string') {
+    const userId = await validateToken({ token });
+
+    if (userId) {
+      verified = true;
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          emailVerified: new Date(),
+        },
+      });
+    } else {
+      verified = false;
+    }
+  }
 
   if (verified === true) {
     message = `Email verified!`;

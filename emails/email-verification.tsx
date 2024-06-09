@@ -6,83 +6,141 @@ import {
   Heading,
   Hr,
   Html,
-  Img,
-  Link,
   Preview,
   Section,
-  Tailwind,
   Text,
 } from '@react-email/components';
 
 interface EmailVerificationEmailProps {
-  inviteLink?: string;
+  verifyUrl?: string;
 }
 
-const baseUrl = process.env.AUTH_URL ? `https://${process.env.AUTH_URL}` : '';
-
 export const EmailVerificationEmail = ({
-  inviteLink,
+  verifyUrl,
 }: EmailVerificationEmailProps) => {
-  const previewText = `Verify LiftLens Email`;
-
   return (
     <Html>
       <Head />
-      <Preview>{previewText}</Preview>
-      <Tailwind>
-        <Body className="bg-white my-auto mx-auto font-sans px-2">
-          <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] max-w-[465px]">
-            <Section className="mt-[32px]">
-              <Img
-                src={`${baseUrl}/vercel.svg`}
-                width="40"
-                height="37"
-                alt="Vercel"
-                className="my-0 mx-auto"
-              />
+      <Preview>LiftLens Email Verification</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          <Section style={coverSection}>
+            <Section style={headerSection}>
+              <div style={headerText}>LiftLens</div>
             </Section>
-            <Heading className="text-black text-[24px] font-normal text-center p-0 mt-[30px] mb-0 mx-0">
-              <strong>LiftLens</strong>
-            </Heading>
-            <Heading className="text-black text-[24px] font-normal text-center">
-              Email Verification
-            </Heading>
-            <Text className="text-black text-[14px] leading-[24px]">
-              Hello lifter,
-            </Text>
-            <Text className="text-black text-[14px] leading-[24px]">
-              To continue creating your account with LiftLens, please verify
-              your email by selecting the link below.
-            </Text>
-            <Section className="text-center mt-[32px] mb-[32px]">
-              <Button
-                className="bg-[#00D64E] rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3"
-                href={inviteLink}
-              >
-                Start Lifting
-              </Button>
+            <Section style={upperSection}>
+              <Heading style={h1}>Verify your email address</Heading>
+              <Text style={mainText}>
+                Thanks for signing up to LiftLens. To continue creating your
+                account, please verify your email by selecting the link below.
+              </Text>
+              <Section style={verificationSection}>
+                <Button style={linkText} href={verifyUrl}>
+                  Start Lifting
+                </Button>
+              </Section>
             </Section>
-            <Text className="text-black text-[14px] leading-[24px]">
-              or copy and paste this URL into your browser:{' '}
-              <Link href={inviteLink} className="text-[#00D64E] no-underline">
-                {inviteLink}
-              </Link>
-            </Text>
-            <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
-            <Text className="text-[#666666] text-[12px] leading-[24px]">
-              If you were not expecting this email, you can safely ignore it. If
-              you are concerned about your account's safety, please reply to
-              this email to get in touch with us.
-            </Text>
-          </Container>
-        </Body>
-      </Tailwind>
+            <Hr />
+            <Section style={lowerSection}>
+              <Text style={cautionText}>
+                If you were not expecting this email, you can safely ignore it.
+                If you are concerned about your account's safety, please reply
+                to this email to get in touch with us.
+              </Text>
+            </Section>
+          </Section>
+        </Container>
+      </Body>
     </Html>
   );
 };
 
-EmailVerificationEmail.PreviewProps = {
-  inviteLink: 'https://vercel.com/teams/invite/foo',
-} as EmailVerificationEmailProps;
+const main = {
+  backgroundColor: '#fff',
+  color: '#212121',
+};
+
+const container = {
+  padding: '20px',
+  margin: '0 auto',
+  backgroundColor: '#eee',
+};
+
+const h1 = {
+  color: '#333',
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontSize: '20px',
+  fontWeight: 'bold',
+  marginBottom: '15px',
+};
+
+const link = {
+  color: '#2754C5',
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontSize: '14px',
+  textDecoration: 'underline',
+};
+
+const text = {
+  color: '#333',
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontSize: '14px',
+  margin: '24px 0',
+};
+
+const headerSection: React.CSSProperties = {
+  backgroundColor: '#0B1215',
+  display: 'table',
+  padding: '20px 0',
+  textAlign: 'center',
+  width: '100%',
+};
+
+const headerText = {
+  color: '#ffffff',
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontSize: '20px',
+  fontWeight: 'bold',
+};
+
+const linkText = {
+  color: '#ffffff',
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontSize: '12px',
+  fontWeight: 'bold',
+};
+
+const coverSection = { backgroundColor: '#fff' };
+
+const upperSection = { padding: '25px 35px' };
+
+const lowerSection = { padding: '25px 35px' };
+
+// const verificationSection: React.CSSProperties = {
+//   display: 'table',
+//   textAlign: 'center',
+// };
+
+const verificationSection: React.CSSProperties = {
+  backgroundColor: '#00D64E',
+  borderRadius: '0.25rem', // equivalent to Tailwind's 'rounded'
+  color: '#FFFFFF', // equivalent to Tailwind's 'text-white'
+  fontSize: '12px', // equivalent to Tailwind's 'text-[12px]'
+  textDecoration: 'none', // equivalent to Tailwind's 'no-underline'
+  textAlign: 'center', // equivalent to Tailwind's 'text-center'
+  padding: '1rem 1.25rem', // equivalent to Tailwind's 'px-5 py-3'
+  margin: 'auto', // centers the button horizontally
+  display: 'block', // necessary for margin: auto to work
+  width: 'fit-content', // fits the width to the content
+};
+
+const mainText = { ...text, marginBottom: '14px' };
+
+const cautionText = { ...text, margin: '0px' };
 
 export default EmailVerificationEmail;

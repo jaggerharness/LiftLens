@@ -26,10 +26,11 @@ async function generateJWT(user: any) {
   return jwt.sign(jwtPayload, jwtSecret, { expiresIn: '1h' });
 }
 
-async function sendEmail(user: any, inviteLink: string) {
+async function sendEmail(user: any, token: string) {
   const region = process.env.AWS_REGION;
   const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
   const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  const verifyUrl = `${process.env.AUTH_URL}/auth/verify-email?verifyToken=${token}`;
 
   if (!(region && accessKeyId && secretAccessKey)) {
     throw new Error('AWS credentials or region are not set');
@@ -43,7 +44,7 @@ async function sendEmail(user: any, inviteLink: string) {
     },
   });
 
-  const emailHtml = render(EmailVerificationEmail({ inviteLink }));
+  const emailHtml = render(EmailVerificationEmail({ verifyUrl }));
 
   const params = {
     Source: 'jagger.dev@gmail.com',
@@ -59,7 +60,7 @@ async function sendEmail(user: any, inviteLink: string) {
       },
       Subject: {
         Charset: 'UTF-8',
-        Data: 'Welcome to LiftLens',
+        Data: 'LiftLens Email Verification',
       },
     },
   };
@@ -74,23 +75,6 @@ async function createVerificationToken(user: any, token: string) {
       token: token,
       expires: new Date(Date.now() + 60 * 60 * 1000), // 1 hour from now
     },
-  });
-}
-
-async function validateToken(token: string) {
-  const jwtSecret = process.env.AUTH_SECRET;
-  if (!jwtSecret) {
-    throw new Error('JWT secret is not set');
-  }
-  return await new Promise<boolean>((resolve) => {
-    jwt.verify(token, jwtSecret, (err, decoded) => {
-      if (err) {
-        resolve(false);
-        return;
-      }
-      // const jwtPayload = decoded as JWT;
-      resolve(true);
-    });
   });
 }
 
@@ -110,19 +94,39 @@ export async function registerUser({ formData }: { formData: FormData }) {
 
   const token = await generateJWT(user);
 
-  await sendEmail(user, 'http://localhost:3000');
+  await sendEmail(user, token);
 
   await createVerificationToken(user, token);
 
   return user;
 }
 
-export async function validateUserEmail({ token }: { token: string }) {
-  const validToken = await validateToken(token);
-  if (validToken) {
-    // process token data
-    // validate user here
-  } else {
-    // display error, resend verification email?
+export async function validateToken({ token }: { token: string }) {
+  const jwtSecret = process.env.AUTH_SECRET;
+  if (!jwtSecret) {
+    throw new Error('JWT secret is not set');
   }
+
+  const verificationToken = await prisma.verificationToken.findFirst({
+    where: {
+      token,
+    },
+  });
+
+  if (!verificationToken) {
+    return null;
+  }
+
+  const decodedToken = jwt.verify(token, jwtSecret) as JWT;
+
+  await prisma.verificationToken.delete({
+    where: {
+      identifier_token: {
+        identifier: verificationToken.identifier,
+        token: token,
+      },
+    },
+  });
+
+  return decodedToken.id as string;
 }

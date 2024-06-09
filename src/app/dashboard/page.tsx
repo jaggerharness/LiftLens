@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const session = await auth();
-  if (!session || session.user?.emailVerified == null) {
+  if (!session) {
     redirect('/');
   }
   return (
