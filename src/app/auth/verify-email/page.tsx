@@ -42,7 +42,7 @@ export default async function VerifyEmailPage({
   }
 
   if (verified === true) {
-    message = `Email verified!`;
+    message = 'Email verified!';
     verified = true;
   } else {
     verified = false;
