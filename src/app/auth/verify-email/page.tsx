@@ -9,6 +9,7 @@ import {
 import prisma from '@/lib/prisma';
 import { validateToken } from '@/server/actions/actions';
 import { LoaderIcon, MailCheck, MailQuestion } from 'lucide-react';
+import Link from 'next/link';
 
 interface VerifyEmailPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -70,7 +71,11 @@ export default async function VerifyEmailPage({
           </p>
         </CardContent>
         <CardFooter>
-          {verified && <Button className="w-full">Sign In</Button>}
+          {verified && (
+            <Link className="w-full" href="/">
+              <Button className="w-full">Sign In</Button>
+            </Link>
+          )}
         </CardFooter>
       </Card>
     </div>

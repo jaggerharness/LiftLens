@@ -10,13 +10,19 @@ import { signInSchema } from './zod';
 
 declare module 'next-auth' {
   interface User {
-    emailVerified?: Date | null;
+    firstName: String | null;
+    lastName: String | null;
+    emailVerified: Date | null;
+    firstLogin: Boolean;
   }
 }
 
 declare module '@auth/core/adapters' {
   interface AdapterUser {
+    firstName: String | null;
+    lastName: String | null;
     emailVerified: Date | null;
+    firstLogin: Boolean;
   }
 }
 
@@ -92,6 +98,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (user) {
         token.email = user.email;
         token.emailVerified = user.emailVerified;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.firstLogin = user.firstLogin;
       }
       return token;
     },
@@ -99,11 +108,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (token) {
         session.user.email = token.email ?? '';
         session.user.emailVerified = token.emailVerified as Date | null;
+        session.user.firstName = token.firstName as String | null;
+        session.user.lastName = token.lastName as String | null;
+        session.user.firstLogin = token.firstLogin as Boolean;
       }
       return session;
     },
     async authorized({ auth, request }) {
       if (auth?.user) {
+        if (auth?.user.firstLogin) {
+          return Response.redirect(
+            new URL('/first-time-setup', request.nextUrl)
+          );
+        }
         return Response.redirect(new URL('/dashboard', request.nextUrl));
       }
       return true;

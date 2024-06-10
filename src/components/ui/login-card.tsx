@@ -2,9 +2,11 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/shad-ui/card';
+import Link from 'next/link';
 import { CredSignIn } from './creds-sign-in';
 import { GitHubSignIn } from './github-sign-in';
 import { GoogleSignIn } from './google-sign-in';
@@ -39,6 +41,12 @@ export default function LoginCard() {
           </div>
         </div>
       </CardContent>
+      <CardFooter className="flex flex-col justify-center text-sm">
+        Don&apos;t have an account?
+        <Link className="hover:text-primary mt-4" href="/sign-up">
+          Sign Up
+        </Link>
+      </CardFooter>
     </Card>
   );
 }

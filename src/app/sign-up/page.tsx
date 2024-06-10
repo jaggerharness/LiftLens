@@ -1,4 +1,4 @@
-import LoginCard from '@/components/ui/login-card';
+import RegisterCard from '@/components/ui/register-card';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
@@ -11,7 +11,7 @@ export default async function Home() {
 
   return (
     <main className="flex h-screen items-center justify-evenly">
-      <LoginCard />
+      <RegisterCard />
     </main>
   );
 }

@@ -75,14 +75,6 @@ const h1 = {
   marginBottom: '15px',
 };
 
-const link = {
-  color: '#2754C5',
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: '14px',
-  textDecoration: 'underline',
-};
-
 const text = {
   color: '#333',
   fontFamily:
@@ -121,22 +113,17 @@ const upperSection = { padding: '25px 35px' };
 
 const lowerSection = { padding: '25px 35px' };
 
-// const verificationSection: React.CSSProperties = {
-//   display: 'table',
-//   textAlign: 'center',
-// };
-
 const verificationSection: React.CSSProperties = {
   backgroundColor: '#00D64E',
-  borderRadius: '0.25rem', // equivalent to Tailwind's 'rounded'
-  color: '#FFFFFF', // equivalent to Tailwind's 'text-white'
-  fontSize: '12px', // equivalent to Tailwind's 'text-[12px]'
-  textDecoration: 'none', // equivalent to Tailwind's 'no-underline'
-  textAlign: 'center', // equivalent to Tailwind's 'text-center'
-  padding: '1rem 1.25rem', // equivalent to Tailwind's 'px-5 py-3'
-  margin: 'auto', // centers the button horizontally
-  display: 'block', // necessary for margin: auto to work
-  width: 'fit-content', // fits the width to the content
+  borderRadius: '0.25rem',
+  color: '#FFFFFF',
+  fontSize: '12px',
+  textDecoration: 'none',
+  textAlign: 'center',
+  padding: '1rem 1.25rem',
+  margin: 'auto',
+  display: 'block',
+  width: 'fit-content',
 };
 
 const mainText = { ...text, marginBottom: '14px' };

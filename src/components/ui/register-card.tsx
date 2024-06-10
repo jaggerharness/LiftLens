@@ -3,12 +3,14 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/shad-ui/card';
 import { Input } from '@/components/shad-ui/input';
 import { Label } from '@/components/shad-ui/label';
 import { registerUser } from '@/server/actions/actions';
+import Link from 'next/dist/client/link';
 import { GitHubSignIn } from './github-sign-in';
 import { GoogleSignIn } from './google-sign-in';
 
@@ -73,6 +75,12 @@ export default function RegisterCard() {
           </div>
         </div>
       </CardContent>
+      <CardFooter className="flex flex-col justify-center text-sm">
+        Already have an account?
+        <Link className="hover:text-primary mt-4" href="/">
+          Sign In
+        </Link>
+      </CardFooter>
     </Card>
   );
 }

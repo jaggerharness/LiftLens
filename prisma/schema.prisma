@@ -1,6 +1,6 @@
 datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -10,12 +10,16 @@ generator client {
 model User {
   id            String          @id @default(cuid())
   name          String?
+  firstName     String?
+  lastName      String?
+  firstLogin    Boolean         @default(true)
   password      String?
   email         String          @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  profile       Profile[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
@@ -76,4 +80,16 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+model Profile {
+  id            String    @id @default(cuid())
+  userId        String
+  dateOfBirth   DateTime?
+  activityLevel Int?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
