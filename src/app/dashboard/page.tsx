@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 
-import { Button } from '@/components/shad-ui/button';
 import {
   Card,
   CardContent,
@@ -20,10 +19,8 @@ import { ModeToggle } from '@/components/ui/mode-toggle';
 import { Overview } from '@/components/ui/overview';
 import { RecentSales } from '@/components/ui/recent-sales';
 import { SignOut } from '@/components/ui/sign-out';
-import TeamSwitcher from '@/components/ui/team-switcher';
 import { UserNav } from '@/components/ui/user-nav';
 import { auth } from '@/lib/auth';
-import { Search } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
@@ -41,11 +38,9 @@ export default async function DashboardPage() {
       <div className="flex-col flex">
         <div className="border-b">
           <div className="flex h-16 items-center px-4">
-            <TeamSwitcher />
             <MainNav className="mx-6" />
             <div className="ml-auto flex items-center space-x-4">
               <ModeToggle />
-              <Search />
               <UserNav />
             </div>
           </div>
@@ -55,7 +50,6 @@ export default async function DashboardPage() {
             <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
             <div className="flex items-center space-x-2">
               <CalendarDateRangePicker />
-              <Button>Download</Button>
             </div>
           </div>
           <Tabs defaultValue="overview" className="space-y-4">
@@ -76,7 +70,7 @@ export default async function DashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Total Revenue
+                      Weekly Workouts
                     </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -92,16 +86,16 @@ export default async function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">$45,231.89</div>
+                    <div className="text-2xl font-bold">3/5</div>
                     <p className="text-xs text-muted-foreground">
-                      +20.1% from last month
+                      +2 more to go
                     </p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Subscriptions
+                      Muscle Groups
                     </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -119,15 +113,17 @@ export default async function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+2350</div>
+                    <div className="text-2xl font-bold">9/13</div>
                     <p className="text-xs text-muted-foreground">
-                      +180.1% from last month
+                      +4 more to go
                     </p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                    <CardTitle className="text-sm font-medium">
+                      Upcoming Workout
+                    </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -143,16 +139,18 @@ export default async function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+12,234</div>
-                    <p className="text-xs text-muted-foreground">
-                      +19% from last month
-                    </p>
+                    <div className="text-2xl font-bold">
+                      {new Date(
+                        new Date().setDate(new Date().getDate() + 1)
+                      ).toDateString()}
+                    </div>
+                    <p className="text-xs text-muted-foreground">@ 5:00pm</p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Active Now
+                      Steps Taken
                     </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
