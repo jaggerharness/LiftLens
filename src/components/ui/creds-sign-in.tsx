@@ -1,36 +1,23 @@
+'use client';
 import { Button } from '@/components/shad-ui/button';
 import { Input } from '@/components/shad-ui/input';
 import { Label } from '@/components/shad-ui/label';
-import { signIn } from '@/lib/auth';
-import { AuthError } from '@auth/core/errors';
-import { isRedirectError } from 'next/dist/client/components/redirect';
+import { credentialsSignIn } from '@/server/actions/actions';
+import { useFormState } from 'react-dom';
 
 export function CredSignIn() {
+  interface ErrorType {
+    message: string;
+  }
+
+  const initialState: ErrorType = {
+    message: '',
+  };
+
+  const [state, formAction] = useFormState(credentialsSignIn, initialState);
+
   return (
-    <form
-      className="grid gap-2"
-      action={async (formData) => {
-        'use server';
-        try {
-          await signIn('credentials', formData);
-          return undefined;
-        } catch (error) {
-          if (isRedirectError(error)) throw error;
-          if (error instanceof Error) {
-            const { type, cause } = error as AuthError;
-            switch (type) {
-              case 'CredentialsSignin':
-                return 'Invalid credentials.';
-              case 'CallbackRouteError':
-                return cause?.err?.toString();
-              default:
-                return 'Something went wrong.';
-            }
-          }
-          throw error;
-        }
-      }}
-    >
+    <form className="grid gap-2" action={formAction}>
       <Label className="sr-only" htmlFor="email">
         Email
       </Label>
@@ -54,6 +41,9 @@ export function CredSignIn() {
         autoCapitalize="none"
         autoCorrect="off"
       />
+      <p aria-live="polite" className="sr-only">
+        {typeof state !== 'string' && state?.message}
+      </p>
       <Button>Sign In</Button>
     </form>
   );
