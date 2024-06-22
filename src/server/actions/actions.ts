@@ -7,7 +7,9 @@ import { SES } from '@aws-sdk/client-ses';
 import { render } from '@react-email/render';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { AuthError } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
+import { isRedirectError } from 'next/dist/client/components/redirect';
 import EmailVerificationEmail from '../../../emails/email-verification';
 
 async function hashPassword(password: string) {
@@ -133,37 +135,34 @@ export async function validateToken({ token }: { token: string }) {
   return decodedToken.id as string;
 }
 
-export async function credentialsSignIn(prevState: any, formData: FormData) {
-  // try {
-  const validatedFields = await signInSchema.safeParseAsync({
-    email: formData.get('email'),
-    password: formData.get('password'),
-  });
+export async function credentialsSignIn(_: any, formData: FormData) {
+  try {
+    const validatedFields = await signInSchema.safeParseAsync({
+      email: formData.get('email'),
+      password: formData.get('password'),
+    });
 
-  if (!validatedFields.success) {
-    return {
-      message: 'Please enter a valid email',
-    };
-    // return {
-    //   errors: validatedFields.error.flatten().fieldErrors,
-    // };
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    await signIn('credentials', validatedFields);
+    return undefined;
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    if (error instanceof Error) {
+      const { type, cause } = error as AuthError;
+      switch (type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        case 'CallbackRouteError':
+          return cause?.err?.toString();
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
   }
-
-  await signIn('credentials', validatedFields);
-  return undefined;
-  // } catch (error) {
-  //   if (isRedirectError(error)) throw error;
-  //   if (error instanceof Error) {
-  //     const { type, cause } = error as AuthError;
-  //     switch (type) {
-  //       case 'CredentialsSignin':
-  //         return 'Invalid credentials.';
-  //       case 'CallbackRouteError':
-  //         return cause?.err?.toString();
-  //       default:
-  //         return 'Something went wrong.';
-  //     }
-  //   }
-  //   throw error;
-  // }
 }

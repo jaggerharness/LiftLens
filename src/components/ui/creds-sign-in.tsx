@@ -7,11 +7,17 @@ import { useFormState } from 'react-dom';
 
 export function CredSignIn() {
   interface ErrorType {
-    message: string;
+    errors: {
+      email: string[];
+      password: string[];
+    };
   }
 
   const initialState: ErrorType = {
-    message: '',
+    errors: {
+      email: [],
+      password: [],
+    },
   };
 
   const [state, formAction] = useFormState(credentialsSignIn, initialState);
@@ -30,6 +36,12 @@ export function CredSignIn() {
         autoComplete="email"
         autoCorrect="off"
       />
+      <p>
+        {typeof state !== 'string' &&
+          state?.errors.email?.map((err, index) => (
+            <div key={index}>{err}</div>
+          ))}
+      </p>
       <Label className="sr-only" htmlFor="password">
         Password
       </Label>
@@ -41,8 +53,11 @@ export function CredSignIn() {
         autoCapitalize="none"
         autoCorrect="off"
       />
-      <p aria-live="polite" className="sr-only">
-        {typeof state !== 'string' && state?.message}
+      <p>
+        {typeof state !== 'string' &&
+          state?.errors.password?.map((err, index) => (
+            <div key={index}>{err}</div>
+          ))}
       </p>
       <Button>Sign In</Button>
     </form>
