@@ -22,12 +22,8 @@ export default async function VerifyEmailPage({
   let message: string = 'Verifying email...';
   let verified: boolean | null = null;
 
-  console.log({ token });
-
   if (typeof token === 'string') {
     const userId = await validateToken({ token });
-
-    console.log(userId);
 
     if (userId) {
       verified = true;
