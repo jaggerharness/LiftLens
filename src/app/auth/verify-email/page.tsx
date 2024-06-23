@@ -27,6 +27,8 @@ export default async function VerifyEmailPage({
   if (typeof token === 'string') {
     const userId = await validateToken({ token });
 
+    console.log(userId);
+
     if (userId) {
       verified = true;
       await prisma.user.update({

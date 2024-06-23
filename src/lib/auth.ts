@@ -115,8 +115,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return session;
     },
     async authorized({ auth, request }) {
-      console.log('HEYHEYHEYHYEHYENHEYEHADFLAWERLKJ');
-      console.log({ auth });
       if (auth?.user) {
         // TODO
         if (auth?.user.firstLogin) {

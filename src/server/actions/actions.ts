@@ -2,7 +2,6 @@
 
 import { signIn } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { signInSchema } from '@/lib/zod';
 import { SES } from '@aws-sdk/client-ses';
 import { render } from '@react-email/render';
 import bcrypt from 'bcrypt';
@@ -31,45 +30,49 @@ async function generateJWT(user: any) {
 }
 
 async function sendEmail(user: any, token: string) {
-  const region = process.env.AWS_REGION;
-  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-  const verifyUrl = `${process.env.AUTH_URL}/auth/verify-email?verifyToken=${token}`;
+  try {
+    const region = process.env.AWS_REGION;
+    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+    const verifyUrl = `${process.env.AUTH_URL}/auth/verify-email?verifyToken=${token}`;
 
-  if (!(region && accessKeyId && secretAccessKey)) {
-    throw new Error('AWS credentials or region are not set');
-  }
+    if (!(region && accessKeyId && secretAccessKey)) {
+      throw new Error('AWS credentials or region are not set');
+    }
 
-  const ses = new SES({
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
-  });
+    const ses = new SES({
+      region,
+      credentials: {
+        accessKeyId,
+        secretAccessKey,
+      },
+    });
 
-  const emailHtml = render(EmailVerificationEmail({ verifyUrl }));
+    const emailHtml = render(EmailVerificationEmail({ verifyUrl }));
 
-  const params = {
-    Source: 'jagger.dev@gmail.com',
-    Destination: {
-      ToAddresses: [user.email],
-    },
-    Message: {
-      Body: {
-        Html: {
+    const params = {
+      Source: 'jagger.dev@gmail.com',
+      Destination: {
+        ToAddresses: [user.email],
+      },
+      Message: {
+        Body: {
+          Html: {
+            Charset: 'UTF-8',
+            Data: emailHtml,
+          },
+        },
+        Subject: {
           Charset: 'UTF-8',
-          Data: emailHtml,
+          Data: 'LiftLens Email Verification',
         },
       },
-      Subject: {
-        Charset: 'UTF-8',
-        Data: 'LiftLens Email Verification',
-      },
-    },
-  };
+    };
 
-  await ses.sendEmail(params);
+    await ses.sendEmail(params);
+  } catch (error) {
+    throw new Error('Failed to send email');
+  }
 }
 
 async function createVerificationToken(user: any, token: string) {
@@ -105,50 +108,55 @@ export async function registerUser({ formData }: { formData: FormData }) {
   return user;
 }
 
-export async function validateToken({ token }: { token: string }) {
+export async function validateToken({
+  token,
+}: {
+  token: string;
+}): Promise<string | null> {
   const jwtSecret = process.env.AUTH_SECRET;
   if (!jwtSecret) {
     throw new Error('JWT secret is not set');
   }
 
-  const verificationToken = await prisma.verificationToken.findFirst({
-    where: {
-      token,
-    },
-  });
-
-  if (!verificationToken) {
-    return null;
-  }
-
-  const decodedToken = jwt.verify(token, jwtSecret) as JWT;
-
-  await prisma.verificationToken.delete({
-    where: {
-      identifier_token: {
-        identifier: verificationToken.identifier,
-        token: token,
-      },
-    },
-  });
-
-  return decodedToken.id as string;
-}
-
-export async function credentialsSignIn(_: any, formData: FormData) {
   try {
-    const validatedFields = await signInSchema.safeParseAsync({
-      email: formData.get('email'),
-      password: formData.get('password'),
+    const verificationToken = await prisma.verificationToken.findFirst({
+      where: { token },
     });
 
-    if (!validatedFields.success) {
-      return {
-        errors: validatedFields.error.flatten().fieldErrors,
-      };
+    if (!verificationToken) {
+      return null;
     }
 
-    await signIn('credentials', validatedFields);
+    const decodedToken = jwt.verify(token, jwtSecret);
+    if (typeof decodedToken !== 'object' || !decodedToken.id) {
+      throw new Error('Invalid token format');
+    }
+
+    await prisma.verificationToken.delete({
+      where: {
+        identifier_token: {
+          identifier: verificationToken.identifier,
+          token: token,
+        },
+      },
+    });
+
+    return decodedToken.id;
+  } catch (error) {
+    // Consider logging the error or handling it as per your application's error handling policy
+    throw new Error('Token validation failed');
+  }
+}
+
+export async function credentialsSignIn({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  try {
+    await signIn('credentials', { email, password });
     return undefined;
   } catch (error) {
     if (isRedirectError(error)) throw error;
