@@ -47,7 +47,7 @@ const fetchUser = async (email: string, password: string) => {
 };
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
-  debug: true,
+  debug: false,
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: 'jwt',
