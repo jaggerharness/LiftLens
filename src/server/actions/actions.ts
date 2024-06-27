@@ -85,9 +85,13 @@ async function createVerificationToken(user: any, token: string) {
   });
 }
 
-export async function registerUser({ formData }: { formData: FormData }) {
-  const email = formData.get('email');
-  const password = formData.get('password');
+export async function registerUser({
+  values,
+}: {
+  values: { email: string; password: string };
+}) {
+  const email = values.email;
+  const password = values.password;
 
   const hashedPassword = await hashPassword(password?.toString() ?? '');
 

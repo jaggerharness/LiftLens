@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/shad-ui/button';
 import {
   Card,
@@ -8,13 +10,44 @@ import {
   CardTitle,
 } from '@/components/shad-ui/card';
 import { Input } from '@/components/shad-ui/input';
-import { Label } from '@/components/shad-ui/label';
 import { registerUser } from '@/server/actions/actions';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/dist/client/link';
-import { GitHubSignIn } from './github-sign-in';
-import { GoogleSignIn } from './google-sign-in';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '../shad-ui/form';
 
 export default function RegisterCard() {
+  const formSchema = z.object({
+    email: z
+      .string({ required_error: 'Email is required' })
+      .min(1, 'Email is required')
+      .email('Invalid email'),
+    password: z
+      .string({ required_error: 'Password is required' })
+      .min(1, 'Password is required')
+      .min(8, 'Password must be more than 8 characters')
+      .max(32, 'Password must be less than 32 characters'),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await registerUser({ values });
+  }
+
   return (
     <Card>
       <CardHeader className="space-y-1">
@@ -26,52 +59,53 @@ export default function RegisterCard() {
       <CardContent className="grid gap-4">
         <div className="grid gap-6">
           <div className="grid gap-2">
-            <form
-              className="grid gap-2"
-              action={async (formData) => {
-                'use server';
-                await registerUser({ formData });
-              }}
-            >
-              <Label className="sr-only" htmlFor="email">
-                Email
-              </Label>
-              <Input
-                id="email"
-                name="email"
-                placeholder="Enter your email"
-                type="email"
-                autoCapitalize="none"
-                autoComplete="email"
-                autoCorrect="off"
-              />
-              <Label className="sr-only" htmlFor="password">
-                Password
-              </Label>
-              <Input
-                id="password"
-                name="password"
-                placeholder="Create a password"
-                type="password"
-                autoCapitalize="none"
-                autoCorrect="off"
-              />
-              <Button className="mt-3 w-full">Register</Button>
-            </form>
-          </div>
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <GitHubSignIn />
-            <GoogleSignIn />
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="grid gap-2"
+              >
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter your email"
+                          type="email"
+                          autoCapitalize="none"
+                          autoComplete="email"
+                          autoCorrect="off"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Create a password"
+                          type="password"
+                          autoCapitalize="none"
+                          autoCorrect="off"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="mt-3 w-full">
+                  Register
+                </Button>
+              </form>
+            </Form>
           </div>
         </div>
       </CardContent>
