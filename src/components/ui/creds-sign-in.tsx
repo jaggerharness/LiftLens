@@ -48,7 +48,13 @@ export function CredSignIn() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Email" {...field} />
+                <Input
+                  placeholder="Email"
+                  type="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -60,7 +66,13 @@ export function CredSignIn() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Password" {...field} />
+                <Input
+                  placeholder="Password"
+                  type="password"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

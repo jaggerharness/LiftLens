@@ -45,7 +45,8 @@ export default function RegisterCard() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await registerUser({ values });
+    const result = await registerUser({ values });
+    console.log(result);
   }
 
   return (

@@ -51,7 +51,7 @@ async function sendEmail(user: any, token: string) {
     const emailHtml = render(EmailVerificationEmail({ verifyUrl }));
 
     const params = {
-      Source: 'jagger.dev@gmail.com',
+      Source: user.email,
       Destination: {
         ToAddresses: [user.email],
       },
@@ -90,26 +90,32 @@ export async function registerUser({
 }: {
   values: { email: string; password: string };
 }) {
-  const email = values.email;
-  const password = values.password;
+  try {
+    const email = values.email;
+    const password = values.password;
 
-  const hashedPassword = await hashPassword(password?.toString() ?? '');
+    const hashedPassword = await hashPassword(password?.toString() ?? '');
 
-  const user = await prisma.user.create({
-    data: {
-      name: email?.toString() ?? '',
-      password: hashedPassword,
-      email: email?.toString() ?? '',
-    },
-  });
+    const user = await prisma.user.create({
+      data: {
+        name: email?.toString() ?? '',
+        password: hashedPassword,
+        email: email?.toString() ?? '',
+      },
+    });
 
-  const token = await generateJWT(user);
+    const token = await generateJWT(user);
 
-  await sendEmail(user, token);
+    await createVerificationToken(user, token);
 
-  await createVerificationToken(user, token);
+    await sendEmail(user, token);
 
-  return user;
+    return {
+      message: 'Registration successful. Please verify email and login.',
+    };
+  } catch (error) {
+    return { message: 'Registration failed. Please try again later.' };
+  }
 }
 
 export async function validateToken({
