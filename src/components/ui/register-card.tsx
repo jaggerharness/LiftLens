@@ -39,7 +39,6 @@ export default function RegisterCard() {
         title: 'Uh oh! Something went wrong.',
         description: toastMessage,
       });
-      // Reset the error state if needed
       setShowError(false);
     }
     if (showSuccess) {
@@ -48,9 +47,8 @@ export default function RegisterCard() {
         title: 'Account Created!',
         description: toastMessage,
       });
-      // Reset the error state if needed
       setShowSuccess(false);
-      redirect('/');
+      redirect('/auth/verify-email');
     }
   }, [showError, showSuccess, toast, toastMessage]);
 

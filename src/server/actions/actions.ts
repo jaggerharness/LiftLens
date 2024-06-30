@@ -180,7 +180,6 @@ export async function validateToken({
 
     return decodedToken.id;
   } catch (error) {
-    // Consider logging the error or handling it as per your application's error handling policy
     throw new Error('Token validation failed');
   }
 }
@@ -194,18 +193,30 @@ export async function credentialsSignIn({
 }) {
   try {
     await signIn('credentials', { email, password });
-    return undefined;
+    return {
+      message: 'Successful sign in.',
+      type: 'success',
+    };
   } catch (error) {
     if (isRedirectError(error)) throw error;
     if (error instanceof Error) {
       const { type, cause } = error as AuthError;
       switch (type) {
         case 'CredentialsSignin':
-          return 'Invalid credentials.';
+          return {
+            message: 'Invalid Credentials',
+            type: 'error',
+          };
         case 'CallbackRouteError':
-          return cause?.err?.toString();
+          return {
+            message: cause?.err?.toString(),
+            type: 'error',
+          };
         default:
-          return 'Something went wrong.';
+          return {
+            message: 'Something went wrong.',
+            type: 'error',
+          };
       }
     }
     throw error;

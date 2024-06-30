@@ -5,7 +5,6 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import github from 'next-auth/providers/github';
 import google from 'next-auth/providers/google';
-import { ZodError } from 'zod';
 import { signInSchema } from './zod';
 
 declare module 'next-auth' {
@@ -84,11 +83,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
           return user;
         } catch (error) {
-          if (error instanceof ZodError) {
-            return null;
-          } else {
-            throw new Error('Unexpected error.');
-          }
+          return null;
         }
       },
     }),

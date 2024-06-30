@@ -2,13 +2,14 @@ import { Button } from '@/components/shad-ui/button';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/shad-ui/card';
 import prisma from '@/lib/prisma';
 import { validateToken } from '@/server/actions/actions';
-import { LoaderIcon, MailCheck, MailQuestion } from 'lucide-react';
+import { MailCheck, RefreshCwIcon } from 'lucide-react';
 import Link from 'next/link';
 
 interface VerifyEmailPageProps {
@@ -50,32 +51,50 @@ export default async function VerifyEmailPage({
 
   return (
     <div className="flex flex-col h-screen justify-center items-center">
-      <Card className="max-w-sm text-center">
-        <CardHeader>
-          <CardTitle>Email Verification</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="w-full grid place-content-center py-4">
-            {verified === null ? (
-              <LoaderIcon className="animate-spin" />
-            ) : verified === true ? (
+      {verified === true ? (
+        <Card className="max-w-sm text-center">
+          <CardHeader>
+            <CardTitle>Email Verification</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="w-full grid place-content-center py-4">
               <MailCheck />
-            ) : (
-              <MailQuestion />
-            )}
-          </div>
-          <p className="text-lg text-muted-foreground text-balance">
-            {message}
-          </p>
-        </CardContent>
-        <CardFooter>
-          {verified && (
+            </div>
+            <p className="text-lg text-muted-foreground text-balance">
+              {message}
+            </p>
+          </CardContent>
+          <CardFooter>
             <Link className="w-full" href="/">
               <Button className="w-full">Sign In</Button>
             </Link>
-          )}
-        </CardFooter>
-      </Card>
+          </CardFooter>
+        </Card>
+      ) : (
+        <Card className="w-4/12">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl">
+              First, let's verify your email
+            </CardTitle>
+            <CardDescription>
+              Check <span className="font-semibold">jagger.dev@gmail.com</span>{' '}
+              to verify your email and get started.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <Button type="submit" className="w-full">
+              <RefreshCwIcon className="mr-2 h-4 w-4" />
+              Resend Email
+            </Button>
+          </CardContent>
+          <CardFooter className="flex flex-col justify-center text-sm">
+            Having trouble?
+            <Link className="hover:text-primary mt-4" href="/sign-up">
+              Contact Support
+            </Link>
+          </CardFooter>
+        </Card>
+      )}
     </div>
   );
 }
