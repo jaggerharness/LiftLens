@@ -74,7 +74,7 @@ export default async function VerifyEmailPage({
         <Card className="w-4/12">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl">
-              First, let's verify your email
+              First, let&apos;s verify your email
             </CardTitle>
             <CardDescription>
               Check <span className="font-semibold">jagger.dev@gmail.com</span>{' '}
