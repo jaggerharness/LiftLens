@@ -3,6 +3,7 @@
 import { signIn } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { SES } from '@aws-sdk/client-ses';
+import { Prisma } from '@prisma/client';
 import { render } from '@react-email/render';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -90,31 +91,57 @@ export async function registerUser({
 }: {
   values: { email: string; password: string };
 }) {
-  try {
-    const email = values.email;
-    const password = values.password;
+  const email = values.email;
+  const password = values.password;
 
+  try {
     const hashedPassword = await hashPassword(password?.toString() ?? '');
 
-    const user = await prisma.user.create({
-      data: {
-        name: email?.toString() ?? '',
-        password: hashedPassword,
-        email: email?.toString() ?? '',
-      },
+    await prisma.$transaction(async (prisma) => {
+      const user = await prisma.user.create({
+        data: {
+          name: email?.toString() ?? '',
+          password: hashedPassword,
+          email: email?.toString() ?? '',
+        },
+      });
+
+      const token = await generateJWT(user);
+
+      await createVerificationToken(user, token);
+
+      // Attempt to send verification email
+      await sendEmail(user, token);
+
+      return user;
     });
-
-    const token = await generateJWT(user);
-
-    await createVerificationToken(user, token);
-
-    await sendEmail(user, token);
 
     return {
       message: 'Registration successful. Please verify email and login.',
+      type: 'success',
     };
   } catch (error) {
-    return { message: 'Registration failed. Please try again later.' };
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      return {
+        message:
+          'An account with this email already exists. Please use a different email or login.',
+        type: 'error',
+      };
+    }
+    if (error instanceof Error && error.message === 'Failed to send email') {
+      return {
+        message:
+          'Failed to send email verification email. Please check email and try again.',
+        type: 'error',
+      };
+    }
+    return {
+      message: 'Registration failed. Please try again later.',
+      type: 'error',
+    };
   }
 }
 

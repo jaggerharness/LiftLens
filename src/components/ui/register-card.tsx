@@ -10,9 +10,12 @@ import {
   CardTitle,
 } from '@/components/shad-ui/card';
 import { Input } from '@/components/shad-ui/input';
+import { useToast } from '@/components/ui/use-toast';
 import { registerUser } from '@/server/actions/actions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/dist/client/link';
+import { redirect } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -24,6 +27,33 @@ import {
 } from '../shad-ui/form';
 
 export default function RegisterCard() {
+  const { toast } = useToast();
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  useEffect(() => {
+    if (showError) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: toastMessage,
+      });
+      // Reset the error state if needed
+      setShowError(false);
+    }
+    if (showSuccess) {
+      toast({
+        variant: 'success',
+        title: 'Account Created!',
+        description: toastMessage,
+      });
+      // Reset the error state if needed
+      setShowSuccess(false);
+      redirect('/');
+    }
+  }, [showError, showSuccess, toast, toastMessage]);
+
   const formSchema = z.object({
     email: z
       .string({ required_error: 'Email is required' })
@@ -46,7 +76,13 @@ export default function RegisterCard() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const result = await registerUser({ values });
-    console.log(result);
+    if (result.type === 'error') {
+      setToastMessage(result.message);
+      setShowError(true);
+    } else {
+      setToastMessage('Please verify your email to login.');
+      setShowSuccess(true);
+    }
   }
 
   return (
