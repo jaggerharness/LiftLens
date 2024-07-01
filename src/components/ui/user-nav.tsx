@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Avatar,
   AvatarFallback,
@@ -14,11 +16,10 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/shad-ui/dropdown-menu';
-import { auth, signOut } from '@/lib/auth';
+import { Session } from 'next-auth';
+import { signOut } from "next-auth/react"
 
-export async function UserNav() {
-  const session = await auth();
-
+export function UserNav({ session }: { session: Session }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -46,17 +47,8 @@ export async function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <form
-            action={async () => {
-              'use server';
-              await signOut({ redirectTo: '/' });
-            }}
-          >
-            <Button type="submit" variant="ghost">
-              Sign Out
-            </Button>
-          </form>
+        <DropdownMenuItem onClick={() => signOut()}>
+          Sign Out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>

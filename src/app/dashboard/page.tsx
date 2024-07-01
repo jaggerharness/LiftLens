@@ -20,10 +20,10 @@ export default async function DashboardPage() {
       <div className="flex-col flex">
         <div className="border-b">
           <div className="flex h-16 items-center px-4">
-          <h2 className="text-3xl font-bold tracking-tight">LiftLens</h2>
+            <h2 className="text-3xl font-bold tracking-tight">LiftLens</h2>
             <div className="ml-auto flex items-center space-x-4">
               <ModeToggle />
-              <UserNav />
+              <UserNav session={session} />
             </div>
           </div>
         </div>
