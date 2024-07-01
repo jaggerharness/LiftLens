@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma';
 import { SES } from '@aws-sdk/client-ses';
 import { Prisma } from '@prisma/client';
 import { render } from '@react-email/render';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { AuthError } from 'next-auth';
 import { JWT } from 'next-auth/jwt';

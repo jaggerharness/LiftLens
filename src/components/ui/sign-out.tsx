@@ -1,6 +1,5 @@
 import { signOut } from '@/lib/auth';
 import { Button } from '@/components/shad-ui/button';
-import { Icons } from '@/components/shad-ui/icons';
 
 export function SignOut() {
   return (
@@ -10,7 +9,7 @@ export function SignOut() {
         await signOut({ redirectTo: '/' });
       }}
     >
-      <Button type="submit" variant="outline">
+      <Button className='text-left' type="submit" variant="ghost">
         Sign Out
       </Button>
     </form>

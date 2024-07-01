@@ -18,6 +18,7 @@ import { auth, signOut } from '@/lib/auth';
 
 export async function UserNav() {
   const session = await auth();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,9 +32,9 @@ export async function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">shadcn</p>
+            <p className="text-sm font-medium leading-none">Signed in as:</p>
             <p className="text-xs leading-none text-muted-foreground">
-              m@example.com
+              {session?.user?.email ?? ''}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -43,24 +44,19 @@ export async function UserNav() {
             Profile
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={async () => {
-            'use server';
-            await signOut({ redirectTo: '/' });
-          }}
-        >
-          Log out
+        <DropdownMenuItem>
+          <form
+            action={async () => {
+              'use server';
+              await signOut({ redirectTo: '/' });
+            }}
+          >
+            <Button type="submit" variant="ghost">
+              Sign Out
+            </Button>
+          </form>
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
