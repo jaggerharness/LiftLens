@@ -72,7 +72,6 @@ async function sendEmail(user: any, token: string) {
 
     await ses.sendEmail(params);
   } catch (error) {
-    console.log({ error });
     throw new Error('Failed to send email');
   }
 }
@@ -133,7 +132,6 @@ export async function registerUser({
       };
     }
     if (error instanceof Error && error.message === 'Failed to send email') {
-      console.log({ error });
       return {
         message:
           'Failed to send email verification email. Please check email and try again.',

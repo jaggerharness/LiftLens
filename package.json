@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "email": "email dev"
+    "email": "email dev",
+    "docker:build": "PG_VERSION=16 TAG=latest docker-compose up --build -d"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.1.0",
