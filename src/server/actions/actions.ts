@@ -11,6 +11,7 @@ import { AuthError } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import { isRedirectError } from 'next/dist/client/components/redirect';
 import EmailVerificationEmail from '../../../emails/email-verification';
+import ResetPasswordEmail from '../../../emails/reset-password';
 
 async function hashPassword(password: string) {
   return await bcrypt.hash(password, 10);
@@ -30,7 +31,7 @@ async function generateJWT(user: any) {
   return jwt.sign(jwtPayload, jwtSecret, { expiresIn: '1h' });
 }
 
-async function sendEmail(user: any, token: string) {
+async function sendEmailVerification(user: any, token: string) {
   try {
     const region = process.env.AWS_REGION;
     const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
@@ -76,6 +77,66 @@ async function sendEmail(user: any, token: string) {
   }
 }
 
+export async function sendPasswordReset(email: string) {
+  try {
+    const region = process.env.AWS_REGION;
+    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+    const emailTo = email;
+
+    const user = await prisma.user.findFirst({
+      where: { email },
+    });
+
+    console.log({user});
+
+    if(!user){
+      return null;
+    }
+
+    const token = await generateJWT(user);
+    const resetUrl = `${process.env.AUTH_URL}/auth/reset-password?resetToken=${token}`;
+
+    if (!(region && accessKeyId && secretAccessKey)) {
+      throw new Error('AWS credentials or region are not set');
+    }
+
+    const ses = new SES({
+      region,
+      credentials: {
+        accessKeyId,
+        secretAccessKey,
+      },
+    });
+
+    const emailHtml = render(ResetPasswordEmail({ resetUrl, emailTo }));
+
+    const params = {
+      Source: 'no-reply@liftlens.app',
+      Destination: {
+        ToAddresses: [emailTo],
+      },
+      Message: {
+        Body: {
+          Html: {
+            Charset: 'UTF-8',
+            Data: emailHtml,
+          },
+        },
+        Subject: {
+          Charset: 'UTF-8',
+          Data: 'LiftLens Email Verification',
+        },
+      },
+    };
+
+    await ses.sendEmail(params);
+  } catch (error) {
+    console.log({error});
+    throw new Error('Failed to send email');
+  }
+}
+
 async function createVerificationToken(user: any, token: string) {
   await prisma.verificationToken.create({
     data: {
@@ -111,7 +172,7 @@ export async function registerUser({
       await createVerificationToken(user, token);
 
       // Attempt to send verification email
-      await sendEmail(user, token);
+      await sendEmailVerification(user, token);
 
       return user;
     });

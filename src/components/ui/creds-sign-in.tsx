@@ -15,6 +15,7 @@ import {
   FormItem,
   FormMessage,
 } from '../shad-ui/form';
+import { ForgotPasswordDialog } from './forgot-password-dialog';
 
 export function CredSignIn() {
   const formSchema = z.object({
@@ -101,6 +102,7 @@ export function CredSignIn() {
             </FormItem>
           )}
         />
+        <ForgotPasswordDialog />
         <Button type="submit">Sign In</Button>
       </form>
     </Form>
