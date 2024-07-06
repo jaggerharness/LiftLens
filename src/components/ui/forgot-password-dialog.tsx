@@ -1,6 +1,12 @@
 'use client';
 
+import { sendPasswordReset } from '@/server/actions/actions';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { RefreshCwIcon } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '../shad-ui/button';
 import {
   Dialog,
   DialogContent,
@@ -17,13 +23,7 @@ import {
   FormItem,
   FormMessage,
 } from '../shad-ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Input } from '../shad-ui/input';
-import { Button } from '../shad-ui/button';
-import { sendPasswordReset } from '@/server/actions/actions';
-import { useState } from 'react';
-import { RefreshCwIcon } from 'lucide-react';
 
 export function ForgotPasswordDialog() {
   const [submitted, setSubmitted] = useState(false);
@@ -53,9 +53,12 @@ export function ForgotPasswordDialog() {
         Forgot Password?
       </DialogTrigger>
       {!submitted ? (
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent
+          onFocus={() => console.log('focus')}
+          className="sm:max-w-[425px]"
+        >
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-2">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
               <DialogHeader>
                 <DialogTitle>Forgot Password?</DialogTitle>
                 <DialogDescription>
@@ -89,7 +92,10 @@ export function ForgotPasswordDialog() {
           </Form>
         </DialogContent>
       ) : (
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          className="sm:max-w-[425px]"
+        >
           <DialogHeader>
             <DialogTitle>Check your email</DialogTitle>
             <DialogDescription>
@@ -98,8 +104,15 @@ export function ForgotPasswordDialog() {
               your password.
             </DialogDescription>
           </DialogHeader>
-          <div className='text-sm text-muted-foreground'>
-          If you haven't received an email in the next few minutes use the button below to resend the reset form, or <span className='text-primary hover:text-primary/90 hover:cursor-pointer' onClick={() => setSubmitted(false)}>try with a new email</span>
+          <div className="text-sm text-muted-foreground">
+            If you haven't received an email in the next few minutes use the
+            button below to resend the reset form, or{' '}
+            <span
+              className="text-primary hover:text-primary/90 hover:cursor-pointer"
+              onClick={() => setSubmitted(false)}
+            >
+              try with a new email
+            </span>
           </div>
           <DialogFooter>
             <Button type="submit" className="w-full">

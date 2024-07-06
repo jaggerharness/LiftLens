@@ -88,9 +88,7 @@ export async function sendPasswordReset(email: string) {
       where: { email },
     });
 
-    console.log({user});
-
-    if(!user){
+    if (!user) {
       return null;
     }
 
@@ -100,6 +98,14 @@ export async function sendPasswordReset(email: string) {
     if (!(region && accessKeyId && secretAccessKey)) {
       throw new Error('AWS credentials or region are not set');
     }
+
+    await prisma.passwordResetToken.create({
+      data: {
+        identifier: user.id,
+        token: token,
+        expires: new Date(Date.now() + 60 * 60 * 1000), // 1 hour from now
+      },
+    });
 
     const ses = new SES({
       region,
@@ -125,14 +131,14 @@ export async function sendPasswordReset(email: string) {
         },
         Subject: {
           Charset: 'UTF-8',
-          Data: 'LiftLens Email Verification',
+          Data: 'LiftLens Password Reset',
         },
       },
     };
 
     await ses.sendEmail(params);
   } catch (error) {
-    console.log({error});
+    console.log({ error });
     throw new Error('Failed to send email');
   }
 }
@@ -245,6 +251,37 @@ export async function validateToken({
   }
 }
 
+export async function validatePasswordResetToken({
+  token,
+}: {
+  token: string;
+}): Promise<string | null> {
+  const jwtSecret = process.env.AUTH_SECRET;
+  if (!jwtSecret) {
+    throw new Error('JWT secret is not set');
+  }
+
+  try {
+    const passwordResetToken = await prisma.passwordResetToken.findFirst({
+      where: { token },
+    });
+
+    if (!passwordResetToken) {
+      return null;
+    }
+
+    const decodedToken = jwt.verify(token, jwtSecret);
+    if (typeof decodedToken !== 'object' || !decodedToken.id) {
+      throw new Error('Invalid token format');
+    }
+
+    return decodedToken.id;
+  } catch (error) {
+    console.log({ error });
+    throw new Error('Token validation failed');
+  }
+}
+
 export async function credentialsSignIn({
   email,
   password,
@@ -281,5 +318,42 @@ export async function credentialsSignIn({
       }
     }
     throw error;
+  }
+}
+
+export async function resetPassword({
+  userId,
+  password,
+  token,
+}: {
+  userId: string;
+  password: string;
+  token: string;
+}) {
+  try {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        password: await hashPassword(password),
+      },
+    });
+
+    await prisma.passwordResetToken.deleteMany({
+      where: {
+        token,
+      },
+    });
+
+    return {
+      message: 'Password reset.',
+      type: 'success',
+    };
+  } catch (error) {
+    return {
+      message: 'Something went wrong.',
+      type: 'error',
+    };
   }
 }
