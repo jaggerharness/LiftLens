@@ -110,15 +110,16 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return session;
     },
     async authorized({ auth, request }) {
-      if (auth?.user) {
-        // TODO
-        if (auth?.user.firstLogin) {
-          return Response.redirect(
-            new URL('/first-time-setup', request.nextUrl)
-          );
-        }
-        return Response.redirect(new URL('/dashboard', request.nextUrl));
-      }
+      // if (auth?.user) {
+      // TODO
+      // if (auth?.user.firstLogin) {
+      //   alert('TODO');
+      //   return Response.redirect(
+      //     new URL('/first-time-setup', request.nextUrl)
+      //   );
+      // }
+      // return Response.redirect(new URL('/dashboard', request.nextUrl));
+      // }
       return true;
     },
   },

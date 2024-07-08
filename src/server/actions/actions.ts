@@ -1,6 +1,6 @@
 'use server';
 
-import { signIn } from '@/lib/auth';
+import { auth, signIn } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { SES } from '@aws-sdk/client-ses';
 import { Prisma } from '@prisma/client';
@@ -356,4 +356,9 @@ export async function resetPassword({
       type: 'error',
     };
   }
+}
+
+export async function resendEmailVerification() {
+  const session = await auth();
+  console.log({ session });
 }

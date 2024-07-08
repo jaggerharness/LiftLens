@@ -3,7 +3,6 @@ import { Metadata } from 'next';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import { UserNav } from '@/components/ui/user-nav';
 import { auth } from '@/lib/auth';
-import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -12,9 +11,6 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const session = await auth();
-  if (!session) {
-    redirect('/');
-  }
   return (
     <>
       <div className="flex-col flex">
@@ -23,7 +19,7 @@ export default async function DashboardPage() {
             <h2 className="text-3xl font-bold tracking-tight">LiftLens</h2>
             <div className="ml-auto flex items-center space-x-4">
               <ModeToggle />
-              <UserNav session={session} />
+              <UserNav session={session!} />
             </div>
           </div>
         </div>

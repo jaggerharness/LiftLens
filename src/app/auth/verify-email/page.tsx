@@ -9,8 +9,9 @@ import {
 } from '@/components/shad-ui/card';
 import prisma from '@/lib/prisma';
 import { validateToken } from '@/server/actions/actions';
-import { MailCheck, RefreshCwIcon } from 'lucide-react';
+import { MailCheck } from 'lucide-react';
 import Link from 'next/link';
+import { ResendEmail } from './components/resend-email';
 
 interface VerifyEmailPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -77,15 +78,12 @@ export default async function VerifyEmailPage({
               First, let&apos;s verify your email
             </CardTitle>
             <CardDescription>
-              Check <span className="font-semibold">jagger.dev@gmail.com</span>{' '}
-              to verify your email and get started.
+              Check your inbox to complete your email verification and get
+              started.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
-            <Button type="submit" className="w-full">
-              <RefreshCwIcon className="mr-2 h-4 w-4" />
-              Resend Email
-            </Button>
+            <ResendEmail />
           </CardContent>
           <CardFooter className="flex flex-col justify-center text-sm">
             Having trouble?
