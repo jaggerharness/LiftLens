@@ -37,6 +37,12 @@ export default async function VerifyEmailPage({
           emailVerified: new Date(),
         },
       });
+
+      // TODO WHY DOESN'T THIS WORK
+      // Update user session
+      // await update({
+      //   user: updateUser,
+      // });
     } else {
       verified = false;
     }

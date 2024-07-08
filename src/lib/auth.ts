@@ -45,7 +45,7 @@ const fetchUser = async (email: string, password: string) => {
   return userObj;
 };
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
+export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
   debug: false,
   adapter: PrismaAdapter(prisma),
   session: {
@@ -110,17 +110,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return session;
     },
     async authorized({ auth, request }) {
-      // if (auth?.user) {
-      // TODO
-      // if (auth?.user.firstLogin) {
-      //   alert('TODO');
-      //   return Response.redirect(
-      //     new URL('/first-time-setup', request.nextUrl)
-      //   );
+      if (auth?.user?.emailVerified === null) {
+        return Response.redirect(
+          new URL('/auth/verify-email', request.nextUrl)
+        );
+      }
+
+      // TODO implement first time profile set up
+      // if (auth?.user?.firstLogin) {
+      //   return Response.redirect(new URL('/first-time-setup', request.nextUrl));
       // }
-      // return Response.redirect(new URL('/dashboard', request.nextUrl));
-      // }
-      return true;
+      return !!auth;
     },
   },
 });
