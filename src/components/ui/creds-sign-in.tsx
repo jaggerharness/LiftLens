@@ -56,6 +56,7 @@ export function CredSignIn() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const result = await credentialsSignIn(values);
     if (result?.type === 'error') {
+      console.log({ result });
       setToastMessage(
         'An error occurred while trying to log you in. Check your credentials and try again.'
       );

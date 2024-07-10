@@ -81,6 +81,10 @@ export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
             throw new Error('User not found.');
           }
 
+          if (user.emailVerified === null) {
+            throw new Error('Email not verified');
+          }
+
           return user;
         } catch (error) {
           return null;
@@ -89,18 +93,22 @@ export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.email = user.email;
-        token.emailVerified = user.emailVerified;
-        token.firstName = user.firstName;
-        token.lastName = user.lastName;
-        token.firstLogin = user.firstLogin;
+    async jwt({ token, user, trigger, session }) {
+      console.log(trigger);
+      if (trigger === 'update' && session) {
+        token = { ...user, ...session };
+      } else {
+        if (user) {
+          token.email = user.email;
+          token.emailVerified = user.emailVerified;
+          token.firstName = user.firstName;
+          token.lastName = user.lastName;
+          token.firstLogin = user.firstLogin;
+        }
       }
       return token;
     },
     async session({ session, token }) {
-      console.log({ session });
       if (token) {
         session.user.email = token.email ?? '';
         session.user.emailVerified = token.emailVerified as Date | null;

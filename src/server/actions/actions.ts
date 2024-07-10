@@ -236,14 +236,14 @@ export async function validateToken({
       throw new Error('Invalid token format');
     }
 
-    await prisma.verificationToken.delete({
-      where: {
-        identifier_token: {
-          identifier: verificationToken.identifier,
-          token: token,
-        },
-      },
-    });
+    // await prisma.verificationToken.delete({
+    //   where: {
+    //     identifier_token: {
+    //       identifier: verificationToken.identifier,
+    //       token: token,
+    //     },
+    //   },
+    // });
 
     return decodedToken.id;
   } catch (error) {
