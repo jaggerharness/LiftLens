@@ -100,6 +100,7 @@ export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
       return token;
     },
     async session({ session, token }) {
+      console.log({ session });
       if (token) {
         session.user.email = token.email ?? '';
         session.user.emailVerified = token.emailVerified as Date | null;
