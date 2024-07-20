@@ -119,11 +119,11 @@ export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
       return session;
     },
     async authorized({ auth, request }) {
-      if (auth?.user?.emailVerified === null) {
-        return Response.redirect(
-          new URL('/auth/verify-email', request.nextUrl)
-        );
-      }
+      // if (auth?.user?.emailVerified === null) {
+      //   return Response.redirect(
+      //     new URL('/auth/verify-email', request.nextUrl)
+      //   );
+      // }
 
       // TODO implement first time profile set up
       // if (auth?.user?.firstLogin) {
