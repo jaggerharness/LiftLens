@@ -13,11 +13,12 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/shad-ui/dropdown-menu';
+import { GearIcon } from '@radix-ui/react-icons';
+import { LogOut } from 'lucide-react';
 import { Session } from 'next-auth';
-import { signOut } from "next-auth/react"
+import { signOut } from 'next-auth/react';
 
 export function UserNav({ session }: { session: Session }) {
   return (
@@ -42,14 +43,14 @@ export function UserNav({ session }: { session: Session }) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            Settings
+            <GearIcon className="w-4 h-4 ml-auto text-xs tracking-widest opacity-60" />
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()}>
           Sign Out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          <LogOut className="w-4 h-4 ml-auto text-xs tracking-widest opacity-60" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
