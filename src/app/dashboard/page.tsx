@@ -37,6 +37,7 @@ import { ModeToggle } from '@/components/ui/mode-toggle';
 import { UserNav } from '@/components/ui/user-nav';
 import { auth } from '@/lib/auth';
 import { ListFilter } from 'lucide-react';
+import { CreateWorkoutDrawer } from '@/components/ui/create-workout-drawer';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -67,7 +68,7 @@ export default async function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardFooter>
-                <Button>Create New Workout</Button>
+                <CreateWorkoutDrawer />
               </CardFooter>
             </Card>
             <Card x-chunk="dashboard-05-chunk-1">
