@@ -2,11 +2,11 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
-const Table = React.forwardRef<
+const StickyTable = React.forwardRef<
   HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
+  React.HTMLAttributes<HTMLTableElement> & { wrapperClassName?: string }
+>(({ className, wrapperClassName, ...props }, ref) => (
+  <div className={cn('relative w-full overflow-auto', wrapperClassName)}>
     <table
       ref={ref}
       className={cn('w-full caption-bottom text-sm', className)}
@@ -14,17 +14,17 @@ const Table = React.forwardRef<
     />
   </div>
 ));
-Table.displayName = 'Table';
+StickyTable.displayName = 'StickyTable';
 
-const TableHeader = React.forwardRef<
+const StickyTableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
   <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
 ));
-TableHeader.displayName = 'TableHeader';
+StickyTableHeader.displayName = 'StickyTableHeader';
 
-const TableBody = React.forwardRef<
+const StickyTableBody = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
@@ -34,9 +34,9 @@ const TableBody = React.forwardRef<
     {...props}
   />
 ));
-TableBody.displayName = 'TableBody';
+StickyTableBody.displayName = 'StickyTableBody';
 
-const TableFooter = React.forwardRef<
+const StickyTableFooter = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
@@ -49,9 +49,9 @@ const TableFooter = React.forwardRef<
     {...props}
   />
 ));
-TableFooter.displayName = 'TableFooter';
+StickyTableFooter.displayName = 'StickyTableFooter';
 
-const TableRow = React.forwardRef<
+const StickyTableRow = React.forwardRef<
   HTMLTableRowElement,
   React.HTMLAttributes<HTMLTableRowElement>
 >(({ className, ...props }, ref) => (
@@ -64,9 +64,9 @@ const TableRow = React.forwardRef<
     {...props}
   />
 ));
-TableRow.displayName = 'TableRow';
+StickyTableRow.displayName = 'StickyTableRow';
 
-const TableHead = React.forwardRef<
+const StickyTableHead = React.forwardRef<
   HTMLTableCellElement,
   React.ThHTMLAttributes<HTMLTableCellElement>
 >(({ className, ...props }, ref) => (
@@ -79,9 +79,9 @@ const TableHead = React.forwardRef<
     {...props}
   />
 ));
-TableHead.displayName = 'TableHead';
+StickyTableHead.displayName = 'StickyTableHead';
 
-const TableCell = React.forwardRef<
+const StickyTableCell = React.forwardRef<
   HTMLTableCellElement,
   React.TdHTMLAttributes<HTMLTableCellElement>
 >(({ className, ...props }, ref) => (
@@ -94,9 +94,9 @@ const TableCell = React.forwardRef<
     {...props}
   />
 ));
-TableCell.displayName = 'TableCell';
+StickyTableCell.displayName = 'StickyTableCell';
 
-const TableCaption = React.forwardRef<
+const StickyTableCaption = React.forwardRef<
   HTMLTableCaptionElement,
   React.HTMLAttributes<HTMLTableCaptionElement>
 >(({ className, ...props }, ref) => (
@@ -106,15 +106,15 @@ const TableCaption = React.forwardRef<
     {...props}
   />
 ));
-TableCaption.displayName = 'TableCaption';
+StickyTableCaption.displayName = 'StickyTableCaption';
 
 export {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
+  StickyTable,
+  StickyTableBody,
+  StickyTableCaption,
+  StickyTableCell,
+  StickyTableFooter,
+  StickyTableHead,
+  StickyTableHeader,
+  StickyTableRow,
 };

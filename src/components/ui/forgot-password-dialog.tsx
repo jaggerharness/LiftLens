@@ -62,9 +62,9 @@ export function ForgotPasswordDialog() {
               <DialogHeader>
                 <DialogTitle>Forgot Password?</DialogTitle>
                 <DialogDescription>
-                  If you've forgotten your password, enter your email below.
-                  We'll send you a link to reset your password if there's an
-                  account associated with that email address.
+                  If you&rsquo;ve forgotten your password, enter your email
+                  below. We&rsquo;ll send you a link to reset your password if
+                  there&rsquo;s an account associated with that email address.
                 </DialogDescription>
               </DialogHeader>
               <FormField
@@ -99,14 +99,14 @@ export function ForgotPasswordDialog() {
           <DialogHeader>
             <DialogTitle>Check your email</DialogTitle>
             <DialogDescription>
-              If there's an account associated with the provided email address,
-              you will receive a link containing further instructions to reset
-              your password.
+              If there&rsquo;s an account associated with the provided email
+              address, you will receive a link containing further instructions
+              to reset your password.
             </DialogDescription>
           </DialogHeader>
           <div className="text-sm text-muted-foreground">
-            If you haven't received an email in the next few minutes use the
-            button below to resend the reset form, or{' '}
+            If you haven&rsquo;t received an email in the next few minutes use
+            the button below to resend the reset form, or{' '}
             <span
               className="text-primary hover:text-primary/90 hover:cursor-pointer"
               onClick={() => setSubmitted(false)}
