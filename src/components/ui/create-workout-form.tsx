@@ -1,26 +1,3 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { toast } from './use-toast';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../shad-ui/form';
-import { cn } from '@/lib/utils';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/shad-ui/popover';
-import { CalendarIcon } from '@radix-ui/react-icons';
-import { Calendar } from '../shad-ui/calendar';
-import { format } from 'date-fns';
-import { Input } from '@/components/shad-ui/input';
 import { Button } from '@/components/shad-ui/button';
 import {
   Card,
@@ -31,6 +8,22 @@ import {
   CardTitle,
 } from '@/components/shad-ui/card';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/shad-ui/dialog';
+import { Input } from '@/components/shad-ui/input';
+import { Label } from '@/components/shad-ui/label';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/shad-ui/popover';
+import {
   Table,
   TableBody,
   TableCell,
@@ -38,12 +31,24 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/shad-ui/table';
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from '@/components/shad-ui/toggle-group';
-import { Label } from '@/components/shad-ui/label';
+import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CalendarIcon } from '@radix-ui/react-icons';
+import { format } from 'date-fns';
 import { PlusCircle } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Calendar } from '../shad-ui/calendar';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../shad-ui/form';
+import { toast } from './use-toast';
 
 const workoutFormSchema = z.object({
   name: z
@@ -79,7 +84,7 @@ export function CreateWorkoutForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form className="mx-4 space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="name"
@@ -141,7 +146,7 @@ export function CreateWorkoutForm() {
             </FormItem>
           )}
         />
-        <Card x-chunk="dashboard-07-chunk-1">
+        <Card>
           <CardHeader>
             <CardTitle>Exercises</CardTitle>
             <CardDescription>
@@ -152,99 +157,118 @@ export function CreateWorkoutForm() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">SKU</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead className="w-[100px]">Size</TableHead>
+                  <TableHead className="w-[200px]">Exercise</TableHead>
+                  <TableHead>Sets</TableHead>
+                  <TableHead>Reps</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
-                  <TableCell className="font-semibold">GGPC-001</TableCell>
-                  <TableCell>
-                    <Label htmlFor="stock-1" className="sr-only">
-                      Stock
-                    </Label>
-                    <Input id="stock-1" type="number" defaultValue="100" />
+                  <TableCell className="font-semibold">
+                    Flat DB Press (Heavy)
                   </TableCell>
                   <TableCell>
-                    <Label htmlFor="price-1" className="sr-only">
-                      Price
+                    <Label htmlFor="sets-1" className="sr-only">
+                      Sets
                     </Label>
-                    <Input id="price-1" type="number" defaultValue="99.99" />
+                    <Input id="sets-1" type="number" defaultValue="3" />
                   </TableCell>
                   <TableCell>
-                    <ToggleGroup
-                      type="single"
-                      defaultValue="s"
-                      variant="outline"
-                    >
-                      <ToggleGroupItem value="s">S</ToggleGroupItem>
-                      <ToggleGroupItem value="m">M</ToggleGroupItem>
-                      <ToggleGroupItem value="l">L</ToggleGroupItem>
-                    </ToggleGroup>
+                    <Label htmlFor="reps-1" className="sr-only">
+                      Reps
+                    </Label>
+                    <Input id="reps-1" type="number" defaultValue="10" />
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="font-semibold">GGPC-002</TableCell>
-                  <TableCell>
-                    <Label htmlFor="stock-2" className="sr-only">
-                      Stock
-                    </Label>
-                    <Input id="stock-2" type="number" defaultValue="143" />
+                  <TableCell className="font-semibold">
+                    2-Grip Lat Pulldown
                   </TableCell>
                   <TableCell>
-                    <Label htmlFor="price-2" className="sr-only">
-                      Price
+                    <Label htmlFor="sets-2" className="sr-only">
+                      Sets
                     </Label>
-                    <Input id="price-2" type="number" defaultValue="99.99" />
+                    <Input id="sets-2" type="number" defaultValue="3" />
                   </TableCell>
                   <TableCell>
-                    <ToggleGroup
-                      type="single"
-                      defaultValue="m"
-                      variant="outline"
-                    >
-                      <ToggleGroupItem value="s">S</ToggleGroupItem>
-                      <ToggleGroupItem value="m">M</ToggleGroupItem>
-                      <ToggleGroupItem value="l">L</ToggleGroupItem>
-                    </ToggleGroup>
+                    <Label htmlFor="reps-2" className="sr-only">
+                      Reps
+                    </Label>
+                    <Input id="reps-2" type="number" defaultValue="10" />
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="font-semibold">GGPC-003</TableCell>
-                  <TableCell>
-                    <Label htmlFor="stock-3" className="sr-only">
-                      Stock
-                    </Label>
-                    <Input id="stock-3" type="number" defaultValue="32" />
+                  <TableCell className="font-semibold">
+                    Seated DB Shoulder Press
                   </TableCell>
                   <TableCell>
-                    <Label htmlFor="price-3" className="sr-only">
-                      Stock
+                    <Label htmlFor="sets-3" className="sr-only">
+                      Sets
                     </Label>
-                    <Input id="price-3" type="number" defaultValue="99.99" />
+                    <Input id="sets-3" type="number" defaultValue="3" />
                   </TableCell>
                   <TableCell>
-                    <ToggleGroup
-                      type="single"
-                      defaultValue="s"
-                      variant="outline"
-                    >
-                      <ToggleGroupItem value="s">S</ToggleGroupItem>
-                      <ToggleGroupItem value="m">M</ToggleGroupItem>
-                      <ToggleGroupItem value="l">L</ToggleGroupItem>
-                    </ToggleGroup>
+                    <Label htmlFor="reps-3" className="sr-only">
+                      Reps
+                    </Label>
+                    <Input id="reps-3" type="number" defaultValue="10" />
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </CardContent>
           <CardFooter className="justify-center border-t p-4">
-            <Button size="sm" variant="ghost" className="gap-1">
-              <PlusCircle className="h-3.5 w-3.5" />
-              Add Variant
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="sm" variant="ghost" className="gap-1">
+                  <PlusCircle className="h-3.5 w-3.5" />
+                  Add Exercise
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Select Exercise</DialogTitle>
+                  <DialogDescription>
+                    Select the exercise you want to add to this workout.
+                  </DialogDescription>
+                </DialogHeader>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[100px]">Exercise</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-medium">Hack Squat</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">
+                        Seated Hamstring Curl
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">
+                        Weighted Pull-Up
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">
+                        Cable Chest Press
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">
+                        DB Lateral Raise
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+                <DialogFooter>
+                  <Button type="submit">Select</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </CardFooter>
         </Card>
       </form>

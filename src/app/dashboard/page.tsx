@@ -33,11 +33,11 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/shad-ui/tabs';
+import { CreateWorkoutDrawer } from '@/components/ui/create-workout-drawer';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import { UserNav } from '@/components/ui/user-nav';
 import { auth } from '@/lib/auth';
 import { ListFilter } from 'lucide-react';
-import { CreateWorkoutDrawer } from '@/components/ui/create-workout-drawer';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -60,7 +60,7 @@ export default async function DashboardPage() {
         </div>
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2 p-6">
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-            <Card className="sm:col-span-2" x-chunk="dashboard-05-chunk-0">
+            <Card className="sm:col-span-2">
               <CardHeader className="pb-3">
                 <CardTitle>Upcoming Workouts</CardTitle>
                 <CardDescription className="max-w-lg text-balance leading-relaxed">
@@ -71,7 +71,7 @@ export default async function DashboardPage() {
                 <CreateWorkoutDrawer />
               </CardFooter>
             </Card>
-            <Card x-chunk="dashboard-05-chunk-1">
+            <Card>
               <CardHeader className="pb-2">
                 <CardDescription>This Week</CardDescription>
                 <CardTitle className="text-4xl">4 workouts</CardTitle>
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
                 <Progress value={25} aria-label="1 of 4 workouts completed" />
               </CardFooter>
             </Card>
-            <Card x-chunk="dashboard-05-chunk-2">
+            <Card>
               <CardHeader className="pb-2">
                 <CardDescription>This Month</CardDescription>
                 <CardTitle className="text-4xl">16 workouts</CardTitle>
@@ -132,7 +132,7 @@ export default async function DashboardPage() {
               </div>
             </div>
             <TabsContent value="week">
-              <Card x-chunk="dashboard-05-chunk-3">
+              <Card>
                 <CardHeader className="px-7">
                   <CardTitle>Workouts</CardTitle>
                   <CardDescription>Workouts for the week</CardDescription>

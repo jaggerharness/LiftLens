@@ -1,5 +1,6 @@
 'use client';
 
+import { buttonVariants } from '@/components/shad-ui/button';
 import {
   Drawer,
   DrawerContent,
@@ -9,8 +10,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/shad-ui/drawer';
-import { buttonVariants } from '@/components/shad-ui/button';
-import React from 'react';
 import { CreateWorkoutForm } from './create-workout-form';
 
 export function CreateWorkoutDrawer() {
@@ -24,7 +23,6 @@ export function CreateWorkoutDrawer() {
           <DrawerTitle>Create A Workout</DrawerTitle>
           <DrawerDescription>
             You can create a workout from scratch or use a preexisting template
-            (TODO)
           </DrawerDescription>
         </DrawerHeader>
         <CreateWorkoutForm />
