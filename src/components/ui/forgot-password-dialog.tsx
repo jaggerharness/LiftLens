@@ -53,10 +53,7 @@ export function ForgotPasswordDialog() {
         Forgot Password?
       </DialogTrigger>
       {!submitted ? (
-        <DialogContent
-          onFocus={() => console.log('focus')}
-          className="sm:max-w-[425px]"
-        >
+        <DialogContent className="sm:max-w-[425px]">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
               <DialogHeader>

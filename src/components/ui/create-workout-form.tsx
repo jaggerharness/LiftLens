@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/shad-ui/button';
 import {
   Card,
@@ -33,20 +35,14 @@ import {
 } from '@/components/shad-ui/table';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Exercise } from '@prisma/client';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { format } from 'date-fns';
-import { ListFilter, PlusCircle, Search } from 'lucide-react';
+import { PlusCircle, Search } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { Badge } from '../shad-ui/badge';
 import { Calendar } from '../shad-ui/calendar';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../shad-ui/dropdown-menu';
 import {
   Form,
   FormControl,
@@ -76,7 +72,7 @@ const workoutFormSchema = z.object({
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 
-export function CreateWorkoutForm() {
+export function CreateWorkoutForm({ exercises }: { exercises: Exercise[] }) {
   const form = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutFormSchema),
   });
@@ -251,360 +247,50 @@ export function CreateWorkoutForm() {
                     </div>
                   </form>
                 </div>
-                <div className="ml-auto flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-7 gap-1 text-sm"
-                      >
-                        <ListFilter className="h-3.5 w-3.5" />
-                        <span className="sr-only sm:not-sr-only">Filter</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuCheckboxItem checked>
-                        Upcoming
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem>
-                        Completed
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem>
-                        Skipped
-                      </DropdownMenuCheckboxItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
                 <ScrollArea className="h-full">
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
+                  {exercises.map((exercise) => (
+                    <div
+                      key={exercise.id}
+                      className="flex flex-col gap-2 p-4 pt-0"
                     >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
+                      <button
+                        key={exercise.id}
+                        className={cn(
+                          'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
+                          // mail.selected === item.id && 'bg-muted'
+                        )}
+                        onClick={() => console.log('clicked')}
+                      >
+                        <div className="flex w-full flex-col gap-1">
+                          <div className="flex items-center">
+                            <div className="flex items-center gap-2">
+                              <div className="font-semibold">
+                                {exercise.displayName}
+                              </div>
                             </div>
                           </div>
+                          {/* <div className="text-xs font-medium">
+                            {'This is a description of the exercise'}
+                          </div> */}
                         </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
+                        <div className="line-clamp-2 text-xs text-muted-foreground">
+                          {exercise.description}
                         </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <Badge key={'Arms'} variant={'secondary'}>
+                            {'Biceps'}
+                          </Badge>
+                          <Badge key={'Arms'} variant={'secondary'}>
+                            {'Triceps'}
+                          </Badge>
+                          <Badge key={'Arms'} variant={'secondary'}>
+                            {'Chest'}
+                          </Badge>
                         </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-2 p-4 pt-0">
-                    <button
-                      key={1}
-                      className={cn(
-                        'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                        // mail.selected === item.id && 'bg-muted'
-                      )}
-                      onClick={() => console.log('clicked')}
-                    >
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex items-center">
-                          <div className="flex items-center gap-2">
-                            <div className="font-semibold">
-                              {'Weighted Pull-Up'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-xs font-medium">
-                          {'This is a description of the exercise'}
-                        </div>
-                      </div>
-                      <div className="line-clamp-2 text-xs text-muted-foreground">
-                        {'This is a description of the exercise'}
-                        {/* {item.text.substring(0, 300)} */}
-                      </div>
-                    </button>
-                  </div>
+                      </button>
+                    </div>
+                  ))}
                 </ScrollArea>
-
                 <DialogFooter>
                   <Button type="button">Add</Button>
                 </DialogFooter>

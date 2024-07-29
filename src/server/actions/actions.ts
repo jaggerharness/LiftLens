@@ -138,7 +138,6 @@ export async function sendPasswordReset(email: string) {
 
     await ses.sendEmail(params);
   } catch (error) {
-    console.log({ error });
     throw new Error('Failed to send email');
   }
 }
@@ -277,7 +276,6 @@ export async function validatePasswordResetToken({
 
     return decodedToken.id;
   } catch (error) {
-    console.log({ error });
     throw new Error('Token validation failed');
   }
 }
@@ -359,6 +357,5 @@ export async function resetPassword({
 }
 
 export async function resendEmailVerification() {
-  const session = await auth();
-  console.log({ session });
+  await auth();
 }

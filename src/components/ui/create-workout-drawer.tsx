@@ -1,5 +1,3 @@
-'use client';
-
 import { buttonVariants } from '@/components/shad-ui/button';
 import {
   Drawer,
@@ -12,7 +10,12 @@ import {
 } from '@/components/shad-ui/drawer';
 import { CreateWorkoutForm } from './create-workout-form';
 
-export function CreateWorkoutDrawer() {
+async function getExercises() {
+  return await prisma.exercise.findMany();
+}
+
+export async function CreateWorkoutDrawer() {
+  const exercises = await getExercises();
   return (
     <Drawer>
       <DrawerTrigger className={buttonVariants({ variant: 'default' })}>
@@ -25,7 +28,7 @@ export function CreateWorkoutDrawer() {
             You can create a workout from scratch or use a preexisting template
           </DrawerDescription>
         </DrawerHeader>
-        <CreateWorkoutForm />
+        <CreateWorkoutForm exercises={exercises} />
         <DrawerFooter></DrawerFooter>
       </DrawerContent>
     </Drawer>
