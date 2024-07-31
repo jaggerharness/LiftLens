@@ -5,14 +5,31 @@ const prisma = new PrismaClient();
 async function main() {
   const user = await prisma.user.findFirst();
 
-  const muscleGroups = [
-    { name: 'Chest' },
-    { name: 'Back' },
-    { name: 'Legs' },
-    { name: 'Arms' },
-    { name: 'Shoulders' },
-    { name: 'Core' },
-  ];
+  console.log(`Start seeding ...`);
+
+  const chestMg = await prisma.muscleGroup.create({
+    data: { name: 'Chest' },
+  });
+
+  const backMg = await prisma.muscleGroup.create({
+    data: { name: 'Back' },
+  });
+
+  const legsMg = await prisma.muscleGroup.create({
+    data: { name: 'Legs' },
+  });
+
+  const armsMg = await prisma.muscleGroup.create({
+    data: { name: 'Arms' },
+  });
+
+  const shouldersMg = await prisma.muscleGroup.create({
+    data: { name: 'Shoulders' },
+  });
+
+  const coreMg = await prisma.muscleGroup.create({
+    data: { name: 'Core' },
+  });
 
   const exercises = [
     {
@@ -22,6 +39,9 @@ async function main() {
         'The flat dumbbell press is a great exercise for building the chest muscles. It is a compound exercise that targets the chest, shoulders, and triceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: chestMg.id },
+      },
     },
     {
       name: '2-Grip Lat Pull Down',
@@ -30,6 +50,9 @@ async function main() {
         'The 2-grip lat pull down is a great exercise for building the back muscles. It is a compound exercise that targets the lats, shoulders, and biceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: backMg.id },
+      },
     },
     {
       name: 'Seated Dumbbell Shoulder Press',
@@ -38,6 +61,9 @@ async function main() {
         'The seated dumbbell shoulder press is a great exercise for building the shoulder muscles. It is a compound exercise that targets the shoulders, triceps, and upper chest.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: shouldersMg.id },
+      },
     },
     {
       name: 'Seated Cable Row',
@@ -46,6 +72,9 @@ async function main() {
         'The seated cable row is a great exercise for building the back muscles. It is a compound exercise that targets the lats, shoulders, and biceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: [{ id: backMg.id }, { id: armsMg.id }],
+      },
     },
     {
       name: 'EZ-Bar Skull Crusher',
@@ -54,6 +83,9 @@ async function main() {
         'The ez-bar skull crusher is a great exercise for building the triceps muscles. It is an isolation exercise that targets the triceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: armsMg.id },
+      },
     },
     {
       name: 'EZ-Bar Curl',
@@ -62,6 +94,9 @@ async function main() {
         'The ez-bar curl is a great exercise for building the biceps muscles. It is an isolation exercise that targets the biceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: armsMg.id },
+      },
     },
     {
       name: 'Hack Squat',
@@ -70,6 +105,9 @@ async function main() {
         'The hack squat is a great exercise for building the leg muscles. It is a compound exercise that targets the quads, hamstrings, and glutes.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: legsMg.id },
+      },
     },
     {
       name: 'Seated Hamstring Curl',
@@ -78,6 +116,9 @@ async function main() {
         'The seated hamstring curl is a great exercise for building the hamstring muscles. It is an isolation exercise that targets the hamstrings.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: legsMg.id },
+      },
     },
     {
       name: 'Standing Calf Raise',
@@ -86,6 +127,9 @@ async function main() {
         'The standing calf raise is a great exercise for building the calf muscles. It is an isolation exercise that targets the calves.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: legsMg.id },
+      },
     },
     {
       name: 'Hanging Leg Raise',
@@ -94,6 +138,9 @@ async function main() {
         'The hanging leg raise is a great exercise for building the core muscles. It is an isolation exercise that targets the lower abs.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: coreMg.id },
+      },
     },
     {
       name: 'Pendlay Row',
@@ -102,6 +149,9 @@ async function main() {
         'The pendlay row is a great exercise for building the back muscles. It is a compound exercise that targets the lats, shoulders, and biceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: backMg.id },
+      },
     },
     {
       name: 'Machine Shoulder Press',
@@ -110,6 +160,9 @@ async function main() {
         'The machine shoulder press is a great exercise for building the shoulder muscles. It is a compound exercise that targets the shoulders, triceps, and upper chest.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: shouldersMg.id },
+      },
     },
     {
       name: 'Weighted Pull Up',
@@ -118,6 +171,9 @@ async function main() {
         'The weighted pull up is a great exercise for building the back muscles. It is a compound exercise that targets the lats, shoulders, and biceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: [{ id: backMg.id }, { id: armsMg.id }, { id: shouldersMg.id }],
+      },
     },
     {
       name: 'Cable Chest Press',
@@ -126,6 +182,9 @@ async function main() {
         'The cable chest press is a great exercise for building the chest muscles. It is a compound exercise that targets the chest, shoulders, and triceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: chestMg.id },
+      },
     },
     {
       name: 'Seated Cable Row',
@@ -134,6 +193,9 @@ async function main() {
         'The seated cable row is a great exercise for building the back muscles. It is a compound exercise that targets the lats, shoulders, and biceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: backMg.id },
+      },
     },
     {
       name: 'Bayesian Cable Curl',
@@ -142,6 +204,9 @@ async function main() {
         'The bayesian cable curl is a great exercise for building the biceps muscles. It is an isolation exercise that targets the biceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: armsMg.id },
+      },
     },
     {
       name: 'Triceps Pushdown',
@@ -150,6 +215,9 @@ async function main() {
         'The triceps pushdown is a great exercise for building the triceps muscles. It is an isolation exercise that targets the triceps.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: armsMg.id },
+      },
     },
     {
       name: 'Dumbbell Lateral Raise',
@@ -158,6 +226,9 @@ async function main() {
         'The dumbbell lateral raise is a great exercise for building the shoulder muscles. It is an isolation exercise that targets the shoulders.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: shouldersMg.id },
+      },
     },
     {
       name: 'Romanian Deadlift',
@@ -166,6 +237,9 @@ async function main() {
         'The romanian deadlift is a great exercise for building the hamstring muscles. It is a compound exercise that targets the hamstrings, glutes, and lower back.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: [{ id: legsMg.id }, { id: backMg.id }],
+      },
     },
     {
       name: 'Leg Press',
@@ -174,6 +248,9 @@ async function main() {
         'The leg press is a great exercise for building the leg muscles. It is a compound exercise that targets the quads, hamstrings, and glutes.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: legsMg.id },
+      },
     },
     {
       name: 'Leg Extension',
@@ -182,6 +259,9 @@ async function main() {
         'The leg extension is a great exercise for building the quad muscles. It is an isolation exercise that targets the quads.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: legsMg.id },
+      },
     },
     {
       name: 'Seated Calf Raise',
@@ -190,6 +270,9 @@ async function main() {
         'The seated calf raise is a great exercise for building the calf muscles. It is an isolation exercise that targets the calves.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: legsMg.id },
+      },
     },
     {
       name: 'Cable Crunch',
@@ -198,22 +281,17 @@ async function main() {
         'The cable crunch is a great exercise for building the core muscles. It is an isolation exercise that targets the upper abs.',
       createdBy: user.id,
       isPublic: true,
+      muscleGroups: {
+        connect: { id: coreMg.id },
+      },
     },
   ];
-
-  console.log(`Start seeding ...`);
-  for (const muscleGroup of muscleGroups) {
-    const mg = await prisma.muscleGroup.create({
-      data: muscleGroup,
-    });
-    console.log(`Created muscle group with id: ${mg.id}`);
-  }
 
   for (const exercise of exercises) {
     const ex = await prisma.exercise.create({
       data: exercise,
     });
-    console.log(`Created muscle group with id: ${ex.id}`);
+    console.log(`Created exercise with id: ${ex.id}`);
   }
 
   console.log(`Seeding finished.`);
