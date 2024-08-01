@@ -11,6 +11,7 @@ import {
 } from '@/components/shad-ui/card';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -55,6 +56,7 @@ import {
 import { ScrollArea } from '../shad-ui/scroll-area';
 import { Separator } from '../shad-ui/separator';
 import { toast } from './use-toast';
+import { useRef, useState } from 'react';
 
 const workoutFormSchema = z.object({
   name: z
@@ -80,6 +82,14 @@ export function CreateWorkoutForm({
   const form = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutFormSchema),
   });
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const [workoutExercises, setWorkoutExercises] = useState<
+    ExerciseWithMuscleGroups[]
+  >([]);
+
+  const ref = useRef<HTMLButtonElement | null>(null);
 
   function onSubmit(data: WorkoutFormValues) {
     toast({
@@ -173,57 +183,41 @@ export function CreateWorkoutForm({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell className="font-semibold">
-                    Flat DB Press (Heavy)
-                  </TableCell>
-                  <TableCell>
-                    <Label htmlFor="sets-1" className="sr-only">
-                      Sets
-                    </Label>
-                    <Input id="sets-1" type="number" defaultValue="3" />
-                  </TableCell>
-                  <TableCell>
-                    <Label htmlFor="reps-1" className="sr-only">
-                      Reps
-                    </Label>
-                    <Input id="reps-1" type="number" defaultValue="10" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-semibold">
-                    2-Grip Lat Pulldown
-                  </TableCell>
-                  <TableCell>
-                    <Label htmlFor="sets-2" className="sr-only">
-                      Sets
-                    </Label>
-                    <Input id="sets-2" type="number" defaultValue="3" />
-                  </TableCell>
-                  <TableCell>
-                    <Label htmlFor="reps-2" className="sr-only">
-                      Reps
-                    </Label>
-                    <Input id="reps-2" type="number" defaultValue="10" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-semibold">
-                    Seated DB Shoulder Press
-                  </TableCell>
-                  <TableCell>
-                    <Label htmlFor="sets-3" className="sr-only">
-                      Sets
-                    </Label>
-                    <Input id="sets-3" type="number" defaultValue="3" />
-                  </TableCell>
-                  <TableCell>
-                    <Label htmlFor="reps-3" className="sr-only">
-                      Reps
-                    </Label>
-                    <Input id="reps-3" type="number" defaultValue="10" />
-                  </TableCell>
-                </TableRow>
+                {workoutExercises?.map((workoutExercise) => {
+                  return (
+                    <TableRow>
+                      <TableCell className="font-semibold">
+                        {workoutExercise.name}
+                      </TableCell>
+                      <TableCell>
+                        <Label
+                          htmlFor={`sets-${workoutExercise.id}`}
+                          className="sr-only"
+                        >
+                          Sets
+                        </Label>
+                        <Input
+                          id={`sets-${workoutExercise.id}`}
+                          type="number"
+                          defaultValue="3"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Label
+                          htmlFor={`reps-${workoutExercise.id}`}
+                          className="sr-only"
+                        >
+                          Reps
+                        </Label>
+                        <Input
+                          id={`reps-${workoutExercise.id}`}
+                          type="number"
+                          defaultValue="10"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </CardContent>
@@ -235,6 +229,7 @@ export function CreateWorkoutForm({
                   Add Exercise
                 </Button>
               </DialogTrigger>
+              <DialogClose ref={ref} />
               <DialogContent className="sm:max-w-[425px] h-3/4">
                 <DialogHeader>
                   <DialogTitle>Select Exercise</DialogTitle>
@@ -260,10 +255,29 @@ export function CreateWorkoutForm({
                       <button
                         key={exercise.id}
                         className={cn(
-                          'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                          // exercise.selected === item.id && 'bg-muted'
+                          'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
+                          exercise.id === selectedId &&
+                            'bg-muted border-primary'
                         )}
-                        onClick={() => console.log('clicked')}
+                        onClick={() => setSelectedId(exercise.id)}
+                        onDoubleClick={() => {
+                          setSelectedId(exercise.id);
+
+                          const selectedExercise =
+                            exercises.find(
+                              (element) => element.id === selectedId
+                            ) ?? null;
+
+                          if (selectedExercise) {
+                            setWorkoutExercises((prevWorkoutExercises) => [
+                              ...prevWorkoutExercises,
+                              selectedExercise,
+                            ]);
+                          }
+
+                          ref.current?.click();
+                          setSelectedId(null);
+                        }}
                       >
                         <div className="flex w-full flex-col gap-1">
                           <div className="flex items-center">
@@ -291,7 +305,27 @@ export function CreateWorkoutForm({
                   ))}
                 </ScrollArea>
                 <DialogFooter>
-                  <Button type="button">Add</Button>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      const selectedExercise =
+                        exercises.find(
+                          (element) => element.id === selectedId
+                        ) ?? null;
+
+                      if (selectedExercise) {
+                        setWorkoutExercises((prevWorkoutExercises) => [
+                          ...prevWorkoutExercises,
+                          selectedExercise,
+                        ]);
+                      }
+
+                      ref.current?.click();
+                      setSelectedId(null);
+                    }}
+                  >
+                    Add
+                  </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
