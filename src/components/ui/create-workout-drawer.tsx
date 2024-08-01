@@ -8,15 +8,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/shad-ui/drawer';
-import { CreateWorkoutForm } from './create-workout-form';
 import prisma from '@/lib/prisma';
-import { Exercise, Prisma } from '@prisma/client';
-
-type ExerciseWithMuscleGroups = Prisma.ExerciseGetPayload<{
-  include: {
-    muscleGroups: true;
-  };
-}>;
+import { ExerciseWithMuscleGroups } from '@/lib/types';
+import { CreateWorkoutForm } from './create-workout-form';
 
 async function getExercises(): Promise<ExerciseWithMuscleGroups[]> {
   const exercises = await prisma.exercise.findMany({

@@ -3,32 +3,62 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  const user = await prisma.user.findFirst();
-
   console.log(`Start seeding ...`);
+
+  const user = await prisma.user.create({
+    data: {
+      name: 'Tech Support',
+      firstName: 'Tech',
+      lastName: 'Support',
+      firstLogin: false,
+      password: 'password',
+      email: 'support@liftlens.app',
+      emailVerified: new Date(),
+    },
+  });
 
   const chestMg = await prisma.muscleGroup.create({
     data: { name: 'Chest' },
   });
 
-  const backMg = await prisma.muscleGroup.create({
-    data: { name: 'Back' },
+  const calvesMg = await prisma.muscleGroup.create({
+    data: { name: 'Calves' },
   });
 
-  const legsMg = await prisma.muscleGroup.create({
-    data: { name: 'Legs' },
+  const hamstringsMg = await prisma.muscleGroup.create({
+    data: { name: 'Hamstrings' },
   });
 
-  const armsMg = await prisma.muscleGroup.create({
-    data: { name: 'Arms' },
+  const quadricepsMg = await prisma.muscleGroup.create({
+    data: { name: 'Quadriceps' },
+  });
+
+  const glutesMg = await prisma.muscleGroup.create({
+    data: { name: 'Glutes' },
+  });
+
+  const bicepsMg = await prisma.muscleGroup.create({
+    data: { name: 'Biceps' },
+  });
+
+  const tricepsMg = await prisma.muscleGroup.create({
+    data: { name: 'Triceps' },
   });
 
   const shouldersMg = await prisma.muscleGroup.create({
     data: { name: 'Shoulders' },
   });
 
+  const latsMg = await prisma.muscleGroup.create({
+    data: { name: 'Lats' },
+  });
+
   const coreMg = await prisma.muscleGroup.create({
     data: { name: 'Core' },
+  });
+
+  const backMg = await prisma.muscleGroup.create({
+    data: { name: 'Back' },
   });
 
   const exercises = [
@@ -40,7 +70,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: chestMg.id },
+        connect: [
+          { id: chestMg.id },
+          { id: shouldersMg.id },
+          { id: tricepsMg.id },
+        ],
       },
     },
     {
@@ -51,7 +85,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: backMg.id },
+        connect: [
+          { id: latsMg.id },
+          { id: shouldersMg.id },
+          { id: bicepsMg.id },
+        ],
       },
     },
     {
@@ -62,7 +100,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: shouldersMg.id },
+        connect: [
+          { id: chestMg.id },
+          { id: shouldersMg.id },
+          { id: tricepsMg.id },
+        ],
       },
     },
     {
@@ -73,7 +115,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: [{ id: backMg.id }, { id: armsMg.id }],
+        connect: [
+          { id: latsMg.id },
+          { id: shouldersMg.id },
+          { id: bicepsMg.id },
+        ],
       },
     },
     {
@@ -84,7 +130,7 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: armsMg.id },
+        connect: { id: tricepsMg.id },
       },
     },
     {
@@ -95,7 +141,7 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: armsMg.id },
+        connect: { id: bicepsMg.id },
       },
     },
     {
@@ -106,7 +152,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: legsMg.id },
+        connect: [
+          { id: quadricepsMg.id },
+          { id: hamstringsMg.id },
+          { id: glutesMg.id },
+        ],
       },
     },
     {
@@ -117,7 +167,7 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: legsMg.id },
+        connect: { id: hamstringsMg.id },
       },
     },
     {
@@ -128,7 +178,7 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: legsMg.id },
+        connect: { id: calvesMg.id },
       },
     },
     {
@@ -150,7 +200,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: backMg.id },
+        connect: [
+          { id: latsMg.id },
+          { id: shouldersMg.id },
+          { id: bicepsMg.id },
+        ],
       },
     },
     {
@@ -161,7 +215,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: shouldersMg.id },
+        connect: [
+          { id: chestMg.id },
+          { id: shouldersMg.id },
+          { id: tricepsMg.id },
+        ],
       },
     },
     {
@@ -172,7 +230,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: [{ id: backMg.id }, { id: armsMg.id }, { id: shouldersMg.id }],
+        connect: [
+          { id: latsMg.id },
+          { id: shouldersMg.id },
+          { id: bicepsMg.id },
+        ],
       },
     },
     {
@@ -183,7 +245,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: chestMg.id },
+        connect: [
+          { id: chestMg.id },
+          { id: shouldersMg.id },
+          { id: tricepsMg.id },
+        ],
       },
     },
     {
@@ -194,7 +260,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: backMg.id },
+        connect: [
+          { id: latsMg.id },
+          { id: shouldersMg.id },
+          { id: bicepsMg.id },
+        ],
       },
     },
     {
@@ -205,7 +275,7 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: armsMg.id },
+        connect: { id: bicepsMg.id },
       },
     },
     {
@@ -216,7 +286,7 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: armsMg.id },
+        connect: { id: tricepsMg.id },
       },
     },
     {
@@ -238,7 +308,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: [{ id: legsMg.id }, { id: backMg.id }],
+        connect: [
+          { id: hamstringsMg.id },
+          { id: glutesMg.id },
+          { id: backMg.id },
+        ],
       },
     },
     {
@@ -249,7 +323,11 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: legsMg.id },
+        connect: [
+          { id: quadricepsMg.id },
+          { id: hamstringsMg.id },
+          { id: glutesMg.id },
+        ],
       },
     },
     {
@@ -260,7 +338,7 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: legsMg.id },
+        connect: { id: quadricepsMg.id },
       },
     },
     {
@@ -271,7 +349,7 @@ async function main() {
       createdBy: user.id,
       isPublic: true,
       muscleGroups: {
-        connect: { id: legsMg.id },
+        connect: { id: calvesMg.id },
       },
     },
     {

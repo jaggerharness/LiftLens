@@ -33,9 +33,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/shad-ui/table';
+import { ExerciseWithMuscleGroups } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Exercise, MuscleGroup, Prisma } from '@prisma/client';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { format } from 'date-fns';
 import { PlusCircle, Search } from 'lucide-react';
@@ -55,14 +55,6 @@ import {
 import { ScrollArea } from '../shad-ui/scroll-area';
 import { Separator } from '../shad-ui/separator';
 import { toast } from './use-toast';
-import {
-  Key,
-  ReactElement,
-  JSXElementConstructor,
-  ReactNode,
-  ReactPortal,
-  AwaitedReactNode,
-} from 'react';
 
 const workoutFormSchema = z.object({
   name: z
@@ -79,12 +71,6 @@ const workoutFormSchema = z.object({
 });
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
-
-type ExerciseWithMuscleGroups = Prisma.ExerciseGetPayload<{
-  include: {
-    muscleGroups: true;
-  };
-}>;
 
 export function CreateWorkoutForm({
   exercises,
@@ -266,74 +252,43 @@ export function CreateWorkoutForm({
                   </form>
                 </div>
                 <ScrollArea className="h-full">
-                  {exercises.map(
-                    (exercise: {
-                      id: Key | null | undefined;
-                      displayName:
-                        | string
-                        | number
-                        | bigint
-                        | boolean
-                        | ReactElement<any, string | JSXElementConstructor<any>>
-                        | Iterable<ReactNode>
-                        | ReactPortal
-                        | Promise<AwaitedReactNode>
-                        | null
-                        | undefined;
-                      description:
-                        | string
-                        | number
-                        | bigint
-                        | boolean
-                        | ReactElement<any, string | JSXElementConstructor<any>>
-                        | Iterable<ReactNode>
-                        | ReactPortal
-                        | Promise<AwaitedReactNode>
-                        | null
-                        | undefined;
-                    }) => (
-                      <div
+                  {exercises.map((exercise) => (
+                    <div
+                      key={exercise.id}
+                      className="flex flex-col gap-2 p-4 pt-0"
+                    >
+                      <button
                         key={exercise.id}
-                        className="flex flex-col gap-2 p-4 pt-0"
+                        className={cn(
+                          'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
+                          // exercise.selected === item.id && 'bg-muted'
+                        )}
+                        onClick={() => console.log('clicked')}
                       >
-                        <button
-                          key={exercise.id}
-                          className={cn(
-                            'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent'
-                            // exercise.selected === item.id && 'bg-muted'
-                          )}
-                          onClick={() => console.log('clicked')}
-                        >
-                          <div className="flex w-full flex-col gap-1">
-                            <div className="flex items-center">
-                              <div className="flex items-center gap-2">
-                                <div className="font-semibold">
-                                  {exercise.displayName}
-                                </div>
+                        <div className="flex w-full flex-col gap-1">
+                          <div className="flex items-center">
+                            <div className="flex items-center gap-2">
+                              <div className="font-semibold">
+                                {exercise.displayName}
                               </div>
                             </div>
-                            {/* <div className="text-xs font-medium">
-                            {'This is a description of the exercise'}
-                          </div> */}
                           </div>
-                          <div className="line-clamp-2 text-xs text-muted-foreground">
-                            {exercise.description}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Badge key={'Arms'} variant={'secondary'}>
-                              {'Biceps'}
-                            </Badge>
-                            <Badge key={'Arms'} variant={'secondary'}>
-                              {'Triceps'}
-                            </Badge>
-                            <Badge key={'Arms'} variant={'secondary'}>
-                              {'Chest'}
-                            </Badge>
-                          </div>
-                        </button>
-                      </div>
-                    )
-                  )}
+                        </div>
+                        <div className="line-clamp-2 text-xs text-muted-foreground">
+                          {exercise.description}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {exercise.muscleGroups.map((muscleGroup) => {
+                            return (
+                              <Badge key={muscleGroup.id} variant={'secondary'}>
+                                {muscleGroup.name}
+                              </Badge>
+                            );
+                          })}
+                        </div>
+                      </button>
+                    </div>
+                  ))}
                 </ScrollArea>
                 <DialogFooter>
                   <Button type="button">Add</Button>
