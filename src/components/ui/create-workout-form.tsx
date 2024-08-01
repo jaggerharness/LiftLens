@@ -185,7 +185,7 @@ export function CreateWorkoutForm({
               <TableBody>
                 {workoutExercises?.map((workoutExercise) => {
                   return (
-                    <TableRow>
+                    <TableRow key={workoutExercise.id}>
                       <TableCell className="font-semibold">
                         {workoutExercise.name}
                       </TableCell>
