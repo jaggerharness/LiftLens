@@ -126,4 +126,14 @@ model Exercise {
   updatedAt DateTime @updatedAt
 
   muscleGroups MuscleGroup[] @relation("ExerciseMuscleGroups")
+  workouts     Workout[]     @relation("WorkoutExercises")
+}
+
+model Workout {
+  id          String     @id @default(cuid())
+  name        String
+  workoutDate DateTime
+  exercises   Exercise[] @relation("WorkoutExercises")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
