@@ -39,8 +39,11 @@ import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { format } from 'date-fns';
-import { PlusCircle, Search } from 'lucide-react';
+import { PlusCircle, Search, Trash2Icon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import { Badge } from '../shad-ui/badge';
 import { Calendar } from '../shad-ui/calendar';
@@ -56,7 +59,6 @@ import {
 import { ScrollArea } from '../shad-ui/scroll-area';
 import { Separator } from '../shad-ui/separator';
 import { toast } from './use-toast';
-import { useRef, useState } from 'react';
 
 const workoutFormSchema = z.object({
   name: z
@@ -83,23 +85,35 @@ export function CreateWorkoutForm({
     resolver: zodResolver(workoutFormSchema),
   });
 
+  const router = useRouter();
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const [workoutExercises, setWorkoutExercises] = useState<
-    ExerciseWithMuscleGroups[]
+    { exercise: ExerciseWithMuscleGroups; uuid: string }[]
   >([]);
 
   const ref = useRef<HTMLButtonElement | null>(null);
 
   function onSubmit(data: WorkoutFormValues) {
     toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+      title: 'Workout Created',
+      description: `Workout ${data.name} created successfully!`,
+      variant: 'success',
     });
+  }
+
+  function addExercise(exercise: ExerciseWithMuscleGroups) {
+    setWorkoutExercises((prevExercises) => [
+      ...prevExercises,
+      { exercise, uuid: uuidv4() },
+    ]);
+  }
+
+  function removeExercise(uuid: string) {
+    setWorkoutExercises((prevExercises) =>
+      prevExercises.filter((exercise) => exercise.uuid !== uuid)
+    );
   }
 
   return (
@@ -175,49 +189,65 @@ export function CreateWorkoutForm({
           </CardHeader>
           <CardContent>
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[200px]">Exercise</TableHead>
-                  <TableHead>Sets</TableHead>
-                  <TableHead>Reps</TableHead>
-                </TableRow>
-              </TableHeader>
+              {workoutExercises.length === 0 ? (
+                <TableBody className="text-center text-small text-muted-foreground">
+                  No exercises added yet. Add an exercise using the button
+                  below.
+                </TableBody>
+              ) : (
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-1/2 sm:w-[200px]">
+                      Exercise
+                    </TableHead>
+                    <TableHead className="sm:w-[200px]">Sets</TableHead>
+                    <TableHead className="sm:w-[200px]">Reps</TableHead>
+                    <TableHead className=""></TableHead>
+                  </TableRow>
+                </TableHeader>
+              )}
               <TableBody>
-                {workoutExercises?.map((workoutExercise) => {
-                  return (
-                    <TableRow key={workoutExercise.id}>
-                      <TableCell className="font-semibold">
-                        {workoutExercise.name}
-                      </TableCell>
-                      <TableCell>
-                        <Label
-                          htmlFor={`sets-${workoutExercise.id}`}
-                          className="sr-only"
-                        >
-                          Sets
-                        </Label>
-                        <Input
-                          id={`sets-${workoutExercise.id}`}
-                          type="number"
-                          defaultValue="3"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Label
-                          htmlFor={`reps-${workoutExercise.id}`}
-                          className="sr-only"
-                        >
-                          Reps
-                        </Label>
-                        <Input
-                          id={`reps-${workoutExercise.id}`}
-                          type="number"
-                          defaultValue="10"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                {workoutExercises.map(({ exercise, uuid }) => (
+                  <TableRow key={uuid}>
+                    <TableCell className="font-semibold">
+                      {exercise.name}
+                    </TableCell>
+                    <TableCell>
+                      <Label
+                        htmlFor={`sets-${exercise.id}`}
+                        className="sr-only"
+                      >
+                        Sets
+                      </Label>
+                      <Input
+                        id={`sets-${exercise.id}`}
+                        type="number"
+                        defaultValue="3"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Label
+                        htmlFor={`reps-${exercise.id}`}
+                        className="sr-only"
+                      >
+                        Reps
+                      </Label>
+                      <Input
+                        id={`reps-${exercise.id}`}
+                        type="number"
+                        defaultValue="10"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => removeExercise(uuid)}
+                        variant={'destructive'}
+                      >
+                        <Trash2Icon className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>
@@ -269,10 +299,7 @@ export function CreateWorkoutForm({
                             ) ?? null;
 
                           if (selectedExercise) {
-                            setWorkoutExercises((prevWorkoutExercises) => [
-                              ...prevWorkoutExercises,
-                              selectedExercise,
-                            ]);
+                            addExercise(selectedExercise);
                           }
 
                           ref.current?.click();
@@ -314,10 +341,7 @@ export function CreateWorkoutForm({
                         ) ?? null;
 
                       if (selectedExercise) {
-                        setWorkoutExercises((prevWorkoutExercises) => [
-                          ...prevWorkoutExercises,
-                          selectedExercise,
-                        ]);
+                        addExercise(selectedExercise);
                       }
 
                       ref.current?.click();
@@ -331,6 +355,13 @@ export function CreateWorkoutForm({
             </Dialog>
           </CardFooter>
         </Card>
+        <Button
+          className="w-1/2 flex mx-auto"
+          type="submit"
+          variant={'default'}
+        >
+          Create Workout
+        </Button>
       </form>
     </Form>
   );

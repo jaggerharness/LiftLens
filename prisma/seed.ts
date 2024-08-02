@@ -79,7 +79,7 @@ async function main() {
     },
     {
       name: '2-Grip Lat Pull Down',
-      displayName: '2-Grip Lat PD',
+      displayName: '2-Grip Lat Pull Down',
       description:
         'The 2-grip lat pull down is a great exercise for building the back muscles. It is a compound exercise that targets the lats, shoulders, and biceps.',
       createdBy: user.id,
@@ -194,7 +194,7 @@ async function main() {
     },
     {
       name: 'Pendlay Row',
-      displayName: 'Pendlay row',
+      displayName: 'Pendlay Row',
       description:
         'The pendlay row is a great exercise for building the back muscles. It is a compound exercise that targets the lats, shoulders, and biceps.',
       createdBy: user.id,

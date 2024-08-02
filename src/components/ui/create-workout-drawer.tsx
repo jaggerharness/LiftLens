@@ -1,9 +1,9 @@
 import { buttonVariants } from '@/components/shad-ui/button';
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -28,15 +28,15 @@ export async function CreateWorkoutDrawer() {
       <DrawerTrigger className={buttonVariants({ variant: 'default' })}>
         Create A Workout
       </DrawerTrigger>
+      <DrawerClose />
       <DrawerContent className="flex items-center space-y-6">
         <DrawerHeader>
           <DrawerTitle>Create A Workout</DrawerTitle>
           <DrawerDescription>
-            You can create a workout from scratch or use a preexisting template
+            You can create a workout from scratch or use an existing template
           </DrawerDescription>
         </DrawerHeader>
         <CreateWorkoutForm exercises={exercises} />
-        <DrawerFooter></DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
