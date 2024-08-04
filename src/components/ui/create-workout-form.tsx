@@ -74,15 +74,6 @@ export function CreateWorkoutForm({
 }: {
   exercises: ExerciseWithMuscleGroups[];
 }) {
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   register,
-  //   formState: { errors },
-  // } = useForm<WorkoutFormValues>({
-  //   resolver: zodResolver(workoutFormSchema),
-  // });
-
   const form = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutFormSchema),
     defaultValues: {
@@ -119,11 +110,14 @@ export function CreateWorkoutForm({
 
   function addExercise(exercise: ExerciseWithMuscleGroups) {
     const { id, displayName } = exercise;
-    append({
-      exercise: { id, displayName: displayName ?? '' },
-      sets: 3,
-      reps: 10,
-    });
+    append(
+      {
+        exercise: { id, displayName: displayName ?? '' },
+        sets: 3,
+        reps: 10,
+      },
+      { shouldFocus: false }
+    );
   }
 
   return (
@@ -241,17 +235,24 @@ export function CreateWorkoutForm({
                         </TableCell>
                         <TableCell>
                           <Label
-                            htmlFor={`sets-${field.id}`}
+                            htmlFor={`workoutExercises.${index}.sets`}
                             className="sr-only"
                           >
                             Sets
                           </Label>
                           <Input
-                            id={`sets-${field.id}`}
-                            name={`sets-${field.id}`}
                             type="number"
-                            defaultValue="3"
+                            id={`workoutExercises.${index}.sets`}
+                            {...register(
+                              `workoutExercises.${index}.sets` as const,
+                              {
+                                valueAsNumber: true,
+                              }
+                            )}
                           />
+                          {errors.workoutExercises?.[index]?.sets && (
+                            <p>{errors.workoutExercises[index].sets.message}</p>
+                          )}
                         </TableCell>
                         <TableCell>
                           <Label
@@ -261,10 +262,14 @@ export function CreateWorkoutForm({
                             Reps
                           </Label>
                           <Input
-                            id={`reps-${field.id}`}
-                            name={`reps-${field.id}`}
                             type="number"
-                            defaultValue="10"
+                            id={`workoutExercises.${index}.reps`}
+                            {...register(
+                              `workoutExercises.${index}.reps` as const,
+                              {
+                                valueAsNumber: true,
+                              }
+                            )}
                           />
                         </TableCell>
                         <TableCell>

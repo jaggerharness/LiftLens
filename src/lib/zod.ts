@@ -24,14 +24,16 @@ export const workoutFormSchema = z.object({
   date: z.date({
     required_error: 'Workout date required.',
   }),
-  workoutExercises: z.array(
-    z.object({
-      exercise: z.object({
-        id: z.string(),
-        displayName: z.string(),
-      }),
-      sets: z.number().min(1),
-      reps: z.number().min(1),
-    })
-  ),
+  workoutExercises: z
+    .array(
+      z.object({
+        exercise: z.object({
+          id: z.string(),
+          displayName: z.string(),
+        }),
+        sets: z.number().min(1, 'Sets required'),
+        reps: z.number().min(1, 'Reps required'),
+      })
+    )
+    .nonempty('At least one exercise is required'),
 });
