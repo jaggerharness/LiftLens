@@ -235,15 +235,6 @@ export async function validateToken({
       throw new Error('Invalid token format');
     }
 
-    // await prisma.verificationToken.delete({
-    //   where: {
-    //     identifier_token: {
-    //       identifier: verificationToken.identifier,
-    //       token: token,
-    //     },
-    //   },
-    // });
-
     return decodedToken.id;
   } catch (error) {
     throw new Error('Token validation failed');
@@ -358,4 +349,8 @@ export async function resetPassword({
 
 export async function resendEmailVerification() {
   await auth();
+}
+
+export async function createWorkout() {
+  return;
 }

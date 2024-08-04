@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/shad-ui/button';
+import { Button, buttonVariants } from '@/components/shad-ui/button';
 import {
   Card,
   CardContent,
@@ -19,6 +19,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/shad-ui/dialog';
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/shad-ui/drawer';
 import { Input } from '@/components/shad-ui/input';
 import { Label } from '@/components/shad-ui/label';
 import {
@@ -36,23 +45,13 @@ import {
 } from '@/components/shad-ui/table';
 import { ExerciseWithMuscleGroups } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { workoutFormSchema } from '@/lib/zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { format } from 'date-fns';
 import { PlusCircle, Search, Trash2Icon } from 'lucide-react';
-import { buttonVariants } from '@/components/shad-ui/button';
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/shad-ui/drawer';
 import { useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { v4 as uuidv4 } from 'uuid';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Badge } from '../shad-ui/badge';
 import { Calendar } from '../shad-ui/calendar';
@@ -67,21 +66,6 @@ import {
 } from '../shad-ui/form';
 import { ScrollArea } from '../shad-ui/scroll-area';
 import { Separator } from '../shad-ui/separator';
-import { toast } from './use-toast';
-
-const workoutFormSchema = z.object({
-  name: z
-    .string()
-    .min(2, {
-      message: 'Name must be at least 2 characters.',
-    })
-    .max(30, {
-      message: 'Name must not be longer than 30 characters.',
-    }),
-  date: z.date({
-    required_error: 'Workout date required.',
-  }),
-});
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 
@@ -90,40 +74,56 @@ export function CreateWorkoutForm({
 }: {
   exercises: ExerciseWithMuscleGroups[];
 }) {
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   register,
+  //   formState: { errors },
+  // } = useForm<WorkoutFormValues>({
+  //   resolver: zodResolver(workoutFormSchema),
+  // });
+
   const form = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutFormSchema),
+    defaultValues: {
+      name: '',
+    },
+  });
+
+  const {
+    control,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = form;
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'workoutExercises',
   });
 
   const [open, setOpen] = useState(false);
-
   const [selectedId, setSelectedId] = useState<string | null>(null);
-
-  const [workoutExercises, setWorkoutExercises] = useState<
-    { exercise: ExerciseWithMuscleGroups; uuid: string }[]
-  >([]);
-
   const ref = useRef<HTMLButtonElement | null>(null);
 
-  function onSubmit(data: WorkoutFormValues) {
-    setOpen(false);
-    toast({
-      title: 'Workout Created',
-      description: `Workout ${data.name} created successfully!`,
-      variant: 'success',
-    });
+  function onSubmit(data: any) {
+    console.log({ data });
+    console.log({ errors });
+    // setOpen(false);
+    // toast({
+    //   title: 'Workout Created',
+    //   description: `Workout ${data.name} created successfully!`,
+    //   variant: 'success',
+    // });
   }
 
   function addExercise(exercise: ExerciseWithMuscleGroups) {
-    setWorkoutExercises((prevExercises) => [
-      ...prevExercises,
-      { exercise, uuid: uuidv4() },
-    ]);
-  }
-
-  function removeExercise(uuid: string) {
-    setWorkoutExercises((prevExercises) =>
-      prevExercises.filter((exercise) => exercise.uuid !== uuid)
-    );
+    const { id, displayName } = exercise;
+    append({
+      exercise: { id, displayName: displayName ?? '' },
+      sets: 3,
+      reps: 10,
+    });
   }
 
   return (
@@ -139,13 +139,10 @@ export function CreateWorkoutForm({
             You can create a workout from scratch or use an existing template
           </DrawerDescription>
         </DrawerHeader>
-        <Form {...form}>
-          <form
-            className="mx-4 space-y-8"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+        <Form {...form} handleSubmit={handleSubmit}>
+          <form className="mx-4 space-y-8" onSubmit={handleSubmit(onSubmit)}>
             <FormField
-              control={form.control}
+              control={control}
               name="name"
               render={({ field }) => (
                 <FormItem>
@@ -161,7 +158,7 @@ export function CreateWorkoutForm({
               )}
             />
             <FormField
-              control={form.control}
+              control={control}
               name="date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
@@ -215,10 +212,14 @@ export function CreateWorkoutForm({
               </CardHeader>
               <CardContent>
                 <Table>
-                  {workoutExercises.length === 0 ? (
-                    <TableBody className="text-center text-small text-muted-foreground">
-                      No exercises added yet. Add an exercise using the button
-                      below.
+                  {fields.length === 0 ? (
+                    <TableBody>
+                      <TableRow className="pointer-events-none">
+                        <TableCell className="text-center text-small text-muted-foreground">
+                          No exercises added yet. Add an exercise using the
+                          button below.
+                        </TableCell>
+                      </TableRow>
                     </TableBody>
                   ) : (
                     <TableHeader>
@@ -233,40 +234,42 @@ export function CreateWorkoutForm({
                     </TableHeader>
                   )}
                   <TableBody>
-                    {workoutExercises.map(({ exercise, uuid }) => (
-                      <TableRow key={uuid}>
+                    {fields.map((field, index) => (
+                      <TableRow key={field.id}>
                         <TableCell className="font-semibold">
-                          {exercise.name}
+                          {field.exercise.displayName}
                         </TableCell>
                         <TableCell>
                           <Label
-                            htmlFor={`sets-${exercise.id}`}
+                            htmlFor={`sets-${field.id}`}
                             className="sr-only"
                           >
                             Sets
                           </Label>
                           <Input
-                            id={`sets-${exercise.id}`}
+                            id={`sets-${field.id}`}
+                            name={`sets-${field.id}`}
                             type="number"
                             defaultValue="3"
                           />
                         </TableCell>
                         <TableCell>
                           <Label
-                            htmlFor={`reps-${exercise.id}`}
+                            htmlFor={`reps-${field.id}`}
                             className="sr-only"
                           >
                             Reps
                           </Label>
                           <Input
-                            id={`reps-${exercise.id}`}
+                            id={`reps-${field.id}`}
+                            name={`reps-${field.id}`}
                             type="number"
                             defaultValue="10"
                           />
                         </TableCell>
                         <TableCell>
                           <Button
-                            onClick={() => removeExercise(uuid)}
+                            onClick={() => remove(index)}
                             variant={'destructive'}
                           >
                             <Trash2Icon className="h-4 w-4" />
