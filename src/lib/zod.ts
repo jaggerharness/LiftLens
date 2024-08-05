@@ -31,8 +31,8 @@ export const workoutFormSchema = z.object({
           id: z.string(),
           displayName: z.string(),
         }),
-        sets: z.number().min(1, 'Sets required'),
-        reps: z.number().min(1, 'Reps required'),
+        sets: z.coerce.number().min(1, 'Sets must be a postive number'),
+        reps: z.coerce.number().min(1, 'Reps must be a postive number'),
       })
     )
     .nonempty('At least one exercise is required'),

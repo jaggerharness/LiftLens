@@ -49,7 +49,7 @@ export function ForgotPasswordDialog() {
 
   return (
     <Dialog>
-      <DialogTrigger className="text-sm text-left font-medium hover:text-primary text-white tracking-tight">
+      <DialogTrigger className="text-sm text-left font-medium hover:text-primary tracking-tight">
         Forgot Password?
       </DialogTrigger>
       {!submitted ? (
