@@ -10,8 +10,10 @@ import jwt from 'jsonwebtoken';
 import { AuthError } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import { isRedirectError } from 'next/dist/client/components/redirect';
+import { z } from 'zod';
 import EmailVerificationEmail from '../../../emails/email-verification';
 import ResetPasswordEmail from '../../../emails/reset-password';
+import { workoutFormSchema } from '../../lib/zod';
 
 async function hashPassword(password: string) {
   return await bcrypt.hash(password, 10);
@@ -351,6 +353,11 @@ export async function resendEmailVerification() {
   await auth();
 }
 
-export async function createWorkout() {
+export async function createWorkout({
+  data,
+}: {
+  data: z.infer<typeof workoutFormSchema>;
+}) {
+  console.log({ data });
   return;
 }
