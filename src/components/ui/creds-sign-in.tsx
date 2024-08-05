@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/shad-ui/button';
 import { Input } from '@/components/shad-ui/input';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/shad-ui/use-toast';
 import { credentialsSignIn } from '@/server/actions/actions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';

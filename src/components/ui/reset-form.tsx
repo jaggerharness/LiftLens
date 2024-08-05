@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from '../shad-ui/form';
 import { Input } from '../shad-ui/input';
-import { useToast } from './use-toast';
+import { useToast } from '../shad-ui/use-toast';
 
 export function ResetPasswordForm({
   userId,
