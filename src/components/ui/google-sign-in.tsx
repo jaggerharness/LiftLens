@@ -11,7 +11,7 @@ export function GoogleSignIn() {
       }}
     >
       <Button type="submit" variant={'secondary'} className="w-full">
-        <Icons.google className="mr-2 h-4 w-4" />
+        <Icons.google className="mr-2 size-4" />
         Google
       </Button>
     </form>

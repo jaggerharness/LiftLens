@@ -56,6 +56,7 @@ import {
 } from '../shad-ui/form';
 import { ScrollArea } from '../shad-ui/scroll-area';
 import { Separator } from '../shad-ui/separator';
+import { createWorkout } from '@/server/actions/actions';
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 
@@ -87,9 +88,8 @@ export function CreateWorkoutForm({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const ref = useRef<HTMLButtonElement | null>(null);
 
-  function onSubmit(data: any) {
-    console.log({ data });
-    console.log({ errors });
+  async function onSubmit(data: any) {
+    await createWorkout(data);
     // setOpen(false);
     // toast({
     //   title: 'Workout Created',
@@ -106,7 +106,7 @@ export function CreateWorkoutForm({
         sets: 3,
         reps: 10,
       },
-      { shouldFocus: false }
+      { shouldFocus: false },
     );
   }
 
@@ -159,7 +159,7 @@ export function CreateWorkoutForm({
                             variant={'outline'}
                             className={cn(
                               'w-[240px] pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
+                              !field.value && 'text-muted-foreground',
                             )}
                           >
                             {field.value ? (
@@ -167,7 +167,7 @@ export function CreateWorkoutForm({
                             ) : (
                               <span>Pick a date</span>
                             )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            <CalendarIcon className="ml-auto size-4 opacity-50" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
@@ -180,7 +180,6 @@ export function CreateWorkoutForm({
                           disabled={(date) =>
                             date < new Date(new Date().setHours(0, 0, 0, 0))
                           }
-                          initialFocus
                         />
                       </PopoverContent>
                     </Popover>
@@ -240,7 +239,7 @@ export function CreateWorkoutForm({
                                       min={1}
                                       id={`workoutExercises.${index}.sets`}
                                       {...register(
-                                        `workoutExercises.${index}.sets` as const
+                                        `workoutExercises.${index}.sets` as const,
                                       )}
                                     />
                                   </FormControl>
@@ -270,7 +269,7 @@ export function CreateWorkoutForm({
                                       min={1}
                                       id={`workoutExercises.${index}.reps`}
                                       {...register(
-                                        `workoutExercises.${index}.reps` as const
+                                        `workoutExercises.${index}.reps` as const,
                                       )}
                                     />
                                   </FormControl>
@@ -293,7 +292,7 @@ export function CreateWorkoutForm({
                               onClick={() => remove(index)}
                               variant={'destructive'}
                             >
-                              <Trash2Icon className="h-4 w-4" />
+                              <Trash2Icon className="size-4" />
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -305,7 +304,7 @@ export function CreateWorkoutForm({
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button size="sm" variant="ghost" className="gap-1">
-                        <PlusCircle className="h-3.5 w-3.5" />
+                        <PlusCircle className="size-3.5" />
                         Add Exercise
                       </Button>
                     </DialogTrigger>
@@ -321,7 +320,7 @@ export function CreateWorkoutForm({
                       <div className="bg-background/95 mx-4 my-2 supports-[backdrop-filter]:bg-background/60">
                         <form>
                           <div className="relative">
-                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
                             <Input placeholder="Search" className="pl-8" />
                           </div>
                         </form>
@@ -337,7 +336,7 @@ export function CreateWorkoutForm({
                               className={cn(
                                 'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
                                 exercise.id === selectedId &&
-                                  'bg-muted border-primary'
+                                  'bg-muted border-primary',
                               )}
                               onClick={() => setSelectedId(exercise.id)}
                               onDoubleClick={() => {
@@ -345,7 +344,7 @@ export function CreateWorkoutForm({
 
                                 const selectedExercise =
                                   exercises.find(
-                                    (element) => element.id === selectedId
+                                    (element) => element.id === selectedId,
                                   ) ?? null;
 
                                 if (selectedExercise) {
@@ -390,7 +389,7 @@ export function CreateWorkoutForm({
                           onClick={() => {
                             const selectedExercise =
                               exercises.find(
-                                (element) => element.id === selectedId
+                                (element) => element.id === selectedId,
                               ) ?? null;
 
                             if (selectedExercise) {

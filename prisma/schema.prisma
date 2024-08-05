@@ -126,14 +126,14 @@ model Exercise {
   updatedAt DateTime @updatedAt
 
   muscleGroups     MuscleGroup[]     @relation("ExerciseMuscleGroups")
-  workoutExercises WorkoutExercise[] // Updated relationship
+  workoutExercises WorkoutExercise[]
 }
 
 model Workout {
   id               String            @id @default(cuid())
   name             String
   workoutDate      DateTime
-  workoutExercises WorkoutExercise[] // Updated relationship
+  workoutExercises WorkoutExercise[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 }

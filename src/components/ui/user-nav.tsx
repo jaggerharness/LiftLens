@@ -24,8 +24,8 @@ export function UserNav({ session }: { session: Session }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="relative size-8 rounded-full">
+          <Avatar className="size-8">
             <AvatarImage src={session?.user?.image ?? ''} alt="@shadcn" />
             <AvatarFallback>SC</AvatarFallback>
           </Avatar>
@@ -44,13 +44,13 @@ export function UserNav({ session }: { session: Session }) {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             Settings
-            <GearIcon className="w-4 h-4 ml-auto text-xs tracking-widest opacity-60" />
+            <GearIcon className="size-4 ml-auto text-xs tracking-widest opacity-60" />
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()}>
           Sign Out
-          <LogOut className="w-4 h-4 ml-auto text-xs tracking-widest opacity-60" />
+          <LogOut className="size-4 ml-auto text-xs tracking-widest opacity-60" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

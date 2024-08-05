@@ -113,7 +113,7 @@ export function ForgotPasswordDialog() {
           </div>
           <DialogFooter>
             <Button type="submit" className="w-full">
-              <RefreshCwIcon className="mr-2 h-4 w-4" />
+              <RefreshCwIcon className="mr-2 size-4" />
               Resend Email
             </Button>
           </DialogFooter>
