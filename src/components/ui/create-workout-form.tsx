@@ -88,8 +88,9 @@ export function CreateWorkoutForm({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const ref = useRef<HTMLButtonElement | null>(null);
 
-  async function onSubmit(data: any) {
-    await createWorkout(data);
+  async function onSubmit(workoutData: any) {
+    const res = await createWorkout({ workoutData });
+    console.log({ res });
     // setOpen(false);
     // toast({
     //   title: 'Workout Created',

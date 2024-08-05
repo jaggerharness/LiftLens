@@ -354,10 +354,28 @@ export async function resendEmailVerification() {
 }
 
 export async function createWorkout({
-  data,
+  workoutData,
 }: {
-  data: z.infer<typeof workoutFormSchema>;
+  workoutData: z.infer<typeof workoutFormSchema>;
 }) {
-  console.log({ data });
-  return;
+  await prisma.workout.create({
+    data: {
+      name: workoutData.name,
+      workoutDate: workoutData.date,
+      workoutExercises: {
+        create: [
+          {
+            exerciseId: workoutData.workoutExercises[0].exercise.id,
+            sets: workoutData.workoutExercises[0].sets,
+            reps: workoutData.workoutExercises[0].reps,
+            sortOrder: 1,
+          },
+        ],
+      },
+    },
+  });
+  return {
+    message: 'Workout created.',
+    type: 'success',
+  };
 }
