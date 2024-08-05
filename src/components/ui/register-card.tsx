@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/shad-ui/card';
 import { Input } from '@/components/shad-ui/input';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/shad-ui/use-toast';
 import { registerUser } from '@/server/actions/actions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/dist/client/link';

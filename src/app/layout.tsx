@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@/components/shad-ui/theme-provider';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/shad-ui/toaster';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
