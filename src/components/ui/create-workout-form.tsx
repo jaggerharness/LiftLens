@@ -57,6 +57,7 @@ import {
 import { ScrollArea } from '../shad-ui/scroll-area';
 import { Separator } from '../shad-ui/separator';
 import { createWorkout } from '@/server/actions/actions';
+import { toast } from '@/components/shad-ui/use-toast';
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 
@@ -90,13 +91,20 @@ export function CreateWorkoutForm({
 
   async function onSubmit(workoutData: any) {
     const res = await createWorkout({ workoutData });
-    console.log({ res });
-    // setOpen(false);
-    // toast({
-    //   title: 'Workout Created',
-    //   description: `Workout ${data.name} created successfully!`,
-    //   variant: 'success',
-    // });
+    if(res.type === 'success'){
+      setOpen(false);
+      toast({
+        title: 'Workout Created',
+        description: `Workout ${workoutData.name} created successfully!`,
+        variant: 'success',
+      });
+      return;
+    }
+    toast({
+      title: 'Error',
+      description: `An unexpected error occurred. Please try again later.`,
+      variant: 'destructive',
+    });
   }
 
   function addExercise(exercise: ExerciseWithMuscleGroups) {

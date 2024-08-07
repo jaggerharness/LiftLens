@@ -139,6 +139,7 @@ model Workout {
 }
 
 model WorkoutExercise {
+  id         String   @id @default(cuid())
   workoutId  String
   exerciseId String
   sets       Int
@@ -150,5 +151,5 @@ model WorkoutExercise {
   workout  Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
 
-  @@id([workoutId, exerciseId])
+  @@unique([workoutId, exerciseId, sortOrder])
 }

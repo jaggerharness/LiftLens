@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
+import React from 'react';
 
 export function MainNav({
   className,

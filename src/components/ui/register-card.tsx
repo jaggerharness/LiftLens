@@ -25,6 +25,7 @@ import {
   FormItem,
   FormMessage,
 } from '../shad-ui/form';
+import { signInSchema } from '@/lib/zod';
 
 export default function RegisterCard() {
   const { toast } = useToast();
@@ -52,27 +53,15 @@ export default function RegisterCard() {
     }
   }, [showError, showSuccess, toast, toastMessage]);
 
-  const formSchema = z.object({
-    email: z
-      .string({ required_error: 'Email is required' })
-      .min(1, 'Email is required')
-      .email('Invalid email'),
-    password: z
-      .string({ required_error: 'Password is required' })
-      .min(1, 'Password is required')
-      .min(8, 'Password must be more than 8 characters')
-      .max(32, 'Password must be less than 32 characters'),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof signInSchema>) {
     const result = await registerUser({ values });
     if (result.type === 'error') {
       setToastMessage(result.message);

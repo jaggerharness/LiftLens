@@ -10,6 +10,7 @@ import {
   Section,
   Text,
 } from '@react-email/components';
+import React from 'react';
 
 interface EmailVerificationEmailProps {
   verifyUrl?: string;
@@ -44,7 +45,7 @@ export const EmailVerificationEmail = ({
             <Section style={lowerSection}>
               <Text style={cautionText}>
                 If you were not expecting this email, you can safely ignore it.
-                If you are concerned about your account's safety, please reply
+                If you are concerned about your account&rsquo;s safety, please reply
                 to this email to get in touch with us.
               </Text>
             </Section>

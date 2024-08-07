@@ -16,22 +16,11 @@ import {
   FormMessage,
 } from '../shad-ui/form';
 import { ForgotPasswordDialog } from './forgot-password-dialog';
+import { signInSchema } from '@/lib/zod';
 
 export function CredSignIn() {
-  const formSchema = z.object({
-    email: z
-      .string({ required_error: 'Email is required' })
-      .min(1, 'Email is required')
-      .email('Invalid email'),
-    password: z
-      .string({ required_error: 'Password is required' })
-      .min(1, 'Password is required')
-      .min(8, 'Password must be more than 8 characters')
-      .max(32, 'Password must be less than 32 characters'),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -53,7 +42,7 @@ export function CredSignIn() {
     }
   }, [showError, toast, toastMessage]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof signInSchema>) {
     const result = await credentialsSignIn(values);
     if (result?.type === 'error') {
       setToastMessage(

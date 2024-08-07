@@ -21,7 +21,7 @@ export default async function VerifyEmailPage({
   searchParams,
 }: VerifyEmailPageProps) {
   const token = searchParams.verifyToken;
-  let message: string = 'Verifying email...';
+  let message: string;
   let verified: boolean | null = null;
 
   if (typeof token === 'string') {
@@ -52,7 +52,7 @@ export default async function VerifyEmailPage({
 
   return (
     <div className="flex flex-col h-screen justify-center items-center">
-      {verified === true ? (
+      {verified ? (
         <Card className="max-w-sm text-center">
           <CardHeader>
             <CardTitle>Email Verification</CardTitle>

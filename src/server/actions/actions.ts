@@ -1,3 +1,5 @@
+// noinspection ExceptionCaughtLocallyJS
+
 'use server';
 
 import { auth, signIn } from '@/lib/auth';
@@ -13,7 +15,7 @@ import { isRedirectError } from 'next/dist/client/components/redirect';
 import { z } from 'zod';
 import EmailVerificationEmail from '../../../emails/email-verification';
 import ResetPasswordEmail from '../../../emails/reset-password';
-import { workoutFormSchema } from '../../lib/zod';
+import { workoutFormSchema } from '@/lib/zod';
 
 async function hashPassword(password: string) {
   return await bcrypt.hash(password, 10);
@@ -363,14 +365,12 @@ export async function createWorkout({
       name: workoutData.name,
       workoutDate: workoutData.date,
       workoutExercises: {
-        create: [
-          {
-            exerciseId: workoutData.workoutExercises[0].exercise.id,
-            sets: workoutData.workoutExercises[0].sets,
-            reps: workoutData.workoutExercises[0].reps,
-            sortOrder: 1,
-          },
-        ],
+        create: workoutData.workoutExercises.map((exercise, index) => ({
+          exerciseId: exercise.exercise.id,
+          sets: exercise.sets,
+          reps: exercise.reps,
+          sortOrder: index + 1,
+        })),
       },
     },
   });
