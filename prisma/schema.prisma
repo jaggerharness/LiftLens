@@ -26,6 +26,7 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   Exercise  Exercise[]
+  Workout   Workout[]
 }
 
 model Account {
@@ -130,12 +131,17 @@ model Exercise {
 }
 
 model Workout {
-  id               String            @id @default(cuid())
-  name             String
-  workoutDate      DateTime
+  id          String   @id @default(cuid())
+  name        String
+  workoutDate DateTime
+  createdBy   String
+
+  user User @relation(fields: [createdBy], references: [id], onDelete: NoAction)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   workoutExercises WorkoutExercise[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
 }
 
 model WorkoutExercise {

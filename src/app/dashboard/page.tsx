@@ -10,42 +10,39 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/shad-ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/shad-ui/dropdown-menu';
 import { Progress } from '@/components/shad-ui/progress';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/shad-ui/table';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/shad-ui/tabs';
 import { CreateWorkoutDrawer } from '@/components/ui/create-workout-drawer';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import { UserNav } from '@/components/ui/user-nav';
 import { auth } from '@/lib/auth';
-import { ListFilter } from 'lucide-react';
+import prisma from '@/lib/prisma';
+import { WorkoutTable } from '@/components/ui/workout-table';
+import { WorkoutWithExercises } from '@/lib/types';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
   description: 'LiftLens Dashboard',
 };
 
+async function getWorkouts(): Promise<WorkoutWithExercises[]> {
+  return prisma.workout.findMany({
+    include: {
+      workoutExercises: {
+        include: {
+          exercise: {
+            include: {
+              muscleGroups: true,
+            },
+          },
+        },
+      },
+    }
+  });
+}
+
 export default async function DashboardPage() {
   const session = await auth();
+  const workouts = await getWorkouts();
   return (
     <main>
       <div className="flex-col flex">
@@ -98,134 +95,7 @@ export default async function DashboardPage() {
               </CardFooter>
             </Card>
           </div>
-          <Tabs defaultValue="week">
-            <div className="flex items-center">
-              <TabsList>
-                <TabsTrigger value="week">Week</TabsTrigger>
-                <TabsTrigger value="month">Month</TabsTrigger>
-                <TabsTrigger value="year">Year</TabsTrigger>
-              </TabsList>
-              <div className="ml-auto flex items-center gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 gap-1 text-sm"
-                    >
-                      <ListFilter className="size-3.5" />
-                      <span className="sr-only sm:not-sr-only">Filter</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuCheckboxItem checked>
-                      Upcoming
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>
-                      Completed
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>Skipped</DropdownMenuCheckboxItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-            <TabsContent value="week">
-              <Card>
-                <CardHeader className="px-7">
-                  <CardTitle>Workouts</CardTitle>
-                  <CardDescription>Workouts for the week</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Type</TableHead>
-                        <TableHead className="hidden sm:table-cell">
-                          Estimated Time
-                        </TableHead>
-                        <TableHead className="hidden sm:table-cell">
-                          Status
-                        </TableHead>
-                        <TableHead>Date</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>
-                          <div className="font-medium">Chest / Arms</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            Bulking
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          35 - 45 mins
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="outline">
-                            Upcoming
-                          </Badge>
-                        </TableCell>
-                        <TableCell>07/22/2024</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          <div className="font-medium">Legs / Core</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            Bulking
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          35 - 45 mins
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="outline">
-                            Upcoming
-                          </Badge>
-                        </TableCell>
-                        <TableCell>07/24/2024</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          <div className="font-medium">Chest / Arms</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            Bulking
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          35 - 45 mins
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="outline">
-                            Upcoming
-                          </Badge>
-                        </TableCell>
-                        <TableCell>07/26/2024</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell>
-                          <div className="font-medium">Legs / Back</div>
-                          <div className="hidden text-sm text-muted-foreground md:inline">
-                            Bulking
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          35 - 45 mins
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          <Badge className="text-xs" variant="outline">
-                            Upcoming
-                          </Badge>
-                        </TableCell>
-                        <TableCell>07/28/2024</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+          <WorkoutTable workouts={workouts} />
         </div>
       </div>
     </main>

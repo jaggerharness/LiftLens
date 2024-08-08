@@ -58,6 +58,7 @@ import { ScrollArea } from '../shad-ui/scroll-area';
 import { Separator } from '../shad-ui/separator';
 import { createWorkout } from '@/server/actions/actions';
 import { toast } from '@/components/shad-ui/use-toast';
+import { useRouter } from 'next/navigation';
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 
@@ -72,6 +73,8 @@ export function CreateWorkoutForm({
       name: '',
     },
   });
+
+  const router = useRouter();
 
   const {
     control,
@@ -93,6 +96,7 @@ export function CreateWorkoutForm({
     const res = await createWorkout({ workoutData });
     if(res.type === 'success'){
       setOpen(false);
+      router.refresh();
       toast({
         title: 'Workout Created',
         description: `Workout ${workoutData.name} created successfully!`,

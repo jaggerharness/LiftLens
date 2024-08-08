@@ -4,6 +4,7 @@
 
 import { auth, signIn } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { workoutFormSchema } from '@/lib/zod';
 import { SES } from '@aws-sdk/client-ses';
 import { Prisma } from '@prisma/client';
 import { render } from '@react-email/render';
@@ -15,7 +16,6 @@ import { isRedirectError } from 'next/dist/client/components/redirect';
 import { z } from 'zod';
 import EmailVerificationEmail from '../../../emails/email-verification';
 import ResetPasswordEmail from '../../../emails/reset-password';
-import { workoutFormSchema } from '@/lib/zod';
 
 async function hashPassword(password: string) {
   return await bcrypt.hash(password, 10);
@@ -360,10 +360,21 @@ export async function createWorkout({
 }: {
   workoutData: z.infer<typeof workoutFormSchema>;
 }) {
+  const user = await auth();
+
+  console.log({user});
+
+  if (!user || !user.user || !user.user.id) {
+    throw new Error('User is not authenticated');
+  }
+
+  const createdBy = user.user.id;
+
   await prisma.workout.create({
     data: {
       name: workoutData.name,
       workoutDate: workoutData.date,
+      createdBy: createdBy,
       workoutExercises: {
         create: workoutData.workoutExercises.map((exercise, index) => ({
           exerciseId: exercise.exercise.id,
@@ -374,6 +385,7 @@ export async function createWorkout({
       },
     },
   });
+
   return {
     message: 'Workout created.',
     type: 'success',

@@ -98,6 +98,7 @@ export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
         token = { ...user, ...session };
       } else {
         if (user) {
+          token.id = user.id;
           token.email = user.email;
           token.emailVerified = user.emailVerified;
           token.firstName = user.firstName;
@@ -109,6 +110,7 @@ export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
     },
     async session({ session, token }) {
       if (token) {
+        session.user.id = token.id as string;
         session.user.email = token.email ?? '';
         session.user.emailVerified = token.emailVerified as Date | null;
         session.user.firstName = token.firstName as String | null;

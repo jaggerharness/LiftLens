@@ -5,3 +5,17 @@ export type ExerciseWithMuscleGroups = Prisma.ExerciseGetPayload<{
     muscleGroups: true;
   };
 }>;
+
+export type WorkoutWithExercises = Prisma.WorkoutGetPayload<{
+  include: {
+    workoutExercises: {
+      include: {
+        exercise: {
+          include: {
+            muscleGroups: true;
+          };
+        };
+      }
+    }
+  };
+}>;
