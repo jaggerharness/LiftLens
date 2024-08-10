@@ -30,7 +30,7 @@ export default function LoginCard() {
               <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="px-2 text-muted-foreground">
+              <span className="px-2 text-muted-foreground bg-card">
                 Or continue with
               </span>
             </div>

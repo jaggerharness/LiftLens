@@ -16,6 +16,7 @@ import { WorkoutTable } from '@/components/ui/workout-table';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { WorkoutWithExercises } from '@/lib/types';
+import { endOfWeek, startOfWeek } from 'date-fns';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -24,8 +25,18 @@ export const metadata: Metadata = {
 
 async function getWorkouts(): Promise<WorkoutWithExercises[]> {
   const session = await auth();
+  const currentDate = new Date();
+  const startOfWeekDate = startOfWeek(currentDate, { weekStartsOn: 1 });
+  const endOfWeekDate = endOfWeek(currentDate, { weekStartsOn: 1 });
+
   return prisma.workout.findMany({
-    where: { createdBy: session?.user?.id },
+    where: {
+      createdBy: session?.user?.id,
+      workoutDate: {
+        gte: startOfWeekDate,
+        lte: endOfWeekDate,
+      },
+    },
     orderBy: { workoutDate: 'asc' },
     include: {
       workoutExercises: {
@@ -72,7 +83,9 @@ export default async function DashboardPage() {
             <Card>
               <CardHeader className="pb-2">
                 <CardDescription>This Week</CardDescription>
-                <CardTitle className="text-4xl">4 workouts</CardTitle>
+                <CardTitle className="text-4xl">
+                  {workouts.length} workouts
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-xs text-muted-foreground">
@@ -80,7 +93,10 @@ export default async function DashboardPage() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Progress value={25} aria-label="1 of 4 workouts completed" />
+                <Progress
+                  value={25}
+                  aria-label={`${workouts.filter((workout) => new Date(workout.workoutDate) < new Date(new Date().setHours(0, 0, 0, 0))).length} of ${workouts.length} workouts completed`}
+                />
               </CardFooter>
             </Card>
             <Card>

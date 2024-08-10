@@ -32,6 +32,7 @@ import {
   TabsTrigger,
 } from '@/components/shad-ui/tabs';
 import { WorkoutWithExercises } from '@/lib/types';
+import { format } from 'date-fns';
 import { ListFilter } from 'lucide-react';
 
 export function WorkoutTable({
@@ -92,18 +93,18 @@ export function WorkoutTable({
                       <div className="font-medium">{workout.name}</div>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">
-                      {workout.workoutExercises.length * 5} mins
+                      {workout.workoutExercises.length * 10} mins
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">
-                      <Badge className="text-xs" variant="outline">
-                        {workout.workoutDate.getDate() <
-                        new Date().setHours(0, 0, 0, 0)
+                      <Badge className="text-xs -ml-1" variant="outline">
+                        {workout.workoutDate >=
+                        new Date(new Date().setHours(0, 0, 0, 0))
                           ? 'Upcoming'
                           : 'Completed'}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {workout.workoutDate.toLocaleDateString()}
+                      {format(new Date(workout.workoutDate), 'EEEE, MMM do')}
                     </TableCell>
                   </TableRow>
                 ))}

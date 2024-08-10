@@ -58,7 +58,6 @@ import {
   FormMessage,
 } from '../shad-ui/form';
 import { ScrollArea } from '../shad-ui/scroll-area';
-import { Separator } from '../shad-ui/separator';
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 
@@ -98,8 +97,14 @@ export function CreateWorkoutForm({
 
   useEffect(() => {
     setFilteredExercises(
-      exercises.filter((exercise) =>
-        exercise.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      exercises.filter(
+        (exercise) =>
+          exercise.name
+            .toLowerCase()
+            .includes(searchQuery.trimEnd().toLowerCase()) ||
+          exercise.displayName
+            ?.toLowerCase()
+            .includes(searchQuery.trimEnd().toLowerCase()),
       ),
     );
   }, [searchQuery, exercises]);
@@ -341,14 +346,13 @@ export function CreateWorkoutForm({
                       </Button>
                     </DialogTrigger>
                     <DialogClose ref={ref} />
-                    <DialogContent className="h-[85vh] sm:h-3/4">
+                    <DialogContent className="h-[85vh] sm:h-3/4 flex flex-col">
                       <DialogHeader>
                         <DialogTitle>Select Exercise</DialogTitle>
                         <DialogDescription>
                           Select the exercise you want to add to this workout.
                         </DialogDescription>
                       </DialogHeader>
-                      <Separator />
                       <div className="bg-background/95 mx-4 my-2 supports-[backdrop-filter]:bg-background/60">
                         <form>
                           <div className="relative">
@@ -362,63 +366,69 @@ export function CreateWorkoutForm({
                           </div>
                         </form>
                       </div>
-                      <ScrollArea className="h-full">
-                        {filteredExercises.map((exercise) => (
-                          <div
-                            key={exercise.id}
-                            className="flex flex-col gap-2 p-4 pt-0"
-                          >
-                            <button
+                      <ScrollArea className="flex-auto">
+                        {filteredExercises.length === 0 ? (
+                          <div className="text-pretty text-center text-muted-foreground">
+                            No exercises found
+                          </div>
+                        ) : (
+                          filteredExercises.map((exercise) => (
+                            <div
                               key={exercise.id}
-                              className={cn(
-                                'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-                                exercise.id === selectedId &&
-                                  'bg-muted border-primary',
-                              )}
-                              onClick={() => setSelectedId(exercise.id)}
-                              onDoubleClick={() => {
-                                setSelectedId(exercise.id);
-
-                                const selectedExercise =
-                                  exercises.find(
-                                    (element) => element.id === selectedId,
-                                  ) ?? null;
-
-                                if (selectedExercise) {
-                                  addExercise(selectedExercise);
-                                }
-
-                                ref.current?.click();
-                                setSelectedId(null);
-                              }}
+                              className="flex flex-col gap-2 p-4 pt-0"
                             >
-                              <div className="flex w-full flex-col gap-1">
-                                <div className="flex items-center">
-                                  <div className="flex items-center gap-2">
-                                    <div className="font-semibold">
-                                      {exercise.displayName}
+                              <button
+                                key={exercise.id}
+                                className={cn(
+                                  'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
+                                  exercise.id === selectedId &&
+                                    'bg-muted border-primary',
+                                )}
+                                onClick={() => setSelectedId(exercise.id)}
+                                onDoubleClick={() => {
+                                  setSelectedId(exercise.id);
+
+                                  const selectedExercise =
+                                    exercises.find(
+                                      (element) => element.id === selectedId,
+                                    ) ?? null;
+
+                                  if (selectedExercise) {
+                                    addExercise(selectedExercise);
+                                  }
+
+                                  ref.current?.click();
+                                  setSelectedId(null);
+                                }}
+                              >
+                                <div className="flex w-full flex-col gap-1">
+                                  <div className="flex items-center">
+                                    <div className="flex items-center gap-2">
+                                      <div className="font-semibold">
+                                        {exercise.displayName}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                              <div className="line-clamp-2 text-xs text-muted-foreground">
-                                {exercise.description}
-                              </div>
-                              <div className="flex items-center gap-2">
-                                {exercise.muscleGroups.map((muscleGroup) => {
-                                  return (
-                                    <Badge
-                                      key={muscleGroup.id}
-                                      variant={'secondary'}
-                                    >
-                                      {muscleGroup.name}
-                                    </Badge>
-                                  );
-                                })}
-                              </div>
-                            </button>
-                          </div>
-                        ))}
+                                <div className="line-clamp-2 text-xs text-muted-foreground">
+                                  {exercise.description}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  {exercise.muscleGroups.map((muscleGroup) => {
+                                    return (
+                                      <Badge
+                                        key={muscleGroup.id}
+                                        variant={'secondary'}
+                                      >
+                                        {muscleGroup.name}
+                                      </Badge>
+                                    );
+                                  })}
+                                </div>
+                              </button>
+                            </div>
+                          ))
+                        )}
                       </ScrollArea>
                       <DialogFooter>
                         <Button
