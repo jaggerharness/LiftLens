@@ -1,20 +1,44 @@
 'use client';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shad-ui/tabs';
-import {
-  DropdownMenu, DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel, DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/shad-ui/dropdown-menu';
-import { Button } from '@/components/shad-ui/button';
-import { ListFilter } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/shad-ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shad-ui/table';
 import { Badge } from '@/components/shad-ui/badge';
+import { Button } from '@/components/shad-ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/shad-ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/shad-ui/dropdown-menu';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/shad-ui/table';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/shad-ui/tabs';
 import { WorkoutWithExercises } from '@/lib/types';
+import { ListFilter } from 'lucide-react';
 
-export function WorkoutTable({ workouts }: { workouts: WorkoutWithExercises[] }) {
+export function WorkoutTable({
+  workouts,
+}: {
+  workouts: WorkoutWithExercises[];
+}) {
   return (
     <Tabs defaultValue="week">
       <div className="flex items-center">
@@ -26,11 +50,7 @@ export function WorkoutTable({ workouts }: { workouts: WorkoutWithExercises[] })
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 gap-1 text-sm"
-              >
+              <Button variant="outline" size="sm" className="h-7 gap-1 text-sm">
                 <ListFilter className="size-3.5" />
                 <span className="sr-only sm:not-sr-only">Filter</span>
               </Button>
@@ -41,9 +61,7 @@ export function WorkoutTable({ workouts }: { workouts: WorkoutWithExercises[] })
               <DropdownMenuCheckboxItem checked>
                 Upcoming
               </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem>
-                Completed
-              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem>Completed</DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem>Skipped</DropdownMenuCheckboxItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -59,34 +77,15 @@ export function WorkoutTable({ workouts }: { workouts: WorkoutWithExercises[] })
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Type</TableHead>
+                  <TableHead>Workout</TableHead>
                   <TableHead className="hidden sm:table-cell">
                     Estimated Time
                   </TableHead>
-                  <TableHead className="hidden sm:table-cell">
-                    Status
-                  </TableHead>
+                  <TableHead className="hidden sm:table-cell">Status</TableHead>
                   <TableHead>Date</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Chest / Arms</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      Bulking
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell">
-                    35 - 45 mins
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell">
-                    <Badge className="text-xs" variant="outline">
-                      Upcoming
-                    </Badge>
-                  </TableCell>
-                  <TableCell>07/22/2024</TableCell>
-                </TableRow>
                 {workouts.map((workout) => (
                   <TableRow key={workout.id}>
                     <TableCell>
@@ -97,10 +96,15 @@ export function WorkoutTable({ workouts }: { workouts: WorkoutWithExercises[] })
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">
                       <Badge className="text-xs" variant="outline">
-                        {workout.workoutDate.getDate() < new Date().setHours(0, 0, 0, 0) ? 'Upcoming' : 'Completed'}
+                        {workout.workoutDate.getDate() <
+                        new Date().setHours(0, 0, 0, 0)
+                          ? 'Upcoming'
+                          : 'Completed'}
                       </Badge>
                     </TableCell>
-                    <TableCell>{workout.workoutDate.toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      {workout.workoutDate.toLocaleDateString()}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

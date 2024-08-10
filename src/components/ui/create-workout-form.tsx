@@ -33,14 +33,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/shad-ui/table';
+import { toast } from '@/components/shad-ui/use-toast';
 import { ExerciseWithMuscleGroups } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { workoutFormSchema } from '@/lib/zod';
+import { createWorkout } from '@/server/actions/actions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { format } from 'date-fns';
 import { PlusCircle, Search, Trash2Icon } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Badge } from '../shad-ui/badge';
@@ -56,9 +59,6 @@ import {
 } from '../shad-ui/form';
 import { ScrollArea } from '../shad-ui/scroll-area';
 import { Separator } from '../shad-ui/separator';
-import { createWorkout } from '@/server/actions/actions';
-import { toast } from '@/components/shad-ui/use-toast';
-import { useRouter } from 'next/navigation';
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 
@@ -67,6 +67,9 @@ export function CreateWorkoutForm({
 }: {
   exercises: ExerciseWithMuscleGroups[];
 }) {
+  const [filteredExercises, setFilteredExercises] = useState(exercises);
+  const [searchQuery, setSearchQuery] = useState('');
+
   const form = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutFormSchema),
     defaultValues: {
@@ -80,6 +83,7 @@ export function CreateWorkoutForm({
     control,
     handleSubmit,
     register,
+    reset,
     formState: { errors },
   } = form;
 
@@ -92,10 +96,25 @@ export function CreateWorkoutForm({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const ref = useRef<HTMLButtonElement | null>(null);
 
+  useEffect(() => {
+    setFilteredExercises(
+      exercises.filter((exercise) =>
+        exercise.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
+    );
+  }, [searchQuery, exercises]);
+
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
   async function onSubmit(workoutData: any) {
     const res = await createWorkout({ workoutData });
-    if(res.type === 'success'){
+    if (res.type === 'success') {
       setOpen(false);
+      reset({
+        workoutExercises: [],
+      });
       router.refresh();
       toast({
         title: 'Workout Created',
@@ -334,12 +353,17 @@ export function CreateWorkoutForm({
                         <form>
                           <div className="relative">
                             <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
-                            <Input placeholder="Search" className="pl-8" />
+                            <Input
+                              value={searchQuery}
+                              onChange={handleOnChange}
+                              placeholder="Search"
+                              className="pl-8"
+                            />
                           </div>
                         </form>
                       </div>
                       <ScrollArea className="h-full">
-                        {exercises.map((exercise) => (
+                        {filteredExercises.map((exercise) => (
                           <div
                             key={exercise.id}
                             className="flex flex-col gap-2 p-4 pt-0"

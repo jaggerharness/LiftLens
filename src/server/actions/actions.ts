@@ -362,8 +362,6 @@ export async function createWorkout({
 }) {
   const user = await auth();
 
-  console.log({user});
-
   if (!user || !user.user || !user.user.id) {
     throw new Error('User is not authenticated');
   }

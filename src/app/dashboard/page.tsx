@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
 
-import { Badge } from '@/components/shad-ui/badge';
-import { Button } from '@/components/shad-ui/button';
 import {
   Card,
   CardContent,
@@ -14,9 +12,9 @@ import { Progress } from '@/components/shad-ui/progress';
 import { CreateWorkoutDrawer } from '@/components/ui/create-workout-drawer';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import { UserNav } from '@/components/ui/user-nav';
+import { WorkoutTable } from '@/components/ui/workout-table';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { WorkoutTable } from '@/components/ui/workout-table';
 import { WorkoutWithExercises } from '@/lib/types';
 
 export const metadata: Metadata = {
@@ -25,7 +23,10 @@ export const metadata: Metadata = {
 };
 
 async function getWorkouts(): Promise<WorkoutWithExercises[]> {
+  const session = await auth();
   return prisma.workout.findMany({
+    where: { createdBy: session?.user?.id },
+    orderBy: { workoutDate: 'asc' },
     include: {
       workoutExercises: {
         include: {
@@ -36,7 +37,7 @@ async function getWorkouts(): Promise<WorkoutWithExercises[]> {
           },
         },
       },
-    }
+    },
   });
 }
 
