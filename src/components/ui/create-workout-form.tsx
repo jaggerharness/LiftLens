@@ -104,7 +104,12 @@ export function CreateWorkoutForm({
             .includes(searchQuery.trimEnd().toLowerCase()) ||
           exercise.displayName
             ?.toLowerCase()
-            .includes(searchQuery.trimEnd().toLowerCase()),
+            .includes(searchQuery.trimEnd().toLowerCase()) ||
+          exercise.muscleGroups.some((muscleGroup) =>
+            muscleGroup.name
+              .toLowerCase()
+              .includes(searchQuery.trimEnd().toLowerCase()),
+          ),
       ),
     );
   }, [searchQuery, exercises]);
@@ -350,7 +355,9 @@ export function CreateWorkoutForm({
                       <DialogHeader>
                         <DialogTitle>Select Exercise</DialogTitle>
                         <DialogDescription>
-                          Select the exercise you want to add to this workout.
+                          <p>
+                            Select the exercise you want to add to this workout.
+                          </p>
                         </DialogDescription>
                       </DialogHeader>
                       <div className="bg-background/95 mx-4 my-2 supports-[backdrop-filter]:bg-background/60">
@@ -360,7 +367,7 @@ export function CreateWorkoutForm({
                             <Input
                               value={searchQuery}
                               onChange={handleOnChange}
-                              placeholder="Search"
+                              placeholder="Search by exercise or muscle"
                               className="pl-8"
                             />
                           </div>

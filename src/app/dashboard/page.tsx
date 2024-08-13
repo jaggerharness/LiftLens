@@ -107,11 +107,12 @@ export default async function DashboardPage() {
           </div>
         </div>
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2 p-6">
+          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
             <Card className="sm:col-span-2">
               <CardHeader className="pb-3">
-                <CardTitle>Upcoming Workouts</CardTitle>
-                <CardDescription className="max-w-lg text-balance leading-relaxed">
+                <CardTitle>Workouts</CardTitle>
+                <CardDescription className="text-balance leading-relaxed flex flex-row">
                   Create and manage your upcoming workouts.
                 </CardDescription>
               </CardHeader>
@@ -170,6 +171,7 @@ export default async function DashboardPage() {
               </CardFooter>
             </Card>
           </div>
+          <h2 className="text-3xl font-bold tracking-tight">My Schedule</h2>
           <WorkoutTable workouts={workouts} />
         </div>
       </div>
