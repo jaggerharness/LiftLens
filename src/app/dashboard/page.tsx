@@ -120,7 +120,7 @@ export default async function DashboardPage() {
                 <CreateWorkoutDrawer />
               </CardFooter>
             </Card>
-            <Card>
+            <Card className={workouts.length === 0 ? 'hidden' : ''}>
               <CardHeader className="pb-2">
                 <CardDescription>This Week</CardDescription>
                 <CardTitle className="text-4xl">
@@ -147,7 +147,7 @@ export default async function DashboardPage() {
                 />
               </CardFooter>
             </Card>
-            <Card>
+            <Card className={workouts.length === 0 ? 'hidden' : ''}>
               <CardHeader className="pb-2">
                 <CardDescription>This Month</CardDescription>
                 <CardTitle className="text-4xl">{`${analytics.monthWorkoutData.length} workouts`}</CardTitle>
