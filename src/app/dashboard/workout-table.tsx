@@ -35,6 +35,12 @@ export function WorkoutTable({
 }: {
   workouts: WorkoutWithExercises[];
 }) {
+  async function handleStartWorkout(workout: WorkoutWithExercises) {
+    if (workout.workoutDate > new Date()) {
+      console.log('Starting workout for new date warning');
+    }
+  }
+
   return (
     <Card>
       <CardHeader className="px-7">
@@ -87,7 +93,7 @@ export function WorkoutTable({
                       </TableCell>
                     </TableRow>
                   </DialogTrigger>
-                  <DialogContent className="h-screen">
+                  <DialogContent className="flex flex-col max-h-full sm:max-h-[85vh]">
                     <DialogHeader>
                       <DialogTitle>Workout Details</DialogTitle>
                       <DialogDescription>
@@ -95,7 +101,7 @@ export function WorkoutTable({
                         when you are ready.
                       </DialogDescription>
                     </DialogHeader>
-                    <ScrollArea className="m-2 px-2">
+                    <ScrollArea className="m-2 px-2 overflow-y-auto">
                       <Table>
                         <TableHeader>
                           <TableRow className="pointer-events-none">
@@ -125,10 +131,15 @@ export function WorkoutTable({
                       </Table>
                     </ScrollArea>
                     <DialogFooter className="gap-2 mt-2">
-                      <Button variant="secondary" type="submit">
+                      <Button variant="secondary" type="button">
                         Edit Workout
                       </Button>
-                      <Button type="submit">Start Workout</Button>
+                      <Button
+                        onClick={() => handleStartWorkout(workout)}
+                        type="button"
+                      >
+                        Start Workout
+                      </Button>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
