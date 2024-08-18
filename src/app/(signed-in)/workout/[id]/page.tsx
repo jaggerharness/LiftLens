@@ -22,18 +22,26 @@ export default function WorkoutPage({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 p-6">
       <h1>{`Workout ID: ${params.id}`}</h1>
-      <Button variant={'outline'} onClick={handleAddNote}>
+      <Button className="max-w-fit" variant={'outline'} onClick={handleAddNote}>
         Add Note
       </Button>
-      <Button variant={'outline'} onClick={handlePause}>
+      <Button className="max-w-fit" variant={'secondary'} onClick={handlePause}>
         Pause
       </Button>
-      <Button variant={'outline'} onClick={handleComplete}>
+      <Button
+        className="max-w-fit"
+        variant={'default'}
+        onClick={handleComplete}
+      >
         Complete
       </Button>
-      <Button variant={'outline'} onClick={handleCancel}>
+      <Button
+        className="max-w-fit"
+        variant={'destructive'}
+        onClick={handleCancel}
+      >
         Cancel
       </Button>
     </div>
