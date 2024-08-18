@@ -124,7 +124,7 @@ export default async function DashboardPage() {
               <CardHeader className="pb-2">
                 <CardDescription>This Week</CardDescription>
                 <CardTitle className="text-4xl">
-                  {workouts.length} workouts
+                  {workouts.length} workout{workouts.length === 1 ? '' : 's'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -150,7 +150,7 @@ export default async function DashboardPage() {
             <Card className={workouts.length === 0 ? 'hidden' : ''}>
               <CardHeader className="pb-2">
                 <CardDescription>This Month</CardDescription>
-                <CardTitle className="text-4xl">{`${analytics.monthWorkoutData.length} workouts`}</CardTitle>
+                <CardTitle className="text-4xl">{`${analytics.monthWorkoutData.length} workout${analytics.monthWorkoutData.length === 1 ? '' : 's'}`}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-xs text-muted-foreground">Lock in!</div>

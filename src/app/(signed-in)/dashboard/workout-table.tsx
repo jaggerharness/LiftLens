@@ -29,16 +29,22 @@ import {
 } from '@/components/shad-ui/table';
 import { WorkoutWithExercises } from '@/lib/types';
 import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 export function WorkoutTable({
   workouts,
 }: {
   workouts: WorkoutWithExercises[];
 }) {
+  const router = useRouter();
+
   async function handleStartWorkout(workout: WorkoutWithExercises) {
     if (workout.workoutDate > new Date()) {
       console.log('Starting workout for new date warning');
+      alert('check console');
+      return;
     }
+    router.push(`/workout/${workout.id}`);
   }
 
   return (
