@@ -3,8 +3,6 @@
 import { Button } from '@/components/shad-ui/button';
 
 export default function WorkoutPage({ params }: { params: { id: string } }) {
-  console.log(params);
-
   const handleAddNote = () => {
     // Logic to add a note
   };

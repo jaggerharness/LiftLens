@@ -45,7 +45,7 @@ const fetchUser = async (email: string, password: string) => {
   return userObj;
 };
 
-export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
+export const { auth, handlers, signIn, signOut } = NextAuth({
   debug: false,
   adapter: PrismaAdapter(prisma),
   session: {
@@ -71,9 +71,8 @@ export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth({
       },
       authorize: async (credentials) => {
         try {
-          const { email, password } = await signInSchema.parseAsync(
-            credentials
-          );
+          const { email, password } =
+            await signInSchema.parseAsync(credentials);
 
           const user = await fetchUser(email, password);
 

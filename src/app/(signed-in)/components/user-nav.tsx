@@ -27,7 +27,7 @@ export function UserNav({ session }: { session: Session }) {
         <Button variant="ghost" className="relative size-8 rounded-full">
           <Avatar className="size-8">
             <AvatarImage src={session?.user?.image ?? ''} alt="@shadcn" />
-            <AvatarFallback>SC</AvatarFallback>
+            <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
