@@ -9,13 +9,13 @@ import {
   CardTitle,
 } from '@/components/shad-ui/card';
 import { Progress } from '@/components/shad-ui/progress';
-import { CreateWorkoutDrawer } from '@/components/ui/create-workout-drawer';
+import { CreateWorkoutDialog } from './components/create-workout-drawer';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { WorkoutWithExercises } from '@/lib/types';
 import { Workout } from '@prisma/client';
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from 'date-fns';
-import { WorkoutTable } from './workout-table';
+import { WorkoutTable } from './components/workout-table';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardFooter>
-              <CreateWorkoutDrawer />
+              <CreateWorkoutDialog />
             </CardFooter>
           </Card>
           <Card className={workouts.length === 0 ? 'hidden' : ''}>

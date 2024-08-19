@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/shad-ui/card';
-import { ResetPasswordForm } from '@/components/ui/reset-form';
+import { ResetPasswordForm } from './components/reset-form';
 import { validatePasswordResetToken } from '@/server/actions/actions';
 import Link from 'next/dist/client/link';
 

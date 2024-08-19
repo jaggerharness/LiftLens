@@ -6,7 +6,7 @@ import { RefreshCwIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Button } from '../shad-ui/button';
+import { Button } from '@/components/shad-ui/button';
 import {
   Dialog,
   DialogContent,
@@ -15,15 +15,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../shad-ui/dialog';
+} from '@/components/shad-ui/dialog';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '../shad-ui/form';
-import { Input } from '../shad-ui/input';
+} from '@/components/shad-ui/form';
+import { Input } from '@/components/shad-ui/input';
 
 export function ForgotPasswordDialog() {
   const [submitted, setSubmitted] = useState(false);

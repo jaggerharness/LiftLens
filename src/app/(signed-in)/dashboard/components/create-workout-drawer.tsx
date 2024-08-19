@@ -10,7 +10,7 @@ async function getExercises(): Promise<ExerciseWithMuscleGroups[]> {
   });
 }
 
-export async function CreateWorkoutDrawer() {
+export async function CreateWorkoutDialog() {
   const exercises = await getExercises();
   return <CreateWorkoutForm exercises={exercises} />;
 }

@@ -5,16 +5,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Button } from '../shad-ui/button';
+import { Button } from '@/components/shad-ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '../shad-ui/form';
-import { Input } from '../shad-ui/input';
-import { useToast } from '../shad-ui/use-toast';
+} from '@/components/shad-ui/form';
+import { Input } from '@/components/shad-ui/input';
+import { useToast } from '@/components/shad-ui/use-toast';
 
 export function ResetPasswordForm({
   userId,

@@ -14,7 +14,7 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '../shad-ui/form';
+} from '@/components/shad-ui/form';
 import { ForgotPasswordDialog } from './forgot-password-dialog';
 import { signInSchema } from '@/lib/zod';
 
@@ -46,7 +46,7 @@ export function CredSignIn() {
     const result = await credentialsSignIn(values);
     if (result?.type === 'error') {
       setToastMessage(
-        'An error occurred while trying to log you in. Check your credentials and try again.'
+        'An error occurred while trying to log you in. Check your credentials and try again.',
       );
       setShowError(true);
     }

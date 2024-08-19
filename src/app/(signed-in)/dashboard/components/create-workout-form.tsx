@@ -46,8 +46,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Badge } from '../shad-ui/badge';
-import { Calendar } from '../shad-ui/calendar';
+import { Badge } from '@/components/shad-ui/badge';
+import { Calendar } from '@/components/shad-ui/calendar';
 import {
   Form,
   FormControl,
@@ -56,8 +56,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../shad-ui/form';
-import { ScrollArea } from '../shad-ui/scroll-area';
+} from '@/components/shad-ui/form';
+import { ScrollArea } from '@/components/shad-ui/scroll-area';
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 

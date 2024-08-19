@@ -1,4 +1,4 @@
-import LoginCard from '@/components/ui/login-card';
+import LoginCard from './components/login-card';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 

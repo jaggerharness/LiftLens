@@ -24,7 +24,7 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '../shad-ui/form';
+} from '@/components/shad-ui/form';
 import { signInSchema } from '@/lib/zod';
 
 export default function RegisterCard() {
