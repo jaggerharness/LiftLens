@@ -61,11 +61,17 @@ import { ScrollArea } from '@/components/shad-ui/scroll-area';
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 
+interface CreateWorkoutFormProps {
+  exercises: ExerciseWithMuscleGroups[];
+  mode: 'create' | 'edit';
+  workout?: WorkoutFormValues;
+}
+
 export function CreateWorkoutForm({
   exercises,
-}: {
-  exercises: ExerciseWithMuscleGroups[];
-}) {
+  mode,
+  workout,
+}: CreateWorkoutFormProps) {
   const [filteredExercises, setFilteredExercises] = useState(exercises);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -155,7 +161,7 @@ export function CreateWorkoutForm({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className={buttonVariants({ variant: 'default' })}>
-        Create A Workout
+        {mode === 'create' ? 'Create A Workout' : 'Edit Workout'}
       </DialogTrigger>
       <DialogClose />
       <DialogContent className="w-full sm:max-w-xl p-0">
