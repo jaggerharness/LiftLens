@@ -12,5 +12,5 @@ async function getExercises(): Promise<ExerciseWithMuscleGroups[]> {
 
 export async function CreateWorkoutDialog() {
   const exercises = await getExercises();
-  return <CreateWorkoutForm exercises={exercises} />;
+  return <CreateWorkoutForm exercises={exercises} mode={'create'} />;
 }
