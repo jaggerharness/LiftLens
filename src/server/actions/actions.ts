@@ -4,6 +4,7 @@
 
 import { auth, signIn } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { WorkoutWithExercises } from '@/lib/types';
 import { workoutFormSchema } from '@/lib/zod';
 import { SES } from '@aws-sdk/client-ses';
 import { Prisma } from '@prisma/client';
@@ -386,6 +387,40 @@ export async function createWorkout({
 
   return {
     message: 'Workout created.',
+    type: 'success',
+  };
+}
+
+export async function startWorkout({
+  workout,
+}: {
+  workout: WorkoutWithExercises;
+}) {
+  const userSession = await auth();
+
+  if (!userSession || !userSession.user || !userSession.user.id) {
+    throw new Error('User is not authenticated');
+  }
+
+  if (workout.createdBy !== userSession.user.id) {
+    throw new Error('User is not authorized to start this workout');
+  }
+
+  await prisma.workout.update({
+    where: {
+      id: workout.id,
+    },
+    data: {
+      state: {
+        connect: {
+          name: 'Started',
+        },
+      },
+    },
+  });
+
+  return {
+    message: 'Workout started.',
     type: 'success',
   };
 }

@@ -372,6 +372,18 @@ async function main() {
     console.log(`Created exercise with id: ${ex.id}`);
   }
 
+  await prisma.workoutState.createMany({
+    data: [
+      { name: 'Scheduled' },
+      { name: 'Started' },
+      { name: 'Completed' },
+      { name: 'Paused' },
+      { name: 'Canceled' },
+      { name: 'Late' },
+      { name: 'Archived' },
+    ],
+  });
+
   console.log(`Seeding finished.`);
 }
 

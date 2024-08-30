@@ -26,8 +26,10 @@ export function UserNav({ session }: { session: Session }) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative size-8 rounded-full">
           <Avatar className="size-8">
-            <AvatarImage src={session?.user?.image ?? ''} alt="@shadcn" />
-            <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
+            <AvatarImage src={session?.user?.image ?? ''} alt="user avatar" />
+            <AvatarFallback>
+              {session?.user?.name?.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

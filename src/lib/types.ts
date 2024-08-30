@@ -15,7 +15,8 @@ export type WorkoutWithExercises = Prisma.WorkoutGetPayload<{
             muscleGroups: true;
           };
         };
-      }
-    }
+      };
+    };
+    state: true;
   };
 }>;

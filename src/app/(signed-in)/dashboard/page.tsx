@@ -9,12 +9,12 @@ import {
   CardTitle,
 } from '@/components/shad-ui/card';
 import { Progress } from '@/components/shad-ui/progress';
-import { CreateWorkoutDialog } from './components/create-workout-drawer';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { WorkoutWithExercises } from '@/lib/types';
 import { Workout } from '@prisma/client';
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from 'date-fns';
+import { CreateWorkoutDialog } from './components/create-workout-drawer';
 import { WorkoutTable } from './components/workout-table';
 
 export const metadata: Metadata = {
@@ -47,6 +47,7 @@ async function getWorkouts(): Promise<WorkoutWithExercises[]> {
           },
         },
       },
+      state: true,
     },
   });
 }

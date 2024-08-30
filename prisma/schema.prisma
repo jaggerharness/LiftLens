@@ -130,13 +130,22 @@ model Exercise {
   workoutExercises WorkoutExercise[]
 }
 
+model WorkoutState {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  Workout Workout[]
+}
+
 model Workout {
   id          String   @id @default(cuid())
   name        String
   workoutDate DateTime
+  notes       String?
+  stateId     Int      @default(1)
   createdBy   String
 
-  user User @relation(fields: [createdBy], references: [id], onDelete: NoAction)
+  user  User         @relation(fields: [createdBy], references: [id], onDelete: NoAction)
+  state WorkoutState @relation(fields: [stateId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

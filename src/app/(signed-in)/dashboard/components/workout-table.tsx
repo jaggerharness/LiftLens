@@ -27,7 +27,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/shad-ui/table';
+import { useToast } from '@/components/shad-ui/use-toast';
 import { WorkoutWithExercises } from '@/lib/types';
+import { startWorkout } from '@/server/actions/actions';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 
@@ -37,14 +39,19 @@ export function WorkoutTable({
   workouts: WorkoutWithExercises[];
 }) {
   const router = useRouter();
+  const { toast } = useToast();
 
   async function handleStartWorkout(workout: WorkoutWithExercises) {
-    if (workout.workoutDate > new Date()) {
-      console.log('Starting workout for new date warning');
-      alert('check console');
-      return;
+    const res = await startWorkout({ workout });
+    console.log({ res });
+    if (res.type === 'success') {
+      toast({
+        variant: 'success',
+        title: 'Workout Started',
+        description: 'Your workout has been started. Good luck!',
+      });
+      router.push(`/workout/${workout.id}`);
     }
-    router.push(`/workout/${workout.id}`);
   }
 
   return (
@@ -88,10 +95,7 @@ export function WorkoutTable({
                       </TableCell>
                       <TableCell className="hidden sm:table-cell">
                         <Badge className="text-xs -ml-1" variant="outline">
-                          {workout.workoutDate >=
-                          new Date(new Date().setHours(0, 0, 0, 0))
-                            ? 'Upcoming'
-                            : 'Completed'}
+                          {workout.state.name}
                         </Badge>
                       </TableCell>
                       <TableCell>
