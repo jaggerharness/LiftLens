@@ -130,27 +130,39 @@ model Exercise {
   workoutExercises WorkoutExercise[]
 }
 
-model WorkoutState {
-  id      Int       @id @default(autoincrement())
-  name    String    @unique
-  Workout Workout[]
+model WorkoutStatus {
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  Workout          Workout[]
+  WorkoutStatusLog WorkoutStatusLog[]
+}
+
+model WorkoutStatusLog {
+  id              Int           @id @default(autoincrement())
+  workoutId       String
+  workoutStatusId Int
+  status          WorkoutStatus @relation(fields: [workoutStatusId], references: [id])
+  timestamp       DateTime      @default(now())
+
+  workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
 }
 
 model Workout {
-  id          String   @id @default(cuid())
-  name        String
-  workoutDate DateTime
-  notes       String?
-  stateId     Int      @default(1)
-  createdBy   String
+  id              String   @id @default(cuid())
+  name            String
+  workoutDate     DateTime
+  notes           String?
+  currentStatusId Int      @default(1)
+  createdBy       String
 
-  user  User         @relation(fields: [createdBy], references: [id], onDelete: NoAction)
-  state WorkoutState @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  user   User          @relation(fields: [createdBy], references: [id], onDelete: NoAction)
+  status WorkoutStatus @relation(fields: [currentStatusId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   workoutExercises WorkoutExercise[]
+  WorkoutStatusLog WorkoutStatusLog[]
 }
 
 model WorkoutExercise {

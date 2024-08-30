@@ -372,7 +372,7 @@ async function main() {
     console.log(`Created exercise with id: ${ex.id}`);
   }
 
-  await prisma.workoutState.createMany({
+  await prisma.workoutStatus.createMany({
     data: [
       { name: 'Scheduled' },
       { name: 'Started' },

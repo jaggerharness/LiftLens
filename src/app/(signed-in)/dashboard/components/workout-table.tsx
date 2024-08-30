@@ -43,7 +43,6 @@ export function WorkoutTable({
 
   async function handleStartWorkout(workout: WorkoutWithExercises) {
     const res = await startWorkout({ workout });
-    console.log({ res });
     if (res.type === 'success') {
       toast({
         variant: 'success',
@@ -95,7 +94,7 @@ export function WorkoutTable({
                       </TableCell>
                       <TableCell className="hidden sm:table-cell">
                         <Badge className="text-xs -ml-1" variant="outline">
-                          {workout.state.name}
+                          {workout.status.name}
                         </Badge>
                       </TableCell>
                       <TableCell>

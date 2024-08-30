@@ -406,21 +406,149 @@ export async function startWorkout({
     throw new Error('User is not authorized to start this workout');
   }
 
+  const workoutStatus = await prisma.workoutStatus.findFirstOrThrow({
+    where: {
+      name: 'Started',
+    },
+  });
+
   await prisma.workout.update({
     where: {
       id: workout.id,
     },
     data: {
-      state: {
-        connect: {
-          name: 'Started',
+      currentStatusId: workoutStatus.id,
+      WorkoutStatusLog: {
+        create: {
+          workoutStatusId: workoutStatus.id,
         },
       },
     },
   });
 
   return {
-    message: 'Workout started.',
+    message: 'Workout Started',
+    type: 'success',
+  };
+}
+
+export async function pauseWorkout({
+  workout,
+}: {
+  workout: WorkoutWithExercises;
+}) {
+  const userSession = await auth();
+
+  if (!userSession || !userSession.user || !userSession.user.id) {
+    throw new Error('User is not authenticated');
+  }
+
+  if (workout.createdBy !== userSession.user.id) {
+    throw new Error('User is not authorized to pause this workout');
+  }
+
+  const workoutStatus = await prisma.workoutStatus.findFirstOrThrow({
+    where: {
+      name: 'Paused',
+    },
+  });
+
+  await prisma.workout.update({
+    where: {
+      id: workout.id,
+    },
+    data: {
+      currentStatusId: workoutStatus.id,
+      WorkoutStatusLog: {
+        create: {
+          workoutStatusId: workoutStatus.id,
+        },
+      },
+    },
+  });
+
+  return {
+    message: 'Workout Paused',
+    type: 'success',
+  };
+}
+
+export async function completeWorkout({
+  workout,
+}: {
+  workout: WorkoutWithExercises;
+}) {
+  const userSession = await auth();
+
+  if (!userSession || !userSession.user || !userSession.user.id) {
+    throw new Error('User is not authenticated');
+  }
+
+  if (workout.createdBy !== userSession.user.id) {
+    throw new Error('User is not authorized to complete this workout');
+  }
+
+  const workoutStatus = await prisma.workoutStatus.findFirstOrThrow({
+    where: {
+      name: 'Completed',
+    },
+  });
+  await prisma.workout.update({
+    where: {
+      id: workout.id,
+    },
+    data: {
+      currentStatusId: workoutStatus.id,
+      WorkoutStatusLog: {
+        create: {
+          workoutStatusId: workoutStatus.id,
+        },
+      },
+    },
+  });
+
+  return {
+    message: 'Workout Completed',
+    type: 'success',
+  };
+}
+
+export async function cancelWorkout({
+  workout,
+}: {
+  workout: WorkoutWithExercises;
+}) {
+  const userSession = await auth();
+
+  if (!userSession || !userSession.user || !userSession.user.id) {
+    throw new Error('User is not authenticated');
+  }
+
+  if (workout.createdBy !== userSession.user.id) {
+    throw new Error('User is not authorized to cancel this workout');
+  }
+
+  const workoutStatus = await prisma.workoutStatus.findFirstOrThrow({
+    where: {
+      name: 'Canceled',
+    },
+  });
+  await prisma.workout.update({
+    where: {
+      id: workout.id,
+    },
+    data: {
+      currentStatusId: workoutStatus.id,
+      WorkoutStatusLog: {
+        create: {
+          workoutStatusId: workoutStatus.id,
+        },
+      },
+    },
+  });
+
+  return {
+    message: 'Workout Canceled',
     type: 'success',
   };
 }

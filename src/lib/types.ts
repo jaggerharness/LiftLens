@@ -17,6 +17,6 @@ export type WorkoutWithExercises = Prisma.WorkoutGetPayload<{
         };
       };
     };
-    state: true;
+    status: true;
   };
 }>;
