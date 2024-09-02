@@ -42,6 +42,14 @@ export function WorkoutTable({
   const { toast } = useToast();
 
   async function handleStartWorkout(workout: WorkoutWithExercises) {
+    if (
+      workout.WorkoutStatusLog[workout.WorkoutStatusLog.length - 1]
+        ?.workoutStatusId === 2
+    ) {
+      router.push(`/workout/${workout.id}`);
+      return;
+    }
+
     const res = await startWorkout({ workout });
     if (res.type === 'success') {
       toast({
@@ -147,7 +155,9 @@ export function WorkoutTable({
                         onClick={() => handleStartWorkout(workout)}
                         type="button"
                       >
-                        Start Workout
+                        {workout.currentStatusId === 2
+                          ? 'View Workout'
+                          : 'Start Workout'}
                       </Button>
                     </DialogFooter>
                   </DialogContent>

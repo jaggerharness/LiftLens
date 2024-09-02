@@ -7,13 +7,21 @@ import {
   cancelWorkout,
   completeWorkout,
   pauseWorkout,
+  startWorkout,
 } from '@/server/actions/actions';
 
 export function WorkoutActions({ workout }: { workout: WorkoutWithExercises }) {
   const { toast } = useToast();
 
-  const handleAddNote = () => {
-    // Logic to add a note
+  const handleResume = async () => {
+    const res = await startWorkout({ workout });
+    if (res.type === 'success') {
+      toast({
+        variant: 'success',
+        title: res.message,
+        description: 'Your workout has been resumed.',
+      });
+    }
   };
 
   const handlePause = async () => {
@@ -50,27 +58,43 @@ export function WorkoutActions({ workout }: { workout: WorkoutWithExercises }) {
   };
 
   return (
-    <section className="flex gap-4">
-      <Button className="max-w-fit" variant={'outline'} onClick={handleAddNote}>
-        Add Note
-      </Button>
-      <Button className="max-w-fit" variant={'secondary'} onClick={handlePause}>
-        Pause
-      </Button>
-      <Button
-        className="max-w-fit"
-        variant={'default'}
-        onClick={handleComplete}
-      >
-        Complete
-      </Button>
-      <Button
-        className="max-w-fit"
-        variant={'destructive'}
-        onClick={handleCancel}
-      >
-        Cancel
-      </Button>
+    <section className="flex justify-between">
+      <div>
+        {workout.currentStatusId === 4 && (
+          <Button
+            className="max-w-fit"
+            variant={'outline'}
+            onClick={handleResume}
+          >
+            Resume Workout
+          </Button>
+        )}
+        {workout.currentStatusId === 2 && (
+          <Button
+            className="max-w-fit"
+            variant={'secondary'}
+            onClick={handlePause}
+          >
+            Pause
+          </Button>
+        )}
+      </div>
+      <div className="flex gap-4">
+        <Button
+          className="max-w-fit"
+          variant={'default'}
+          onClick={handleComplete}
+        >
+          Complete
+        </Button>
+        <Button
+          className="max-w-fit"
+          variant={'destructive'}
+          onClick={handleCancel}
+        >
+          Cancel
+        </Button>
+      </div>
     </section>
   );
 }

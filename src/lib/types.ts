@@ -21,3 +21,5 @@ export type WorkoutWithExercises = Prisma.WorkoutGetPayload<{
     WorkoutStatusLog: true;
   };
 }>;
+
+export type WorkoutStatusLog = Prisma.WorkoutStatusLogGetPayload<{}>;

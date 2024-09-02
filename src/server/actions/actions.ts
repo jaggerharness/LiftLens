@@ -7,7 +7,7 @@ import prisma from '@/lib/prisma';
 import { WorkoutWithExercises } from '@/lib/types';
 import { workoutFormSchema } from '@/lib/zod';
 import { SES } from '@aws-sdk/client-ses';
-import { Prisma } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { render } from '@react-email/render';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -55,7 +55,7 @@ async function sendEmailVerification(user: any, token: string) {
       },
     });
 
-    const emailHtml = render(EmailVerificationEmail({ verifyUrl }));
+    const emailHtml = await render(EmailVerificationEmail({ verifyUrl }));
 
     const params = {
       Source: 'no-reply@liftlens.app',
@@ -120,7 +120,7 @@ export async function sendPasswordReset(email: string) {
       },
     });
 
-    const emailHtml = render(ResetPasswordEmail({ resetUrl, emailTo }));
+    const emailHtml = await render(ResetPasswordEmail({ resetUrl, emailTo }));
 
     const params = {
       Source: 'no-reply@liftlens.app',
@@ -193,7 +193,7 @@ export async function registerUser({
     };
   } catch (error) {
     if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error instanceof PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
       return {
