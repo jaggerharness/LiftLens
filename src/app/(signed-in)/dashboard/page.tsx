@@ -48,6 +48,7 @@ async function getWorkouts(): Promise<WorkoutWithExercises[]> {
         },
       },
       status: true,
+      WorkoutStatusLog: true,
     },
   });
 }
