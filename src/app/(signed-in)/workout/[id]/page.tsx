@@ -1,3 +1,6 @@
+import prisma from '@/lib/prisma';
+import { redirect } from 'next/navigation';
+import { Stopwatch } from './components/stopwatch';
 import { WorkoutActions } from './components/workout-actions';
 
 export default async function WorkoutPage({
@@ -20,12 +23,18 @@ export default async function WorkoutPage({
         },
       },
       status: true,
+      WorkoutStatusLog: true,
     },
   });
 
+  if (!workoutData) {
+    redirect('/dashboard');
+  }
+
   return (
     <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 p-6">
-      <h1>{`Workout ID: ${params.id}`}</h1>
+      <h1>{`Workout: ${workoutData?.name}`}</h1>
+      <Stopwatch workout={workoutData} />
       <WorkoutActions workout={workoutData} />
     </div>
   );
