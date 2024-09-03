@@ -2,23 +2,30 @@
 
 import { Button } from '@/components/shad-ui/button';
 import { useToast } from '@/components/shad-ui/use-toast';
-import { WorkoutWithExercises } from '@/lib/types';
 import {
   cancelWorkout,
   completeWorkout,
   pauseWorkout,
   startWorkout,
 } from '@/server/actions/actions';
+import { useWorkout } from '../active-workout-provider';
 
-export function WorkoutActions({ workout }: { workout: WorkoutWithExercises }) {
+export function WorkoutActions() {
   const { toast } = useToast();
+  const workoutContext = useWorkout();
+  const workout = workoutContext.workout;
+
+  if (!workout) {
+    return <div>Loading...</div>;
+  }
 
   const handleResume = async () => {
     const res = await startWorkout({ workout });
     if (res.type === 'success') {
+      workoutContext.setWorkout(res.data);
       toast({
         variant: 'success',
-        title: res.message,
+        title: 'Workout Resumed',
         description: 'Your workout has been resumed.',
       });
     }
@@ -27,9 +34,10 @@ export function WorkoutActions({ workout }: { workout: WorkoutWithExercises }) {
   const handlePause = async () => {
     const res = await pauseWorkout({ workout });
     if (res.type === 'success') {
+      workoutContext.setWorkout(res.data);
       toast({
         variant: 'success',
-        title: res.message,
+        title: 'Workout Paused',
         description: 'Your workout has been paused.',
       });
     }
@@ -38,9 +46,10 @@ export function WorkoutActions({ workout }: { workout: WorkoutWithExercises }) {
   const handleComplete = async () => {
     const res = await completeWorkout({ workout });
     if (res.type === 'success') {
+      workoutContext.setWorkout(res.data);
       toast({
         variant: 'success',
-        title: res.message,
+        title: 'Workout Completed',
         description: 'Your workout has been completed.',
       });
     }
@@ -49,9 +58,10 @@ export function WorkoutActions({ workout }: { workout: WorkoutWithExercises }) {
   const handleCancel = async () => {
     const res = await cancelWorkout({ workout });
     if (res.type === 'success') {
+      workoutContext.setWorkout(res.data);
       toast({
         variant: 'success',
-        title: res.message,
+        title: 'Workout Canceled',
         description: 'Your workout has been canceled.',
       });
     }
@@ -79,22 +89,24 @@ export function WorkoutActions({ workout }: { workout: WorkoutWithExercises }) {
           </Button>
         )}
       </div>
-      <div className="flex gap-4">
-        <Button
-          className="max-w-fit"
-          variant={'default'}
-          onClick={handleComplete}
-        >
-          Complete
-        </Button>
-        <Button
-          className="max-w-fit"
-          variant={'destructive'}
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-      </div>
+      {workout.currentStatusId !== 3 && workout.currentStatusId !== 5 && (
+        <div className="flex gap-4">
+          <Button
+            className="max-w-fit"
+            variant={'default'}
+            onClick={handleComplete}
+          >
+            Complete
+          </Button>
+          <Button
+            className="max-w-fit"
+            variant={'destructive'}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+        </div>
+      )}
     </section>
   );
 }

@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth';
+import Link from 'next/link';
 import { ModeToggle } from './components/mode-toggle';
 import { UserNav } from './components/user-nav';
-import Link from 'next/link';
 
 export default async function UserNavLayout({
   children,
@@ -13,7 +13,7 @@ export default async function UserNavLayout({
     <section className="flex-col flex">
       <div className="border-b">
         <div className="flex h-16 items-center px-4">
-          <Link href={'/dashboard'}>
+          <Link href={'/dashboard'} replace>
             <h2 className="text-3xl font-bold tracking-tight hover:text-primary/80">
               LiftLens
             </h2>

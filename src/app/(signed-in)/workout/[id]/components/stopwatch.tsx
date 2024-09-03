@@ -1,32 +1,46 @@
 'use client';
 
 import { calculateStartedDuration } from '@/lib/helpers';
-import { WorkoutWithExercises } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { useStopwatch } from 'react-timer-hook';
+import { useWorkout } from '../active-workout-provider';
 
-export function Stopwatch({ workout }: { workout: WorkoutWithExercises }) {
-  const [workoutLogs, setWorkoutLogs] = useState(workout.WorkoutStatusLog);
-  const [offsetSeconds, setOffsetSeconds] = useState(
-    calculateStartedDuration(workoutLogs),
-  );
+export function Stopwatch() {
+  const workoutContext = useWorkout();
+  const workout = workoutContext.workout;
 
-  useEffect(() => {
-    setWorkoutLogs(workout.WorkoutStatusLog);
-  }, [workout.WorkoutStatusLog]);
+  const [stopwatchOffset, setStopwatchOffset] = useState(new Date());
 
   useEffect(() => {
-    setOffsetSeconds(calculateStartedDuration(workoutLogs));
-  }, [workoutLogs]);
+    if (workout) {
+      const newOffsetSeconds = calculateStartedDuration(
+        workout.WorkoutStatusLog,
+      );
 
-  // Set the stopwatch offset
-  const stopwatchOffset = new Date();
-  stopwatchOffset.setSeconds(stopwatchOffset.getSeconds() + offsetSeconds);
+      const newStopwatchOffset = new Date();
+      newStopwatchOffset.setSeconds(
+        newStopwatchOffset.getSeconds() + newOffsetSeconds,
+      );
+      setStopwatchOffset(newStopwatchOffset);
+    }
+  }, [workout]);
 
-  const { seconds, minutes, hours } = useStopwatch({
-    autoStart: workoutLogs[workoutLogs.length - 1]?.workoutStatusId === 2,
+  const { seconds, minutes, hours, reset } = useStopwatch({
+    autoStart:
+      workout?.WorkoutStatusLog[workout.WorkoutStatusLog.length - 1]
+        ?.workoutStatusId === 2,
     offsetTimestamp: stopwatchOffset,
   });
+
+  useEffect(() => {
+    if (workout) {
+      reset(
+        stopwatchOffset,
+        workout.WorkoutStatusLog[workout.WorkoutStatusLog.length - 1]
+          ?.workoutStatusId === 2,
+      );
+    }
+  }, [workout, stopwatchOffset, reset]);
 
   return (
     <section className="flex gap-4">

@@ -7,8 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/shad-ui/table';
+import { Textarea } from '@/components/shad-ui/textarea';
 import prisma from '@/lib/prisma';
 import { redirect } from 'next/navigation';
+import ActiveWorkoutProvider from './active-workout-provider';
 import { Stopwatch } from './components/stopwatch';
 import { WorkoutActions } from './components/workout-actions';
 
@@ -41,35 +43,39 @@ export default async function WorkoutPage({
   }
 
   return (
-    <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 p-6">
-      <div className="flex flex-row justify-between">
-        <h1>
-          {'Workout: '}
-          <span className="font-semibold">{workoutData?.name}</span>
-        </h1>
-        <Stopwatch workout={workoutData} />
-      </div>
-      <ScrollArea className="m-2 px-2 overflow-y-auto">
-        <Table>
-          <TableHeader>
-            <TableRow className="pointer-events-none">
-              <TableHead>Exercise</TableHead>
-              <TableHead className="text-center">Sets</TableHead>
-              <TableHead className="text-center">Reps</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {workoutData.workoutExercises.map((exercise) => (
-              <TableRow className="md:h-10 h-14" key={exercise.id}>
-                <TableCell>{exercise.exercise.displayName}</TableCell>
-                <TableCell className="text-center">{exercise.sets}</TableCell>
-                <TableCell className="text-center">{exercise.reps}</TableCell>
+    <ActiveWorkoutProvider workoutData={workoutData}>
+      <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 p-6">
+        <div className="flex flex-row justify-between">
+          <h1>
+            {'Workout: '}
+            <span className="font-semibold">{workoutData?.name}</span>
+          </h1>
+          <Stopwatch />
+        </div>
+        <ScrollArea className="m-2 px-2 overflow-y-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="pointer-events-none">
+                <TableHead>Exercise</TableHead>
+                <TableHead className="text-center">Sets</TableHead>
+                <TableHead className="text-center">Reps</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </ScrollArea>
-      <WorkoutActions workout={workoutData} />
-    </div>
+            </TableHeader>
+            <TableBody>
+              {workoutData.workoutExercises.map((exercise) => (
+                <TableRow className="md:h-10 h-14" key={exercise.id}>
+                  <TableCell>{exercise.exercise.displayName}</TableCell>
+                  <TableCell className="text-center">{exercise.sets}</TableCell>
+                  <TableCell className="text-center">{exercise.reps}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </ScrollArea>
+        <WorkoutActions />
+        <h1>{'Notes'}</h1>
+        <Textarea value={'Workout notes were entered here'} disabled />
+      </div>
+    </ActiveWorkoutProvider>
   );
 }

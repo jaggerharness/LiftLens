@@ -43,8 +43,9 @@ export function WorkoutTable({
 
   async function handleStartWorkout(workout: WorkoutWithExercises) {
     if (
-      workout.WorkoutStatusLog[workout.WorkoutStatusLog.length - 1]
-        ?.workoutStatusId === 2
+      workout.currentStatusId === 2 ||
+      workout.currentStatusId === 3 ||
+      workout.currentStatusId === 5
     ) {
       router.push(`/workout/${workout.id}`);
       return;
@@ -148,16 +149,23 @@ export function WorkoutTable({
                       </Table>
                     </ScrollArea>
                     <DialogFooter className="gap-2 mt-2">
-                      <Button variant="secondary" type="button">
-                        Edit Workout
-                      </Button>
+                      {workout.currentStatusId !== 2 &&
+                        workout.currentStatusId !== 3 &&
+                        workout.currentStatusId !== 5 && (
+                          <Button variant="secondary" type="button">
+                            Edit Workout
+                          </Button>
+                        )}
                       <Button
                         onClick={() => handleStartWorkout(workout)}
                         type="button"
                       >
                         {workout.currentStatusId === 2
                           ? 'View Workout'
-                          : 'Start Workout'}
+                          : workout.currentStatusId === 3 ||
+                              workout.currentStatusId === 5
+                            ? 'View Workout'
+                            : 'Start Workout'}
                       </Button>
                     </DialogFooter>
                   </DialogContent>

@@ -2,13 +2,11 @@ import { Metadata } from 'next';
 
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/shad-ui/card';
-import { Progress } from '@/components/shad-ui/progress';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { WorkoutWithExercises } from '@/lib/types';
@@ -92,6 +90,7 @@ async function getAnalytics(): Promise<{
 
 export default async function DashboardPage() {
   const workouts = await getWorkouts();
+  console.log({ workouts });
   const analytics = await getAnalytics();
   return (
     <main>
@@ -109,7 +108,7 @@ export default async function DashboardPage() {
               <CreateWorkoutDialog />
             </CardFooter>
           </Card>
-          <Card className={workouts.length === 0 ? 'hidden' : ''}>
+          {/* <Card className={workouts.length === 0 ? 'hidden' : ''}>
             <CardHeader className="pb-2">
               <CardDescription>This Week</CardDescription>
               <CardTitle className="text-4xl">
@@ -156,7 +155,7 @@ export default async function DashboardPage() {
                 aria-label={`${analytics.monthWorkoutData.filter((workout) => new Date(workout.workoutDate) < new Date(new Date().setHours(0, 0, 0, 0))).length} of ${analytics.monthWorkoutData.length} workouts completed`}
               />
             </CardFooter>
-          </Card>
+          </Card> */}
         </div>
         <h2 className="text-3xl font-bold tracking-tight">My Schedule</h2>
         <WorkoutTable workouts={workouts} />

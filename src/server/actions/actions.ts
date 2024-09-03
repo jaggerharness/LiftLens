@@ -412,7 +412,7 @@ export async function startWorkout({
     },
   });
 
-  await prisma.workout.update({
+  const updatedWorkout = await prisma.workout.update({
     where: {
       id: workout.id,
     },
@@ -424,11 +424,16 @@ export async function startWorkout({
         },
       },
     },
+    include: {
+      workoutExercises: true,
+      status: true,
+      WorkoutStatusLog: true,
+    },
   });
 
   return {
-    message: 'Workout Started',
     type: 'success',
+    data: updatedWorkout,
   };
 }
 
@@ -453,7 +458,7 @@ export async function pauseWorkout({
     },
   });
 
-  await prisma.workout.update({
+  const updatedWorkout = await prisma.workout.update({
     where: {
       id: workout.id,
     },
@@ -465,11 +470,16 @@ export async function pauseWorkout({
         },
       },
     },
+    include: {
+      workoutExercises: true,
+      status: true,
+      WorkoutStatusLog: true,
+    },
   });
 
   return {
-    message: 'Workout Paused',
     type: 'success',
+    data: updatedWorkout,
   };
 }
 
@@ -493,7 +503,7 @@ export async function completeWorkout({
       name: 'Completed',
     },
   });
-  await prisma.workout.update({
+  const updatedWorkout = await prisma.workout.update({
     where: {
       id: workout.id,
     },
@@ -505,11 +515,16 @@ export async function completeWorkout({
         },
       },
     },
+    include: {
+      workoutExercises: true,
+      status: true,
+      WorkoutStatusLog: true,
+    },
   });
 
   return {
-    message: 'Workout Completed',
     type: 'success',
+    data: updatedWorkout,
   };
 }
 
@@ -533,7 +548,7 @@ export async function cancelWorkout({
       name: 'Canceled',
     },
   });
-  await prisma.workout.update({
+  const updatedWorkout = await prisma.workout.update({
     where: {
       id: workout.id,
     },
@@ -545,10 +560,15 @@ export async function cancelWorkout({
         },
       },
     },
+    include: {
+      workoutExercises: true,
+      status: true,
+      WorkoutStatusLog: true,
+    },
   });
 
   return {
-    message: 'Workout Canceled',
     type: 'success',
+    data: updatedWorkout,
   };
 }
