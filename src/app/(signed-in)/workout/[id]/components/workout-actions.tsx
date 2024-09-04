@@ -70,13 +70,13 @@ export function WorkoutActions() {
   return (
     <section className="flex justify-between">
       <div>
-        {workout.currentStatusId === 4 && (
+        {(workout.currentStatusId === 4 || workout.currentStatusId === 1) && (
           <Button
             className="max-w-fit"
             variant={'outline'}
             onClick={handleResume}
           >
-            Resume Workout
+            {workout.currentStatusId === 4 ? 'Resume Workout' : 'Start Workout'}
           </Button>
         )}
         {workout.currentStatusId === 2 && (

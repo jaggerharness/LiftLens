@@ -406,21 +406,17 @@ export async function startWorkout({
     throw new Error('User is not authorized to start this workout');
   }
 
-  const workoutStatus = await prisma.workoutStatus.findFirstOrThrow({
-    where: {
-      name: 'Started',
-    },
-  });
+  const startedStatusId = 2;
 
   const updatedWorkout = await prisma.workout.update({
     where: {
       id: workout.id,
     },
     data: {
-      currentStatusId: workoutStatus.id,
+      currentStatusId: startedStatusId,
       WorkoutStatusLog: {
         create: {
-          workoutStatusId: workoutStatus.id,
+          workoutStatusId: startedStatusId,
         },
       },
     },
@@ -452,21 +448,17 @@ export async function pauseWorkout({
     throw new Error('User is not authorized to pause this workout');
   }
 
-  const workoutStatus = await prisma.workoutStatus.findFirstOrThrow({
-    where: {
-      name: 'Paused',
-    },
-  });
+  const pausedStatusId = 4;
 
   const updatedWorkout = await prisma.workout.update({
     where: {
       id: workout.id,
     },
     data: {
-      currentStatusId: workoutStatus.id,
+      currentStatusId: pausedStatusId,
       WorkoutStatusLog: {
         create: {
-          workoutStatusId: workoutStatus.id,
+          workoutStatusId: pausedStatusId,
         },
       },
     },
@@ -498,20 +490,17 @@ export async function completeWorkout({
     throw new Error('User is not authorized to complete this workout');
   }
 
-  const workoutStatus = await prisma.workoutStatus.findFirstOrThrow({
-    where: {
-      name: 'Completed',
-    },
-  });
+  const completedStatusId = 3;
+
   const updatedWorkout = await prisma.workout.update({
     where: {
       id: workout.id,
     },
     data: {
-      currentStatusId: workoutStatus.id,
+      currentStatusId: completedStatusId,
       WorkoutStatusLog: {
         create: {
-          workoutStatusId: workoutStatus.id,
+          workoutStatusId: completedStatusId,
         },
       },
     },
@@ -543,20 +532,17 @@ export async function cancelWorkout({
     throw new Error('User is not authorized to cancel this workout');
   }
 
-  const workoutStatus = await prisma.workoutStatus.findFirstOrThrow({
-    where: {
-      name: 'Canceled',
-    },
-  });
+  const canceledStatusId = 5;
+
   const updatedWorkout = await prisma.workout.update({
     where: {
       id: workout.id,
     },
     data: {
-      currentStatusId: workoutStatus.id,
+      currentStatusId: canceledStatusId,
       WorkoutStatusLog: {
         create: {
-          workoutStatusId: workoutStatus.id,
+          workoutStatusId: canceledStatusId,
         },
       },
     },

@@ -27,41 +27,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/shad-ui/table';
-import { useToast } from '@/components/shad-ui/use-toast';
 import { WorkoutWithExercises } from '@/lib/types';
-import { startWorkout } from '@/server/actions/actions';
 import { format } from 'date-fns';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export function WorkoutTable({
   workouts,
 }: {
   workouts: WorkoutWithExercises[];
 }) {
-  const router = useRouter();
-  const { toast } = useToast();
-
-  async function handleStartWorkout(workout: WorkoutWithExercises) {
-    if (
-      workout.currentStatusId === 2 ||
-      workout.currentStatusId === 3 ||
-      workout.currentStatusId === 5
-    ) {
-      router.push(`/workout/${workout.id}`);
-      return;
-    }
-
-    const res = await startWorkout({ workout });
-    if (res.type === 'success') {
-      toast({
-        variant: 'success',
-        title: 'Workout Started',
-        description: 'Your workout has been started. Good luck!',
-      });
-      router.push(`/workout/${workout.id}`);
-    }
-  }
-
   return (
     <Card>
       <CardHeader className="px-7">
@@ -152,20 +126,18 @@ export function WorkoutTable({
                       {workout.currentStatusId !== 2 &&
                         workout.currentStatusId !== 3 &&
                         workout.currentStatusId !== 5 && (
-                          <Button variant="secondary" type="button">
+                          <Button
+                            variant="secondary"
+                            type="button"
+                            tabIndex={-1}
+                          >
                             Edit Workout
                           </Button>
                         )}
-                      <Button
-                        onClick={() => handleStartWorkout(workout)}
-                        type="button"
-                      >
-                        {workout.currentStatusId === 2
-                          ? 'View Workout'
-                          : workout.currentStatusId === 3 ||
-                              workout.currentStatusId === 5
-                            ? 'View Workout'
-                            : 'Start Workout'}
+                      <Button type="button">
+                        <Link href={`/workout/${workout.id}`}>
+                          View Workout
+                        </Link>
                       </Button>
                     </DialogFooter>
                   </DialogContent>

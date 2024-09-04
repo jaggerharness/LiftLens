@@ -1,6 +1,8 @@
 'use client';
 
+import { Badge } from '@/components/shad-ui/badge';
 import { Button, buttonVariants } from '@/components/shad-ui/button';
+import { Calendar } from '@/components/shad-ui/calendar';
 import {
   Card,
   CardContent,
@@ -19,12 +21,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/shad-ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/shad-ui/form';
 import { Input } from '@/components/shad-ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/shad-ui/popover';
+import { ScrollArea } from '@/components/shad-ui/scroll-area';
 import {
   Table,
   TableBody,
@@ -46,18 +58,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Badge } from '@/components/shad-ui/badge';
-import { Calendar } from '@/components/shad-ui/calendar';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/shad-ui/form';
-import { ScrollArea } from '@/components/shad-ui/scroll-area';
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 
@@ -164,7 +164,7 @@ export function CreateWorkoutForm({
         {mode === 'create' ? 'Create A Workout' : 'Edit Workout'}
       </DialogTrigger>
       <DialogClose />
-      <DialogContent className="w-full sm:max-w-xl p-0">
+      <DialogContent className="w-full sm:max-w-xl p-0 pointer-events-none">
         <ScrollArea className="max-h-[85vh] p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>Create A Workout</DialogTitle>
