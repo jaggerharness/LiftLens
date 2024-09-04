@@ -10,8 +10,7 @@ import {
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { WorkoutWithExercises } from '@/lib/types';
-import { Workout } from '@prisma/client';
-import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from 'date-fns';
+import { endOfWeek, startOfWeek } from 'date-fns';
 import { CreateWorkoutDialog } from './components/create-workout-drawer';
 import { WorkoutTable } from './components/workout-table';
 
@@ -51,47 +50,8 @@ async function getWorkouts(): Promise<WorkoutWithExercises[]> {
   });
 }
 
-async function getAnalytics(): Promise<{
-  weekWorkoutData: Workout[];
-  monthWorkoutData: Workout[];
-}> {
-  const session = await auth();
-  const currentDate = new Date();
-  const startOfWeekDate = startOfWeek(currentDate, { weekStartsOn: 1 });
-  const endOfWeekDate = endOfWeek(currentDate, { weekStartsOn: 1 });
-
-  const startOfMonthDate = startOfMonth(currentDate);
-  const endOfMonthDate = endOfMonth(currentDate);
-
-  const weekWorkoutData = await prisma.workout.findMany({
-    where: {
-      createdBy: session?.user?.id,
-      workoutDate: {
-        gte: startOfWeekDate,
-        lte: endOfWeekDate,
-      },
-    },
-    orderBy: { workoutDate: 'asc' },
-  });
-
-  const monthWorkoutData = await prisma.workout.findMany({
-    where: {
-      createdBy: session?.user?.id,
-      workoutDate: {
-        gte: startOfMonthDate,
-        lte: endOfMonthDate,
-      },
-    },
-    orderBy: { workoutDate: 'asc' },
-  });
-
-  return { weekWorkoutData, monthWorkoutData };
-}
-
 export default async function DashboardPage() {
   const workouts = await getWorkouts();
-  console.log({ workouts });
-  const analytics = await getAnalytics();
   return (
     <main>
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2 p-6">
@@ -108,54 +68,6 @@ export default async function DashboardPage() {
               <CreateWorkoutDialog />
             </CardFooter>
           </Card>
-          {/* <Card className={workouts.length === 0 ? 'hidden' : ''}>
-            <CardHeader className="pb-2">
-              <CardDescription>This Week</CardDescription>
-              <CardTitle className="text-4xl">
-                {workouts.length} workout{workouts.length === 1 ? '' : 's'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs text-muted-foreground">You got this!</div>
-            </CardContent>
-            <CardFooter>
-              <Progress
-                value={
-                  (analytics.weekWorkoutData.filter(
-                    (dataPoint) =>
-                      new Date(dataPoint.workoutDate) <
-                      new Date(new Date().setHours(0, 0, 0, 0)),
-                  ).length /
-                    analytics.weekWorkoutData.length) *
-                  100
-                }
-                aria-label={`${analytics.weekWorkoutData.filter((workout) => new Date(workout.workoutDate) < new Date(new Date().setHours(0, 0, 0, 0))).length} of ${analytics.weekWorkoutData.length} workouts completed`}
-              />
-            </CardFooter>
-          </Card>
-          <Card className={workouts.length === 0 ? 'hidden' : ''}>
-            <CardHeader className="pb-2">
-              <CardDescription>This Month</CardDescription>
-              <CardTitle className="text-4xl">{`${analytics.monthWorkoutData.length} workout${analytics.monthWorkoutData.length === 1 ? '' : 's'}`}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs text-muted-foreground">Lock in!</div>
-            </CardContent>
-            <CardFooter>
-              <Progress
-                value={
-                  (analytics.monthWorkoutData.filter(
-                    (dataPoint) =>
-                      new Date(dataPoint.workoutDate) <
-                      new Date(new Date().setHours(0, 0, 0, 0)),
-                  ).length /
-                    analytics.monthWorkoutData.length) *
-                  100
-                }
-                aria-label={`${analytics.monthWorkoutData.filter((workout) => new Date(workout.workoutDate) < new Date(new Date().setHours(0, 0, 0, 0))).length} of ${analytics.monthWorkoutData.length} workouts completed`}
-              />
-            </CardFooter>
-          </Card> */}
         </div>
         <h2 className="text-3xl font-bold tracking-tight">My Schedule</h2>
         <WorkoutTable workouts={workouts} />

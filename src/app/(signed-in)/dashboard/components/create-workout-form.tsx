@@ -164,7 +164,7 @@ export function CreateWorkoutForm({
         {mode === 'create' ? 'Create A Workout' : 'Edit Workout'}
       </DialogTrigger>
       <DialogClose />
-      <DialogContent className="w-full sm:max-w-xl p-0 pointer-events-none">
+      <DialogContent className="w-full sm:max-w-xl p-0" tabIndex={-1}>
         <ScrollArea className="max-h-[85vh] p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>Create A Workout</DialogTitle>
@@ -260,12 +260,10 @@ export function CreateWorkoutForm({
                     ) : (
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-2/5 sm:w-[200px]">
-                            Exercise
-                          </TableHead>
-                          <TableHead className="sm:w-[200px]">Sets</TableHead>
-                          <TableHead className="sm:w-[200px]">Reps</TableHead>
-                          <TableHead className=""></TableHead>
+                          <TableHead className="w-1/2">Exercise</TableHead>
+                          <TableHead className="w-1/4">Sets</TableHead>
+                          <TableHead className="w-1/4">Reps</TableHead>
+                          <TableHead className="w-1/12"></TableHead>
                         </TableRow>
                       </TableHeader>
                     )}
@@ -283,9 +281,13 @@ export function CreateWorkoutForm({
                                 <FormItem>
                                   <FormControl>
                                     <Input
+                                      className={
+                                        'text-center sm:text-start [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none md:[&::-webkit-inner-spin-button]:appearance-auto md:[&::-webkit-outer-spin-button]:appearance-auto'
+                                      }
                                       type="number"
                                       min={1}
                                       id={`workoutExercises.${index}.sets`}
+                                      onFocus={(e) => e.target.select()}
                                       {...register(
                                         `workoutExercises.${index}.sets` as const,
                                       )}
@@ -313,9 +315,13 @@ export function CreateWorkoutForm({
                                 <FormItem>
                                   <FormControl>
                                     <Input
+                                      className={
+                                        'text-center sm:text-start [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none md:[&::-webkit-inner-spin-button]:appearance-auto md:[&::-webkit-outer-spin-button]:appearance-auto'
+                                      }
                                       type="number"
                                       min={1}
                                       id={`workoutExercises.${index}.reps`}
+                                      onFocus={(e) => e.target.select()}
                                       {...register(
                                         `workoutExercises.${index}.reps` as const,
                                       )}
