@@ -52,8 +52,10 @@ import { workoutFormSchema } from '@/lib/zod';
 import { createWorkout } from '@/server/actions/actions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarIcon } from '@radix-ui/react-icons';
+import { PopoverClose } from '@radix-ui/react-popover';
 import { format } from 'date-fns';
 import { PlusCircle, Search, Trash2Icon } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -79,6 +81,7 @@ export function CreateWorkoutForm({
     resolver: zodResolver(workoutFormSchema),
     defaultValues: {
       name: '',
+      date: new Date(),
     },
   });
 
@@ -98,8 +101,26 @@ export function CreateWorkoutForm({
   });
 
   const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedIdArray, setSelectedIdArray] = useState<string[]>([]);
   const ref = useRef<HTMLButtonElement | null>(null);
+  const popOverRef = useRef<HTMLButtonElement | null>(null);
+
+  const handleSelected = (id: string) => {
+    if (selectedIdArray.includes(id)) {
+      setSelectedIdArray((prev) => prev.filter((item) => item !== id));
+    } else {
+      setSelectedIdArray((prev) => [...prev, id]);
+    }
+  };
+
+  const handleAddExercises = () => {
+    selectedIdArray.forEach((id) => {
+      addExercise(exercises.find((exercise) => exercise.id === id)!);
+    });
+
+    setSelectedIdArray([]);
+    ref.current?.click();
+  };
 
   useEffect(() => {
     setFilteredExercises(
@@ -163,16 +184,21 @@ export function CreateWorkoutForm({
       <DialogTrigger className={buttonVariants({ variant: 'default' })}>
         {mode === 'create' ? 'Create A Workout' : 'Edit Workout'}
       </DialogTrigger>
-      <DialogClose />
+      <DialogClose onClick={() => setSelectedIdArray([])} />
       <DialogContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className="w-screen h-screen sm:h-fit sm:max-w-xl p-0"
+        className="w-full sm:max-w-xl p-0"
         tabIndex={-1}
+        onInteractOutside={(_) => {
+          setSelectedIdArray([]);
+        }}
       >
-        <ScrollArea className="max-h-[85vh] p-4 sm:p-6">
+        <ScrollArea className="max-h-[95vh] px-4 pt-10">
           <DialogHeader>
-            <DialogTitle className="pt-4 sm:pt-0">Create A Workout</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="pt-4 px-4 sm:pt-0">
+              Create A Workout
+            </DialogTitle>
+            <DialogDescription className="px-4">
               You can create a workout from scratch or use an existing template
             </DialogDescription>
           </DialogHeader>
@@ -224,11 +250,15 @@ export function CreateWorkoutForm({
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className="z-50 w-auto p-0" align="start">
+                        <PopoverClose ref={popOverRef} />
                         <Calendar
                           className="pointer-events-auto"
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={(e) => {
+                            field.onChange(e);
+                            popOverRef.current?.click();
+                          }}
                           disabled={(date) =>
                             date < new Date(new Date().setHours(0, 0, 0, 0))
                           }
@@ -264,10 +294,10 @@ export function CreateWorkoutForm({
                     ) : (
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-1/2">Exercise</TableHead>
-                          <TableHead className="w-1/4">Sets</TableHead>
-                          <TableHead className="w-1/4">Reps</TableHead>
-                          <TableHead className="w-1/12"></TableHead>
+                          <TableHead>Exercise</TableHead>
+                          <TableHead>Sets</TableHead>
+                          <TableHead>Reps</TableHead>
+                          <TableHead></TableHead>
                         </TableRow>
                       </TableHeader>
                     )}
@@ -366,13 +396,21 @@ export function CreateWorkoutForm({
                         Add Exercise
                       </Button>
                     </DialogTrigger>
-                    <DialogClose ref={ref} />
-                    <DialogContent className="h-[95vh] sm:h-3/4 flex flex-col">
+                    <DialogClose
+                      ref={ref}
+                      onClick={() => setSelectedIdArray([])}
+                    />
+                    <DialogContent
+                      className="h-[95vh] sm:h-3/4 flex flex-col"
+                      onInteractOutside={(_) => {
+                        setSelectedIdArray([]);
+                      }}
+                    >
                       <DialogHeader>
-                        <DialogTitle>Select Exercise</DialogTitle>
+                        <DialogTitle>Select Exercises</DialogTitle>
                         <DialogDescription>
                           <p>
-                            Select the exercise you want to add to this workout.
+                            Select the exercises you want to add to the workout.
                           </p>
                         </DialogDescription>
                       </DialogHeader>
@@ -404,25 +442,10 @@ export function CreateWorkoutForm({
                                 key={exercise.id}
                                 className={cn(
                                   'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-                                  exercise.id === selectedId &&
+                                  selectedIdArray.includes(exercise.id) &&
                                     'bg-muted border-primary',
                                 )}
-                                onClick={() => setSelectedId(exercise.id)}
-                                onDoubleClick={() => {
-                                  setSelectedId(exercise.id);
-
-                                  const selectedExercise =
-                                    exercises.find(
-                                      (element) => element.id === selectedId,
-                                    ) ?? null;
-
-                                  if (selectedExercise) {
-                                    addExercise(selectedExercise);
-                                  }
-
-                                  ref.current?.click();
-                                  setSelectedId(null);
-                                }}
+                                onClick={() => handleSelected(exercise.id)}
                               >
                                 <div className="flex w-full flex-col gap-1">
                                   <div className="flex items-center">
@@ -456,36 +479,47 @@ export function CreateWorkoutForm({
                       <DialogFooter>
                         <Button
                           type="button"
-                          onClick={() => {
-                            const selectedExercise =
-                              exercises.find(
-                                (element) => element.id === selectedId,
-                              ) ?? null;
-
-                            if (selectedExercise) {
-                              addExercise(selectedExercise);
-                            }
-
-                            ref.current?.click();
-                            setSelectedId(null);
-                          }}
+                          onClick={() => setSelectedIdArray([])}
+                          variant={'destructive'}
+                          className={selectedIdArray.length > 0 ? '' : 'hidden'}
                         >
-                          Add
+                          Clear Selected
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => handleAddExercises()}
+                          className={selectedIdArray.length > 0 ? '' : 'hidden'}
+                        >
+                          {selectedIdArray.length > 0
+                            ? `Add ${selectedIdArray.length} Exercises`
+                            : 'Cancel'}
                         </Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
                 </CardFooter>
               </Card>
-              <Button
-                className="w-1/2 flex mx-auto"
-                type="submit"
-                variant={'default'}
-              >
-                Create Workout
-              </Button>
+              <div className="flex flex-col gap-4">
+                <Button
+                  className="w-1/2 flex mx-auto"
+                  type="submit"
+                  variant={'default'}
+                >
+                  Create Workout
+                </Button>
+                <Link href={'/exercise-explorer'}>
+                  <Button
+                    className="w-1/2 flex mx-auto"
+                    type="submit"
+                    variant={'outline'}
+                  >
+                    Manage Exercises
+                  </Button>
+                </Link>
+              </div>
             </form>
           </Form>
+          <div className="h-8"></div>
         </ScrollArea>
       </DialogContent>
     </Dialog>
