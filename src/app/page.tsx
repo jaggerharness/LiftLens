@@ -17,7 +17,8 @@ export default async function Home() {
 
   return (
     <main className="flex flex-col h-screen items-center justify-center gap-8">
-      <Alert variant="default" className="w-3/4">
+      <LoginCard />
+      <Alert variant="default" className="w-3/4 md:w-1/4">
         <AlertCircle className="size-4" />
         <AlertTitle>NOTE:</AlertTitle>
         <AlertDescription>
@@ -28,7 +29,6 @@ export default async function Home() {
           (Coming soon!)
         </AlertDescription>
       </Alert>
-      <LoginCard />
     </main>
   );
 }

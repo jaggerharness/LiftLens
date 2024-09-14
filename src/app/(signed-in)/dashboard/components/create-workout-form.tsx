@@ -164,10 +164,14 @@ export function CreateWorkoutForm({
         {mode === 'create' ? 'Create A Workout' : 'Edit Workout'}
       </DialogTrigger>
       <DialogClose />
-      <DialogContent className="w-full sm:max-w-xl p-0" tabIndex={-1}>
+      <DialogContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="w-screen h-screen sm:h-fit sm:max-w-xl p-0"
+        tabIndex={-1}
+      >
         <ScrollArea className="max-h-[85vh] p-4 sm:p-6">
           <DialogHeader>
-            <DialogTitle>Create A Workout</DialogTitle>
+            <DialogTitle className="pt-4 sm:pt-0">Create A Workout</DialogTitle>
             <DialogDescription>
               You can create a workout from scratch or use an existing template
             </DialogDescription>
@@ -363,7 +367,7 @@ export function CreateWorkoutForm({
                       </Button>
                     </DialogTrigger>
                     <DialogClose ref={ref} />
-                    <DialogContent className="h-[85vh] sm:h-3/4 flex flex-col">
+                    <DialogContent className="h-[95vh] sm:h-3/4 flex flex-col">
                       <DialogHeader>
                         <DialogTitle>Select Exercise</DialogTitle>
                         <DialogDescription>
