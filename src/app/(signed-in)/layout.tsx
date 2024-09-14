@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth';
 import Link from 'next/link';
 import { ModeToggle } from './components/mode-toggle';
+import { SiteNav } from './components/site-nav';
 import { UserNav } from './components/user-nav';
 
 export default async function UserNavLayout({
@@ -18,7 +19,8 @@ export default async function UserNavLayout({
               LiftLens
             </h2>
           </Link>
-          <div className="ml-auto flex items-center space-x-4">
+          <div className="ml-auto flex items-center space-x-6">
+            <SiteNav className="my-auto hidden sm:flex" />
             <ModeToggle />
             <UserNav session={session!} />
           </div>
