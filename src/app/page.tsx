@@ -1,8 +1,4 @@
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '@/components/shad-ui/alert';
+import { Alert, AlertDescription } from '@/components/shad-ui/alert';
 import { auth } from '@/lib/auth';
 import { AlertCircle } from 'lucide-react';
 import { redirect } from 'next/navigation';
@@ -20,7 +16,6 @@ export default async function Home() {
       <LoginCard />
       <Alert variant="default" className="w-3/4 md:w-1/4">
         <AlertCircle className="size-4" />
-        <AlertTitle>NOTE:</AlertTitle>
         <AlertDescription>
           This application is currently in development and not ready for
           production use. Feel free to create an account and explore, but note
