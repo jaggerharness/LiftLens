@@ -1,13 +1,6 @@
 'use client';
 
 import { Button } from '@/components/shad-ui/button';
-import { Input } from '@/components/shad-ui/input';
-import { useToast } from '@/components/shad-ui/use-toast';
-import { credentialsSignIn } from '@/server/actions/actions';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -15,8 +8,15 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/shad-ui/form';
-import { ForgotPasswordDialog } from './forgot-password-dialog';
+import { Input } from '@/components/shad-ui/input';
+import { useToast } from '@/hooks/use-toast';
 import { signInSchema } from '@/lib/zod';
+import { credentialsSignIn } from '@/server/actions/actions';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { ForgotPasswordDialog } from './forgot-password-dialog';
 
 export function CredSignIn() {
   const form = useForm<z.infer<typeof signInSchema>>({

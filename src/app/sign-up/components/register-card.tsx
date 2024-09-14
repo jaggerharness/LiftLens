@@ -9,15 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/shad-ui/card';
-import { Input } from '@/components/shad-ui/input';
-import { useToast } from '@/components/shad-ui/use-toast';
-import { registerUser } from '@/server/actions/actions';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/dist/client/link';
-import { redirect } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -25,7 +16,16 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/shad-ui/form';
+import { Input } from '@/components/shad-ui/input';
+import { useToast } from '@/hooks/use-toast';
 import { signInSchema } from '@/lib/zod';
+import { registerUser } from '@/server/actions/actions';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/dist/client/link';
+import { redirect } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 export default function RegisterCard() {
   const { toast } = useToast();

@@ -1,10 +1,5 @@
 'use client';
 
-import { resetPassword } from '@/server/actions/actions';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Button } from '@/components/shad-ui/button';
 import {
   Form,
@@ -14,7 +9,12 @@ import {
   FormMessage,
 } from '@/components/shad-ui/form';
 import { Input } from '@/components/shad-ui/input';
-import { useToast } from '@/components/shad-ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
+import { resetPassword } from '@/server/actions/actions';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 export function ResetPasswordForm({
   userId,

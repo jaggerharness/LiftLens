@@ -45,7 +45,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/shad-ui/table';
-import { toast } from '@/components/shad-ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 import { ExerciseWithMuscleGroups } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { workoutFormSchema } from '@/lib/zod';

@@ -15,10 +15,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/shad-ui/dropdown-menu';
-import { GearIcon } from '@radix-ui/react-icons';
-import { LogOut } from 'lucide-react';
+import { DashboardIcon, GearIcon } from '@radix-ui/react-icons';
+import { Dumbbell, LogOut, NotebookPen } from 'lucide-react';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
+import Link from 'next/link';
 
 export function UserNav({ session }: { session: Session }) {
   return (
@@ -33,7 +34,7 @@ export function UserNav({ session }: { session: Session }) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent className="w-72 sm:w-64" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">Signed in as:</p>
@@ -42,6 +43,33 @@ export function UserNav({ session }: { session: Session }) {
             </p>
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator className="block sm:hidden" />
+        <DropdownMenuGroup className="block sm:hidden">
+          <Link href={'/dashboard'}>
+            <DropdownMenuItem>
+              Dashboard
+              <DashboardIcon className="size-4 ml-auto text-xs tracking-widest opacity-60" />
+            </DropdownMenuItem>
+          </Link>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator className="block sm:hidden" />
+        <DropdownMenuGroup className="block sm:hidden">
+          <Link href={'/exercise-explorer'}>
+            <DropdownMenuItem>
+              Exercises
+              <Dumbbell className="size-4 ml-auto text-xs tracking-widest opacity-60" />
+            </DropdownMenuItem>
+          </Link>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator className="block sm:hidden" />
+        <DropdownMenuGroup className="block sm:hidden">
+          <Link href={'/calorie-log'}>
+            <DropdownMenuItem>
+              Calorie Tracking
+              <NotebookPen className="size-4 ml-auto text-xs tracking-widest opacity-60" />
+            </DropdownMenuItem>
+          </Link>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>

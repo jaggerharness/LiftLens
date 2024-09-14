@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/shad-ui/button';
-import { useToast } from '@/components/shad-ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import {
   cancelWorkout,
   completeWorkout,
