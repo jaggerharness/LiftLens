@@ -507,7 +507,7 @@ export function CreateWorkoutForm({
                 >
                   Create Workout
                 </Button>
-                <Link href={'/exercise-explorer'}>
+                <Link href={'/exercises'}>
                   <Button
                     className="w-1/2 flex mx-auto"
                     type="submit"

@@ -22,4 +22,6 @@ export type WorkoutWithExercises = Prisma.WorkoutGetPayload<{
   };
 }>;
 
+export type MuscleGroup = Prisma.MuscleGroupGetPayload<{}>;
+
 export type WorkoutStatusLog = Prisma.WorkoutStatusLogGetPayload<{}>;

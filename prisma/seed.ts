@@ -253,21 +253,6 @@ async function main() {
       },
     },
     {
-      name: 'Seated Cable Row',
-      displayName: 'Seated Cable Row',
-      description:
-        'The seated cable row is a great exercise for building the back muscles. It is a compound exercise that targets the lats, shoulders, and biceps.',
-      createdBy: user.id,
-      isPublic: true,
-      muscleGroups: {
-        connect: [
-          { id: latsMg.id },
-          { id: shouldersMg.id },
-          { id: bicepsMg.id },
-        ],
-      },
-    },
-    {
       name: 'Bayesian Cable Curl',
       displayName: 'Bayesian Cable Curl',
       description:

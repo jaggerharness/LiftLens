@@ -54,7 +54,7 @@ export function UserNav({ session }: { session: Session }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="block sm:hidden" />
         <DropdownMenuGroup className="block sm:hidden">
-          <Link href={'/exercise-explorer'}>
+          <Link href={'/exercises'}>
             <DropdownMenuItem>
               Exercises
               <Dumbbell className="size-4 ml-auto text-xs tracking-widest opacity-60" />

@@ -13,7 +13,7 @@ const features = [
   },
   {
     name: 'Exercises',
-    href: '/exercise-explorer',
+    href: '/exercises',
   },
   {
     name: 'Calorie Tracking',
