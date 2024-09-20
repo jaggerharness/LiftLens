@@ -405,6 +405,7 @@ export function CreateWorkoutForm({
                       onInteractOutside={(_) => {
                         setSelectedIdArray([]);
                       }}
+                      onOpenAutoFocus={(e) => e.preventDefault()}
                     >
                       <DialogHeader>
                         <DialogTitle>Select Exercises</DialogTitle>
@@ -476,7 +477,7 @@ export function CreateWorkoutForm({
                           ))
                         )}
                       </ScrollArea>
-                      <DialogFooter>
+                      <DialogFooter className="gap-2 sm:gap-0">
                         <Button
                           type="button"
                           onClick={() => setSelectedIdArray([])}
