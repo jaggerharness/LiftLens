@@ -16,7 +16,7 @@ const features = [
     href: '/exercises',
   },
   {
-    name: 'Calorie Tracking',
+    name: 'Diet Tracking',
     href: '/calorie-log',
   },
 ];

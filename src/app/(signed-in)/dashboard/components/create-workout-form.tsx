@@ -184,34 +184,41 @@ export function CreateWorkoutForm({
       <DialogTrigger className={buttonVariants({ variant: 'default' })}>
         {mode === 'create' ? 'Create A Workout' : 'Edit Workout'}
       </DialogTrigger>
-      <DialogClose onClick={() => setSelectedIdArray([])} />
+      <DialogClose
+        onClick={() => {
+          setSelectedIdArray([]);
+          reset({
+            name: '',
+            workoutExercises: [],
+          });
+        }}
+      />
       <DialogContent
+        className="h-auto max-h-[85%] md:max-h-[75%] p-1 flex"
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className="w-full sm:max-w-xl p-0"
         tabIndex={-1}
         onInteractOutside={(_) => {
           setSelectedIdArray([]);
+          reset({
+            name: '',
+            workoutExercises: [],
+          });
         }}
       >
-        <ScrollArea className="max-h-[95vh] px-4 pt-10">
+        <ScrollArea className="pt-8 pb-0 px-4">
           <DialogHeader>
-            <DialogTitle className="pt-4 px-4 sm:pt-0">
-              Create A Workout
-            </DialogTitle>
-            <DialogDescription className="px-4">
+            <DialogTitle>Create A Workout</DialogTitle>
+            <DialogDescription>
               You can create a workout from scratch or use an existing template
             </DialogDescription>
           </DialogHeader>
           <Form {...form} handleSubmit={handleSubmit}>
-            <form
-              className="mx-4 mt-4 space-y-8"
-              onSubmit={handleSubmit(onSubmit)}
-            >
+            <form className="space-y-4 px-1" onSubmit={handleSubmit(onSubmit)}>
               <FormField
                 control={control}
                 name="name"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="pt-4">
                     <FormLabel>Workout Name</FormLabel>
                     <FormControl>
                       <Input placeholder="Name" {...field} />
@@ -236,7 +243,7 @@ export function CreateWorkoutForm({
                           <Button
                             variant={'outline'}
                             className={cn(
-                              'w-[240px] pl-3 text-left font-normal',
+                              'pl-3 text-left font-normal',
                               !field.value && 'text-muted-foreground',
                             )}
                           >
@@ -281,7 +288,7 @@ export function CreateWorkoutForm({
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Table>
+                  <Table className={'relative'}>
                     {fields.length === 0 ? (
                       <TableBody>
                         <TableRow className="pointer-events-none">
@@ -304,10 +311,10 @@ export function CreateWorkoutForm({
                     <TableBody>
                       {fields.map((field, index) => (
                         <TableRow key={field.id}>
-                          <TableCell className="font-semibold">
+                          <TableCell className="font-semibold p-3">
                             {field.exercise.displayName}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="p-3">
                             <FormField
                               control={control}
                               name={`workoutExercises.${index}.sets`}
@@ -341,7 +348,7 @@ export function CreateWorkoutForm({
                               )}
                             />
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="p-3">
                             <FormField
                               control={control}
                               name={`workoutExercises.${index}.reps`}
@@ -375,12 +382,13 @@ export function CreateWorkoutForm({
                               )}
                             />
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="p-3">
                             <Button
+                              size={'sm'}
                               onClick={() => remove(index)}
                               variant={'destructive'}
                             >
-                              <Trash2Icon className="size-4" />
+                              <Trash2Icon className="size-3.5" />
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -508,7 +516,7 @@ export function CreateWorkoutForm({
                 >
                   Create Workout
                 </Button>
-                <Link href={'/exercises'}>
+                <Link href={'/exercises'} className="mb-4">
                   <Button
                     className="w-1/2 flex mx-auto"
                     type="submit"
@@ -520,7 +528,6 @@ export function CreateWorkoutForm({
               </div>
             </form>
           </Form>
-          <div className="h-8"></div>
         </ScrollArea>
       </DialogContent>
     </Dialog>
