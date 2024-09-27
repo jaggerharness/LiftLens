@@ -18,8 +18,9 @@ import {
 } from '@/components/shad-ui/dropdown-menu';
 import { Input } from '@/components/shad-ui/input';
 import { ExerciseWithMuscleGroups, MuscleGroup } from '@/lib/types';
-import { FilterIcon, PlusCircle } from 'lucide-react';
+import { FilterIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import CreateExerciseForm from './create-new-exercise';
 
 export default function ExerciseList({
   exercises,
@@ -69,28 +70,6 @@ export default function ExerciseList({
     setSearchQuery(e.target.value);
   };
 
-  //   const filteredExercises = useMemo(() => {
-  //     exercises.filter((exercise) => {
-  //       const matchesSearch =
-  //         exercise.displayName
-  //           ?.toLowerCase()
-  //           .includes(searchQuery.toLowerCase()) ||
-  //         exercise.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         searchQuery === '';
-
-  //       if (filters.muscleGroups.length === 0 && matchesSearch) {
-  //         return true;
-  //       }
-
-  // return filters.muscleGroups.every(
-  //   (filter) =>
-  //     exercise.muscleGroups.some(
-  //       (muscleGroup) => muscleGroup.id === filter.id,
-  //     ) && matchesSearch,
-  //       );
-  //     });
-  //   }, [exercises, filters.muscleGroups, searchQuery]);
-
   return (
     <>
       <div className="px-8 pt-8">
@@ -99,10 +78,7 @@ export default function ExerciseList({
             <h2 className="text-3xl font-bold tracking-tight">
               Exercise Library
             </h2>
-            <Button size="sm" variant="secondary" className="gap-1">
-              <PlusCircle className="size-3.5" />
-              Create New Exercise
-            </Button>
+            <CreateExerciseForm />
           </div>
           <div className="flex items-center gap-4">
             <Input
