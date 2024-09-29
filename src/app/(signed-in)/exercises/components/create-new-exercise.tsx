@@ -44,6 +44,18 @@ export default function CreateExerciseForm() {
     },
   });
 
+  // TODO: fetch these
+  const muscles = [
+    { id: 1, muscle: 'Biceps' },
+    { id: 2, muscle: 'Triceps' },
+    { id: 3, muscle: 'Back' },
+    { id: 4, muscle: 'Hamstrings' },
+    { id: 5, muscle: 'Biceps' },
+    { id: 6, muscle: 'Triceps' },
+    { id: 7, muscle: 'Back' },
+    { id: 8, muscle: 'Hamstrings' }
+  ];
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -98,42 +110,15 @@ export default function CreateExerciseForm() {
               )}
             />
             <ToggleGroup type="multiple" className="flex-row flex-wrap">
-              <ToggleGroupItem
-                className="data-[state=on]:text-accent-foreground"
-                value="a"
-              >
-                <Badge variant={'outline'}>These will be muscles soon</Badge>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="b">
-                <Badge variant={'outline'}>B</Badge>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="c">
-                <Badge variant={'outline'}>C</Badge>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="d">
-                <Badge variant={'outline'}>D</Badge>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="e">
-                <Badge variant={'outline'}>E</Badge>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="f">
-                <Badge variant={'outline'}>F</Badge>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="g">
-                <Badge variant={'outline'}>G</Badge>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="h">
-                <Badge variant={'outline'}>H</Badge>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="i">
-                <Badge variant={'outline'}>I</Badge>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="j">
-                <Badge variant={'outline'}>J</Badge>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="k">
-                <Badge variant={'outline'}>K</Badge>
-              </ToggleGroupItem>
+              {muscles.map((muscle) =>
+                <ToggleGroupItem
+                  key={muscle.id}
+                  className="data-[state=on]:text-accent-foreground"
+                  value={muscle.muscle}
+                >
+                  <Badge variant={'outline'}>{muscle.muscle}</Badge>
+                </ToggleGroupItem>
+              )}
             </ToggleGroup>
             <DialogFooter>
               <Button type="submit">Continue</Button>
