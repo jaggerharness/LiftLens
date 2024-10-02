@@ -1,3 +1,5 @@
+'use client';
+
 import { Badge } from '@/components/shad-ui/badge';
 import { Button } from '@/components/shad-ui/button';
 import {
@@ -21,12 +23,13 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from '@/components/shad-ui/toggle-group';
+import { MuscleGroup } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusCircle } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray} from 'react-hook-form';
 import { z } from 'zod';
 
-export default function CreateExerciseForm() {
+export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: MuscleGroup[] }) {
   const formSchema = z.object({
     name: z
       .string({ required_error: 'Name is required' })
@@ -44,17 +47,18 @@ export default function CreateExerciseForm() {
     },
   });
 
-  // TODO: fetch these
-  const muscles = [
-    { id: 1, muscle: 'Biceps' },
-    { id: 2, muscle: 'Triceps' },
-    { id: 3, muscle: 'Back' },
-    { id: 4, muscle: 'Hamstrings' },
-    { id: 5, muscle: 'Biceps' },
-    { id: 6, muscle: 'Triceps' },
-    { id: 7, muscle: 'Back' },
-    { id: 8, muscle: 'Hamstrings' }
-  ];
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   register,
+  //   reset,
+  //   formState: { errors },
+  // } = form;
+
+  // const { fields, append, remove } = useFieldArray({
+  //   control,
+  //   name: 'workoutExercises',
+  // });
 
   return (
     <Dialog>
@@ -109,19 +113,20 @@ export default function CreateExerciseForm() {
                 </FormItem>
               )}
             />
-            <ToggleGroup type="multiple" className="flex-row flex-wrap">
-              {muscles.map((muscle) =>
+            <p className='text-sm text-muted-foreground'>Select Targeted Muscles:</p>
+            <ToggleGroup variant={'outline'} type="multiple" className="flex-row flex-wrap gap-2">
+              {muscleGroups.map((muscle) =>
                 <ToggleGroupItem
                   key={muscle.id}
-                  className="data-[state=on]:text-accent-foreground"
-                  value={muscle.muscle}
+                  value={muscle.name}
+                  className='rounded-3xl data-[state=on]:text-primary data-[state=on]:bg-transparent'
                 >
-                  <Badge variant={'outline'}>{muscle.muscle}</Badge>
+                  {muscle.name}
                 </ToggleGroupItem>
               )}
             </ToggleGroup>
             <DialogFooter>
-              <Button type="submit">Continue</Button>
+              <Button type="submit">Create Exercise</Button>
             </DialogFooter>
           </form>
         </Form>

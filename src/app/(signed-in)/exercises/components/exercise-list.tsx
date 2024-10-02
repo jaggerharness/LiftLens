@@ -78,7 +78,7 @@ export default function ExerciseList({
             <h2 className="text-3xl font-bold tracking-tight">
               Exercise Library
             </h2>
-            <CreateExerciseForm />
+            <CreateExerciseForm muscleGroups={muscleGroups} />
           </div>
           <div className="flex items-center gap-4">
             <Input
