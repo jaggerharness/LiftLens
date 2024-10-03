@@ -37,3 +37,22 @@ export const workoutFormSchema = z.object({
     )
     .nonempty('At least one exercise is required'),
 });
+
+export const createExerciseFormSchema = z.object({
+  name: z
+    .string({ required_error: 'Name is required' })
+    .min(1, 'Name is required'),
+  description: z
+    .string({ required_error: 'Description is required' })
+    .min(1, 'Description is required'),
+  muscleGroups: z
+    .array(
+      z.object({
+        muscleGroup: z.object({
+          id: z.string(),
+          name: z.string(),
+        }),
+      })
+    )
+    .min(1, 'At least one muscle group is required'),
+});

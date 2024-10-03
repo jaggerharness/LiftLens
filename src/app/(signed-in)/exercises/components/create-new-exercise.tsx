@@ -24,41 +24,27 @@ import {
   ToggleGroupItem,
 } from '@/components/shad-ui/toggle-group';
 import { MuscleGroup } from '@/lib/types';
+import { createExerciseFormSchema } from '@/lib/zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusCircle } from 'lucide-react';
-import { useForm, useFieldArray} from 'react-hook-form';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 
-export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: MuscleGroup[] }) {
-  const formSchema = z.object({
-    name: z
-      .string({ required_error: 'Name is required' })
-      .min(1, 'Name is required'),
-    description: z
-      .string({ required_error: 'Description is required' })
-      .min(1, 'Description is required'),
-  });
+type CreateExerciseFormSchema = z.infer<typeof createExerciseFormSchema>;
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: MuscleGroup[] }) {
+  const form = useForm<CreateExerciseFormSchema>({
+    resolver: zodResolver(createExerciseFormSchema),
     defaultValues: {
       name: '',
       description: '',
+      muscleGroups: [],
     },
   });
 
-  const {
-    control,
-    handleSubmit,
-    register,
-    reset,
-    formState: { errors },
-  } = form;
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'workoutExercises',
-  });
+  async function onSubmit(formData: any) {
+    console.log({ formData });
+  }
 
   return (
     <Dialog>
@@ -69,8 +55,8 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <Form {...form}>
-          <form onSubmit={() => console.log('submit')} className="grid gap-4">
+        <Form {...form} handleSubmit={form.handleSubmit}>
+          <form className="space-y-4 px-1" onSubmit={() => console.log('submitted')}>
             <DialogHeader>
               <DialogTitle>Create New Exercise</DialogTitle>
               <DialogDescription>
@@ -114,17 +100,33 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
               )}
             />
             <p className='text-sm text-muted-foreground'>Select Targeted Muscles:</p>
-            <ToggleGroup variant={'outline'} type="multiple" className="flex-row flex-wrap gap-2">
-              {muscleGroups.map((muscle) =>
-                <ToggleGroupItem
-                  key={muscle.id}
-                  value={muscle.name}
-                  className='rounded-3xl data-[state=on]:text-primary data-[state=on]:bg-transparent'
-                >
-                  {muscle.name}
-                </ToggleGroupItem>
+            <Controller
+              name="muscleGroups"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ToggleGroup
+                      variant={'outline'}
+                      type="multiple"
+                      className="flex-row flex-wrap gap-2"
+                      onValueChange={(value) => field.onChange(value)}
+                    >
+                      {muscleGroups.map((muscle) => (
+                        <ToggleGroupItem
+                          key={muscle.id}
+                          value={muscle.name}
+                          className='rounded-3xl data-[state=on]:text-primary data-[state=on]:bg-transparent'
+                        >
+                          {muscle.name}
+                        </ToggleGroupItem>
+                      ))}
+                    </ToggleGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </ToggleGroup>
+            />
             <DialogFooter>
               <Button type="submit">Create Exercise</Button>
             </DialogFooter>

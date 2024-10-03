@@ -72,7 +72,6 @@ interface CreateWorkoutFormProps {
 export function CreateWorkoutForm({
   exercises,
   mode,
-  workout,
 }: CreateWorkoutFormProps) {
   const [filteredExercises, setFilteredExercises] = useState(exercises);
   const [searchQuery, setSearchQuery] = useState('');

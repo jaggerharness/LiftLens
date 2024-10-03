@@ -5,7 +5,7 @@
 import { auth, signIn } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { WorkoutWithExercises } from '@/lib/types';
-import { workoutFormSchema } from '@/lib/zod';
+import { createExerciseFormSchema, workoutFormSchema } from '@/lib/zod';
 import { SES } from '@aws-sdk/client-ses';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { render } from '@react-email/render';
@@ -556,5 +556,40 @@ export async function cancelWorkout({
   return {
     type: 'success',
     data: updatedWorkout,
+  };
+}
+
+export async function createExercise({
+  exerciseData,
+}: {
+  exerciseData: z.infer<typeof createExerciseFormSchema>;
+}) {
+  const userSession = await auth();
+
+  if (!userSession || !userSession.user || !userSession.user.id) {
+    throw new Error('User is not authenticated');
+  }
+
+  const createdExercise = await prisma.exercise.create({
+    data: {
+      name: exerciseData.name,
+      description: exerciseData.description,
+      isPublic: false,
+      muscleGroups: {
+        connect: exerciseData.muscleGroups.map((muscleGroup) => ({
+          id: muscleGroup.muscleGroup.id,
+        })),
+      },
+      user: {
+        connect: {
+          id: userSession.user.id,
+        },
+      },
+    },
+  });
+
+  return {
+    type: 'success',
+    data: createdExercise,
   };
 }
