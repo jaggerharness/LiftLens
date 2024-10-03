@@ -47,18 +47,18 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
     },
   });
 
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   register,
-  //   reset,
-  //   formState: { errors },
-  // } = form;
+  const {
+    control,
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = form;
 
-  // const { fields, append, remove } = useFieldArray({
-  //   control,
-  //   name: 'workoutExercises',
-  // });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'workoutExercises',
+  });
 
   return (
     <Dialog>
