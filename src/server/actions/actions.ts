@@ -573,11 +573,12 @@ export async function createExercise({
   const createdExercise = await prisma.exercise.create({
     data: {
       name: exerciseData.name,
+      displayName: exerciseData.name,
       description: exerciseData.description,
       isPublic: false,
       muscleGroups: {
         connect: exerciseData.muscleGroups.map((muscleGroup) => ({
-          id: muscleGroup.muscleGroup.id,
+          id: muscleGroup,
         })),
       },
       user: {

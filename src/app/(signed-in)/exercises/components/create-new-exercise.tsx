@@ -1,6 +1,5 @@
 'use client';
 
-import { Badge } from '@/components/shad-ui/badge';
 import { Button } from '@/components/shad-ui/button';
 import {
   Dialog,
@@ -25,10 +24,14 @@ import {
 } from '@/components/shad-ui/toggle-group';
 import { MuscleGroup } from '@/lib/types';
 import { createExerciseFormSchema } from '@/lib/zod';
+import { createExercise } from '@/server/actions/actions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusCircle } from 'lucide-react';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { toast } from '@/hooks/use-toast';
+import { DialogClose } from '@radix-ui/react-dialog';
+import { useRef } from 'react';
 
 type CreateExerciseFormSchema = z.infer<typeof createExerciseFormSchema>;
 
@@ -42,12 +45,30 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
     },
   });
 
-  async function onSubmit(formData: any) {
-    console.log({ formData });
+  const dialogRef = useRef<HTMLButtonElement>(null);
+
+  async function onSubmit(values: z.infer<typeof createExerciseFormSchema>) {
+    console.log(values);
+    const res = await createExercise({ exerciseData: values });
+    if (res.type === 'success') {
+      dialogRef.current?.click();
+      toast({
+        title: 'Exercise Created',
+        description: `Exercise ${values.name} created successfully!`,
+        variant: 'success',
+      });
+      return;
+    }
+    toast({
+      title: 'Error',
+      description: `An unexpected error occurred. Please try again later.`,
+      variant: 'destructive',
+    });
   }
 
   return (
     <Dialog>
+      <DialogClose ref={dialogRef} />
       <DialogTrigger asChild>
         <Button size="sm" variant="secondary" className="gap-1">
           <PlusCircle className="size-3.5" />
@@ -55,8 +76,16 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <Form {...form} handleSubmit={form.handleSubmit}>
-          <form className="space-y-4 px-1" onSubmit={() => console.log('submitted')}>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(
+              onSubmit,
+              (errors) => {
+                console.error('Form submission errors:', errors);
+              }
+            )}
+            className="space-y-8"
+          >
             <DialogHeader>
               <DialogTitle>Create New Exercise</DialogTitle>
               <DialogDescription>
@@ -100,9 +129,9 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
               )}
             />
             <p className='text-sm text-muted-foreground'>Select Targeted Muscles:</p>
-            <Controller
-              name="muscleGroups"
+            <FormField
               control={form.control}
+              name="muscleGroups"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -110,15 +139,12 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
                       variant={'outline'}
                       type="multiple"
                       className="flex-row flex-wrap gap-2"
-                      onValueChange={(value) => field.onChange(value)}
+                      onValueChange={field.onChange}
+                      value={field.value}
                     >
-                      {muscleGroups.map((muscle) => (
-                        <ToggleGroupItem
-                          key={muscle.id}
-                          value={muscle.name}
-                          className='rounded-3xl data-[state=on]:text-primary data-[state=on]:bg-transparent'
-                        >
-                          {muscle.name}
+                      {muscleGroups.map((group) => (
+                        <ToggleGroupItem key={group.id} value={group.id} className='data-[state=on]:border-primary/30'>
+                          {group.name}
                         </ToggleGroupItem>
                       ))}
                     </ToggleGroup>

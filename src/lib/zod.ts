@@ -45,14 +45,5 @@ export const createExerciseFormSchema = z.object({
   description: z
     .string({ required_error: 'Description is required' })
     .min(1, 'Description is required'),
-  muscleGroups: z
-    .array(
-      z.object({
-        muscleGroup: z.object({
-          id: z.string(),
-          name: z.string(),
-        }),
-      })
-    )
-    .min(1, 'At least one muscle group is required'),
+  muscleGroups: z.array(z.string()).min(1, "Select at least one muscle group"),
 });
