@@ -13,17 +13,13 @@ export default async function Home() {
 
   return (
     <main className="flex flex-col h-screen items-center justify-center gap-8">
-      <LoginCard />
       <Alert variant="default" className="w-3/4 md:w-1/4">
         <AlertCircle className="size-4" />
         <AlertDescription>
-          This application is currently in development and not ready for
-          production use. Feel free to create an account and explore, but note
-          that the database is frequently reset, requiring you to re-enter your
-          data. This message will be removed upon the release of version 1.0.
-          (Coming soon!)
+          Beta testing is currently taking place. Data is reset frequently. Report any issues to support@liftlens.app
         </AlertDescription>
       </Alert>
+      <LoginCard />
     </main>
   );
 }

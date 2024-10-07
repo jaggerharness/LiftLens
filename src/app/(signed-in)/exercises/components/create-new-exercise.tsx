@@ -32,6 +32,7 @@ import { z } from 'zod';
 import { toast } from '@/hooks/use-toast';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
 type CreateExerciseFormSchema = z.infer<typeof createExerciseFormSchema>;
 
@@ -45,10 +46,10 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
     },
   });
 
+  const router = useRouter();
   const dialogRef = useRef<HTMLButtonElement>(null);
 
   async function onSubmit(values: z.infer<typeof createExerciseFormSchema>) {
-    console.log(values);
     const res = await createExercise({ exerciseData: values });
     if (res.type === 'success') {
       dialogRef.current?.click();
@@ -57,6 +58,7 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
         description: `Exercise ${values.name} created successfully!`,
         variant: 'success',
       });
+      router.refresh();
       return;
     }
     toast({
@@ -75,7 +77,8 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
           Create New Exercise
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" onOpenAutoFocus={(e) => e.preventDefault()}
+        tabIndex={-1}>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(
@@ -84,7 +87,7 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
                 console.error('Form submission errors:', errors);
               }
             )}
-            className="space-y-8"
+            className="space-y-4"
           >
             <DialogHeader>
               <DialogTitle>Create New Exercise</DialogTitle>

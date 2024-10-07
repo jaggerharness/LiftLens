@@ -15,10 +15,6 @@ const features = [
     name: 'Exercises',
     href: '/exercises',
   },
-  {
-    name: 'Diet Tracking',
-    href: '/calorie-log',
-  },
 ];
 
 interface SiteNavProps extends React.HTMLAttributes<HTMLDivElement> {}
