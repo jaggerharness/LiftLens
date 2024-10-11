@@ -61,22 +61,6 @@ export function UserNav({ session }: { session: Session }) {
             </DropdownMenuItem>
           </Link>
         </DropdownMenuGroup>
-        {/* <DropdownMenuSeparator className="block sm:hidden" />
-        <DropdownMenuGroup className="block sm:hidden">
-          <Link href={'/calorie-log'}>
-            <DropdownMenuItem>
-              Calorie Tracking
-              <NotebookPen className="size-4 ml-auto text-xs tracking-widest opacity-60" />
-            </DropdownMenuItem>
-          </Link>
-        </DropdownMenuGroup> */}
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Settings
-            <GearIcon className="size-4 ml-auto text-xs tracking-widest opacity-60" />
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()}>
           Sign Out

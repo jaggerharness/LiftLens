@@ -335,12 +335,12 @@ export function CreateWorkoutForm({
                                   </FormControl>
                                   <FormMessage>
                                     {errors.workoutExercises?.[index]?.sets && (
-                                      <p>
+                                      <>
                                         {
                                           errors.workoutExercises[index].sets
                                             .message
                                         }
-                                      </p>
+                                      </>
                                     )}
                                   </FormMessage>
                                 </FormItem>
