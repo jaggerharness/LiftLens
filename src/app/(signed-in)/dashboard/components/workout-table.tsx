@@ -30,6 +30,7 @@ import {
 import { WorkoutWithExercises } from '@/lib/types';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import { CalendarDateRangePicker } from './date-range-picker';
 
 export function WorkoutTable({
   workouts,
@@ -38,9 +39,14 @@ export function WorkoutTable({
 }) {
   return (
     <Card>
-      <CardHeader className="px-7">
-        <CardTitle>Upcoming Workouts</CardTitle>
-        <CardDescription>Workouts for the week</CardDescription>
+      <CardHeader className="px-7 flex-row justify-between">
+        <div className='flex flex-col'>
+          <CardTitle>Upcoming Workouts</CardTitle>
+          <CardDescription className='pt-2'>Workouts for the week</CardDescription>
+        </div>
+        <div className="flex items-center space-x-2">
+          <CalendarDateRangePicker />
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
