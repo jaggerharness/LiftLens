@@ -19,18 +19,32 @@ export const metadata: Metadata = {
   description: 'LiftLens Dashboard',
 };
 
-async function getWorkouts(): Promise<WorkoutWithExercises[]> {
+const zeroOutTime = (date: Date) => {
+  date.setHours(0);
+  date.setMinutes(0);
+  date.setSeconds(0);
+  date.setMilliseconds(0);
+  return date;
+};
+
+async function getWorkouts({start, end} : {start: string | undefined, end: string | undefined}): Promise<WorkoutWithExercises[]> {
+  console.log({ start, end });
   const session = await auth();
+  const startParam = start ? zeroOutTime(new Date(start)) : undefined;
+  const endParam = end ? zeroOutTime(new Date(end)) : start;
+
   const currentDate = new Date();
-  const startOfWeekDate = startOfWeek(currentDate, { weekStartsOn: 1 });
-  const endOfWeekDate = endOfWeek(currentDate, { weekStartsOn: 1 });
+  const startRangeValue = startParam ?? zeroOutTime(startOfWeek(currentDate, { weekStartsOn: 1 }));
+  const endRangeValue = endParam ?? zeroOutTime(endOfWeek(currentDate, { weekStartsOn: 1 }));
+
+  console.log({ startRangeValue, endRangeValue });
 
   return prisma.workout.findMany({
     where: {
       createdBy: session?.user?.id,
       workoutDate: {
-        gte: startOfWeekDate,
-        lte: endOfWeekDate,
+        gte: startRangeValue,
+        lt: endRangeValue,
       },
     },
     orderBy: { workoutDate: 'asc' },
@@ -50,8 +64,14 @@ async function getWorkouts(): Promise<WorkoutWithExercises[]> {
   });
 }
 
-export default async function DashboardPage() {
-  const workouts = await getWorkouts();
+export default async function DashboardPage(props: {
+  searchParams?: Promise<{
+    start?: string;
+    end?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const workouts = await getWorkouts({start: searchParams?.start, end: searchParams?.end});
   return (
     <main>
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2 p-6">

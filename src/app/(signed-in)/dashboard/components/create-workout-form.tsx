@@ -417,9 +417,7 @@ export function CreateWorkoutForm({
                       <DialogHeader>
                         <DialogTitle>Select Exercises</DialogTitle>
                         <DialogDescription>
-                          <p>
-                            Select the exercises you want to add to the workout.
-                          </p>
+                          Select the exercises you want to add to the workout.
                         </DialogDescription>
                       </DialogHeader>
                       <div className="bg-background/95 mx-4 my-2 supports-[backdrop-filter]:bg-background/60">
@@ -451,7 +449,7 @@ export function CreateWorkoutForm({
                                 className={cn(
                                   'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
                                   selectedIdArray.includes(exercise.id) &&
-                                    'bg-muted border-primary',
+                                  'bg-muted border-primary',
                                 )}
                                 onClick={() => handleSelected(exercise.id)}
                               >
