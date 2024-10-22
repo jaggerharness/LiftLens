@@ -27,17 +27,23 @@ const zeroOutTime = (date: Date) => {
   return date;
 };
 
+const setEndOfDay = (date: Date) => {
+  date.setHours(23);
+  date.setMinutes(59);
+  date.setSeconds(59);
+  date.setMilliseconds(999);
+  return date;
+};
+
 async function getWorkouts({start, end} : {start: string | undefined, end: string | undefined}): Promise<WorkoutWithExercises[]> {
   console.log({ start, end });
   const session = await auth();
   const startParam = start ? zeroOutTime(new Date(start)) : undefined;
-  const endParam = end ? zeroOutTime(new Date(end)) : start;
+  const endParam = end ? setEndOfDay(new Date(end)) : start ? setEndOfDay(new Date(start)) : undefined;
 
   const currentDate = new Date();
   const startRangeValue = startParam ?? zeroOutTime(startOfWeek(currentDate, { weekStartsOn: 1 }));
-  const endRangeValue = endParam ?? zeroOutTime(endOfWeek(currentDate, { weekStartsOn: 1 }));
-
-  console.log({ startRangeValue, endRangeValue });
+  const endRangeValue = endParam ?? setEndOfDay(endOfWeek(currentDate, { weekStartsOn: 1 }));
 
   return prisma.workout.findMany({
     where: {
