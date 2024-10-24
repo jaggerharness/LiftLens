@@ -21,6 +21,7 @@ import { ExerciseWithMuscleGroups, MuscleGroup } from '@/lib/types';
 import { FilterIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import CreateExerciseForm from './create-new-exercise';
+import { cn } from '@/lib/utils';
 
 export default function ExerciseList({
   exercises,
@@ -90,7 +91,10 @@ export default function ExerciseList({
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
+                <Button variant="outline" className={cn(
+                  'flex items-center gap-2 focus-visible:ring-0 focus-visible:ring-offset-0',
+                  filters.muscleGroups.length === 0 ? 'border-input' : 'border-primary'
+                )}>
                   <FilterIcon className="size-5" />
                   Filters
                 </Button>

@@ -10,7 +10,7 @@ interface WorkoutContextType {
 
 export const ActiveWorkoutContext = createContext<WorkoutContextType>({
   workout: null,
-  setWorkout: () => {},
+  setWorkout: () => { },
 });
 
 export default function ActiveWorkoutProvider({

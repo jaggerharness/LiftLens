@@ -7,19 +7,20 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/shad-ui/table';
-import { Textarea } from '@/components/shad-ui/textarea';
 import prisma from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import ActiveWorkoutProvider from './active-workout-provider';
 import { Stopwatch } from './components/stopwatch';
 import { WorkoutActions } from './components/workout-actions';
+import { WorkoutNotes } from './components/workout-notes';
+import { WorkoutWithExercises } from '@/lib/types';
 
 export default async function WorkoutPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const workoutData = await prisma.workout.findUnique({
+  const workoutData: WorkoutWithExercises | null = await prisma.workout.findUnique({
     where: {
       id: params.id,
     },
@@ -73,8 +74,7 @@ export default async function WorkoutPage({
           </Table>
         </ScrollArea>
         <WorkoutActions />
-        <h1>{'Notes'}</h1>
-        <Textarea value={'Workout notes were entered here'} disabled />
+        <WorkoutNotes data={workoutData} />
       </div>
     </ActiveWorkoutProvider>
   );

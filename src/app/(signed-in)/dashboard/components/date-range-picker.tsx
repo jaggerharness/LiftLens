@@ -38,11 +38,11 @@ export function CalendarDateRangePicker({
 
     const params = new URLSearchParams(searchParams);
 
-    if(range){
+    if (range) {
       params.set('start', range?.from?.toISOString() || '');
       params.set('end', range?.to?.toISOString() || '');
     }
-    else{
+    else {
       params.delete('start');
       params.delete('end');
     }
@@ -79,12 +79,22 @@ export function CalendarDateRangePicker({
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="end">
           <Calendar
+            className="hidden md:block"
             initialFocus
             mode="range"
             defaultMonth={date?.from}
             selected={date}
             onSelect={(range) => handleDateSelect(range)}
             numberOfMonths={2}
+          />
+          <Calendar
+            className="block md:hidden"
+            initialFocus
+            mode="range"
+            defaultMonth={date?.from}
+            selected={date}
+            onSelect={(range) => handleDateSelect(range)}
+            numberOfMonths={1}
           />
         </PopoverContent>
       </Popover>

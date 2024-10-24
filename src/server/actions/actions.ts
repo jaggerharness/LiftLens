@@ -18,6 +18,7 @@ import { z } from 'zod';
 import EmailVerificationEmail from '../../../emails/email-verification';
 import ResetPasswordEmail from '../../../emails/reset-password';
 import { User } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 
 async function hashPassword(password: string) {
   return await bcrypt.hash(password, 10);
@@ -362,19 +363,17 @@ export async function createWorkout({
 }: {
   workoutData: z.infer<typeof workoutFormSchema>;
 }) {
-  const user = await auth();
+  const session = await auth();
 
-  if (!user || !user.user || !user.user.id) {
+  if (!session?.user || !session.user.id) {
     throw new Error('User is not authenticated');
   }
-
-  const createdBy = user.user.id;
 
   await prisma.workout.create({
     data: {
       name: workoutData.name,
       workoutDate: workoutData.date,
-      createdBy: createdBy,
+      createdBy: session.user.id,
       workoutExercises: {
         create: workoutData.workoutExercises.map((exercise, index) => ({
           exerciseId: exercise.exercise.id,
@@ -409,7 +408,7 @@ export async function startWorkout({
 
   const startedStatusId = 2;
 
-  const updatedWorkout = await prisma.workout.update({
+  const updatedWorkout: WorkoutWithExercises = await prisma.workout.update({
     where: {
       id: workout.id,
     },
@@ -422,16 +421,26 @@ export async function startWorkout({
       },
     },
     include: {
-      workoutExercises: true,
+      workoutExercises: {
+        include: {
+          exercise: {
+            include: {
+              muscleGroups: true,
+            },
+          },
+        },
+      },
       status: true,
       WorkoutStatusLog: true,
     },
   });
 
-  return {
+  const response = {
     type: 'success',
     data: updatedWorkout,
   };
+
+  return response;
 }
 
 export async function pauseWorkout({
@@ -451,7 +460,7 @@ export async function pauseWorkout({
 
   const pausedStatusId = 4;
 
-  const updatedWorkout = await prisma.workout.update({
+  const updatedWorkout: WorkoutWithExercises = await prisma.workout.update({
     where: {
       id: workout.id,
     },
@@ -464,7 +473,15 @@ export async function pauseWorkout({
       },
     },
     include: {
-      workoutExercises: true,
+      workoutExercises: {
+        include: {
+          exercise: {
+            include: {
+              muscleGroups: true,
+            },
+          },
+        },
+      },
       status: true,
       WorkoutStatusLog: true,
     },
@@ -493,7 +510,7 @@ export async function completeWorkout({
 
   const completedStatusId = 3;
 
-  const updatedWorkout = await prisma.workout.update({
+  const updatedWorkout: WorkoutWithExercises = await prisma.workout.update({
     where: {
       id: workout.id,
     },
@@ -506,7 +523,15 @@ export async function completeWorkout({
       },
     },
     include: {
-      workoutExercises: true,
+      workoutExercises: {
+        include: {
+          exercise: {
+            include: {
+              muscleGroups: true,
+            },
+          },
+        },
+      },
       status: true,
       WorkoutStatusLog: true,
     },
@@ -535,7 +560,7 @@ export async function cancelWorkout({
 
   const canceledStatusId = 5;
 
-  const updatedWorkout = await prisma.workout.update({
+  const updatedWorkout: WorkoutWithExercises = await prisma.workout.update({
     where: {
       id: workout.id,
     },
@@ -548,7 +573,15 @@ export async function cancelWorkout({
       },
     },
     include: {
-      workoutExercises: true,
+      workoutExercises: {
+        include: {
+          exercise: {
+            include: {
+              muscleGroups: true,
+            },
+          },
+        },
+      },
       status: true,
       WorkoutStatusLog: true,
     },
@@ -559,6 +592,36 @@ export async function cancelWorkout({
     data: updatedWorkout,
   };
 }
+
+export async function updateWorkoutNotes({
+  workoutId,
+  notes,
+}: {
+  workoutId: string;
+  notes: string;
+}) {
+  const session = await auth();
+
+  if (!session || !session.user || !session.user.id) {
+    throw new Error('User is not authenticated');
+  }
+
+  const updatedWorkout = await prisma.workout.update({
+    where: {
+      id: workoutId,
+    },
+    data: {
+      notes,
+    },
+  });
+
+  revalidatePath('/(signed-in)/workout/[id]', 'page')
+
+  return {
+    type: 'success',
+    data: updatedWorkout,
+  };
+};
 
 export async function createExercise({
   exerciseData,
