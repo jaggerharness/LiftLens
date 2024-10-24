@@ -39,12 +39,12 @@ export function WorkoutTable({
 }) {
   return (
     <Card>
-      <CardHeader className="px-7 flex-row justify-between">
+      <CardHeader className="px-7 flex-col md:flex-row justify-between">
         <div className='flex flex-col'>
           <CardTitle>Upcoming Workouts</CardTitle>
-          <CardDescription className='pt-2'>Workouts for the week</CardDescription>
+          <CardDescription className='pt-2'>Workouts for the selected date range</CardDescription>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 pt-2 md:pt-0">
           <CalendarDateRangePicker />
         </div>
       </CardHeader>

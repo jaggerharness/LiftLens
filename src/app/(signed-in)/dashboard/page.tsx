@@ -36,7 +36,6 @@ const setEndOfDay = (date: Date) => {
 };
 
 async function getWorkouts({start, end} : {start: string | undefined, end: string | undefined}): Promise<WorkoutWithExercises[]> {
-  console.log({ start, end });
   const session = await auth();
   const startParam = start ? zeroOutTime(new Date(start)) : undefined;
   const endParam = end ? setEndOfDay(new Date(end)) : start ? setEndOfDay(new Date(start)) : undefined;
