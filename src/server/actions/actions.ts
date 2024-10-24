@@ -17,12 +17,13 @@ import { isRedirectError } from 'next/dist/client/components/redirect';
 import { z } from 'zod';
 import EmailVerificationEmail from '../../../emails/email-verification';
 import ResetPasswordEmail from '../../../emails/reset-password';
+import { User } from '@prisma/client';
 
 async function hashPassword(password: string) {
   return await bcrypt.hash(password, 10);
 }
 
-async function generateJWT(user: any) {
+async function generateJWT(user: User) {
   const jwtPayload: JWT = {
     id: user.id,
     email: user.email,
@@ -36,7 +37,7 @@ async function generateJWT(user: any) {
   return jwt.sign(jwtPayload, jwtSecret, { expiresIn: '1h' });
 }
 
-async function sendEmailVerification(user: any, token: string) {
+async function sendEmailVerification(user: User, token: string) {
   try {
     const region = process.env.AWS_REGION;
     const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
@@ -77,7 +78,7 @@ async function sendEmailVerification(user: any, token: string) {
     };
 
     await ses.sendEmail(params);
-  } catch (error) {
+  } catch {
     throw new Error('Failed to send email');
   }
 }
@@ -142,12 +143,12 @@ export async function sendPasswordReset(email: string) {
     };
 
     await ses.sendEmail(params);
-  } catch (error) {
+  } catch {
     throw new Error('Failed to send email');
   }
 }
 
-async function createVerificationToken(user: any, token: string) {
+async function createVerificationToken(user: User, token: string) {
   await prisma.verificationToken.create({
     data: {
       identifier: user.id,
@@ -241,7 +242,7 @@ export async function validateToken({
     }
 
     return decodedToken.id;
-  } catch (error) {
+  } catch {
     throw new Error('Token validation failed');
   }
 }
@@ -271,7 +272,7 @@ export async function validatePasswordResetToken({
     }
 
     return decodedToken.id;
-  } catch (error) {
+  } catch {
     throw new Error('Token validation failed');
   }
 }
@@ -344,7 +345,7 @@ export async function resetPassword({
       message: 'Password reset.',
       type: 'success',
     };
-  } catch (error) {
+  } catch {
     return {
       message: 'Something went wrong.',
       type: 'error',

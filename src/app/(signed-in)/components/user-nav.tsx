@@ -15,8 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/shad-ui/dropdown-menu';
-import { DashboardIcon, GearIcon } from '@radix-ui/react-icons';
-import { Dumbbell, LogOut, NotebookPen } from 'lucide-react';
+import { DashboardIcon } from '@radix-ui/react-icons';
+import { Dumbbell, LogOut } from 'lucide-react';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';

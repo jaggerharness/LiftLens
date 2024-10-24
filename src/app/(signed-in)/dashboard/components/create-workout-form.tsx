@@ -144,7 +144,7 @@ export function CreateWorkoutForm({
     setSearchQuery(event.target.value);
   };
 
-  async function onSubmit(workoutData: any) {
+  async function onSubmit(workoutData: z.infer<typeof workoutFormSchema>) {
     const res = await createWorkout({ workoutData });
     if (res.type === 'success') {
       setOpen(false);
@@ -196,7 +196,7 @@ export function CreateWorkoutForm({
         className="h-auto max-h-[85%] md:max-h-[75%] p-1 flex"
         onOpenAutoFocus={(e) => e.preventDefault()}
         tabIndex={-1}
-        onInteractOutside={(_) => {
+        onInteractOutside={() => {
           setSelectedIdArray([]);
           reset({
             name: '',
@@ -409,7 +409,7 @@ export function CreateWorkoutForm({
                     />
                     <DialogContent
                       className="h-[95vh] sm:h-3/4 flex flex-col"
-                      onInteractOutside={(_) => {
+                      onInteractOutside={() => {
                         setSelectedIdArray([]);
                       }}
                       onOpenAutoFocus={(e) => e.preventDefault()}

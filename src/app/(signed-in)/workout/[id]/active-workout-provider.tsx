@@ -5,7 +5,7 @@ import { createContext, useContext, useState } from 'react';
 
 interface WorkoutContextType {
   workout: WorkoutWithExercises | null;
-  setWorkout: (workout: any) => void;
+  setWorkout: (workout: WorkoutWithExercises) => void;
 }
 
 export const ActiveWorkoutContext = createContext<WorkoutContextType>({

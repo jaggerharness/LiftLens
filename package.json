@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "prisma generate && next build && npx prisma migrate deploy",
     "start": "next start",
     "lint": "next lint",
@@ -73,7 +73,7 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.7",
+    "eslint-config-next": "^15.0.0-canary.130",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tailwindcss": "^3.17.4",
     "i": "file:prisma/client@latest",

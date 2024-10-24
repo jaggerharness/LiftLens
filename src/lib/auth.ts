@@ -9,19 +9,19 @@ import { signInSchema } from './zod';
 
 declare module 'next-auth' {
   interface User {
-    firstName: String | null;
-    lastName: String | null;
+    firstName: string | null;
+    lastName: string | null;
     emailVerified: Date | null;
-    firstLogin: Boolean;
+    firstLogin: boolean;
   }
 }
 
 declare module '@auth/core/adapters' {
   interface AdapterUser {
-    firstName: String | null;
-    lastName: String | null;
+    firstName: string | null;
+    lastName: string | null;
     emailVerified: Date | null;
-    firstLogin: Boolean;
+    firstLogin: boolean;
   }
 }
 
@@ -85,7 +85,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           }
 
           return user;
-        } catch (error) {
+        } catch {
           return null;
         }
       },
@@ -112,13 +112,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         session.user.id = token.id as string;
         session.user.email = token.email ?? '';
         session.user.emailVerified = token.emailVerified as Date | null;
-        session.user.firstName = token.firstName as String | null;
-        session.user.lastName = token.lastName as String | null;
-        session.user.firstLogin = token.firstLogin as Boolean;
+        session.user.firstName = token.firstName as string | null;
+        session.user.lastName = token.lastName as string | null;
+        session.user.firstLogin = token.firstLogin as boolean;
       }
       return session;
     },
-    async authorized({ auth, request }) {
+    async authorized({ auth }) {
       // if (auth?.user?.emailVerified === null) {
       //   return Response.redirect(
       //     new URL('/auth/verify-email', request.nextUrl)
