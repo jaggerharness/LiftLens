@@ -108,7 +108,6 @@ export function EditWorkout({
     control,
     handleSubmit,
     register,
-    reset,
     formState: { errors },
   } = form;
 
@@ -185,9 +184,6 @@ export function EditWorkout({
     const res = await updateWorkout({ workoutData, workoutId: workout.id });
     if (res.type === "success") {
       setOpen(false);
-      reset({
-        workoutExercises: [],
-      });
       router.refresh();
       toast({
         title: "Workout Updated",
@@ -225,26 +221,11 @@ export function EditWorkout({
       >
         {"Edit Workout"}
       </DialogTrigger>
-      <DialogClose
-        onClick={() => {
-          setSelectedIdArray([]);
-          reset({
-            name: "",
-            workoutExercises: [],
-          });
-        }}
-      />
+      <DialogClose />
       <DialogContent
         className="h-auto max-h-[85%] md:max-h-[75%] p-1 flex"
         onOpenAutoFocus={(e) => e.preventDefault()}
         tabIndex={-1}
-        onInteractOutside={() => {
-          setSelectedIdArray([]);
-          reset({
-            name: "",
-            workoutExercises: [],
-          });
-        }}
       >
         <ScrollArea className="pt-8 pb-0 px-4">
           <DialogHeader>
