@@ -12,7 +12,7 @@ import { validatePasswordResetToken } from '@/server/actions/actions';
 import Link from 'next/dist/client/link';
 
 interface VerifyEmailPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 export default async function VerifyEmailPage({

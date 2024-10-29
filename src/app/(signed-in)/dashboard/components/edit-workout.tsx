@@ -1,8 +1,19 @@
-'use client';
+"use client";
 
-import { Badge } from '@/components/shad-ui/badge';
-import { Button, buttonVariants } from '@/components/shad-ui/button';
-import { Calendar } from '@/components/shad-ui/calendar';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/shad-ui/alert-dialog";
+import { Badge } from "@/components/shad-ui/badge";
+import { Button, buttonVariants } from "@/components/shad-ui/button";
+import { Calendar } from "@/components/shad-ui/calendar";
 import {
   Card,
   CardContent,
@@ -10,7 +21,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/shad-ui/card';
+} from "@/components/shad-ui/card";
 import {
   Dialog,
   DialogClose,
@@ -20,7 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/shad-ui/dialog';
+} from "@/components/shad-ui/dialog";
 import {
   Form,
   FormControl,
@@ -29,14 +40,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/shad-ui/form';
-import { Input } from '@/components/shad-ui/input';
+} from "@/components/shad-ui/form";
+import { Input } from "@/components/shad-ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/shad-ui/popover';
-import { ScrollArea } from '@/components/shad-ui/scroll-area';
+} from "@/components/shad-ui/popover";
+import { ScrollArea } from "@/components/shad-ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -44,48 +55,54 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/shad-ui/table';
-import { toast } from '@/hooks/use-toast';
-import { ExerciseWithMuscleGroups } from '@/lib/types';
-import { cn } from '@/lib/utils';
-import { workoutFormSchema } from '@/lib/zod';
-import { createWorkout } from '@/server/actions/actions';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { CalendarIcon } from '@radix-ui/react-icons';
-import { PopoverClose } from '@radix-ui/react-popover';
-import { format } from 'date-fns';
-import { PlusCircle, Search, Trash2Icon } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { z } from 'zod';
+} from "@/components/shad-ui/table";
+import { useToast } from "@/hooks/use-toast";
+import { ExerciseWithMuscleGroups, WorkoutWithExercises } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { workoutFormSchema } from "@/lib/zod";
+import { deleteWorkout, updateWorkout } from "@/server/actions/actions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { PopoverClose } from "@radix-ui/react-popover";
+import { format } from "date-fns";
+import { PlusCircle, Search, Trash2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useRef, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
 
 type WorkoutFormValues = z.infer<typeof workoutFormSchema>;
 
-interface CreateWorkoutFormProps {
-  exercises: ExerciseWithMuscleGroups[];
-  mode: 'create' | 'edit';
-
-  workout?: WorkoutFormValues;
-}
-
-export function CreateWorkoutForm({
-  exercises,
-  mode,
-}: CreateWorkoutFormProps) {
+export function EditWorkout({
+  workout,
+  exercisesPromise,
+}: {
+  workout: WorkoutWithExercises;
+  exercisesPromise: Promise<ExerciseWithMuscleGroups[]>;
+}) {
+  const exercises = use(exercisesPromise);
   const [filteredExercises, setFilteredExercises] = useState(exercises);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutFormSchema),
     defaultValues: {
-      name: '',
-      date: new Date(),
+      name: workout.name,
+      date: workout.workoutDate,
+      workoutExercises: workout.workoutExercises.map((workoutExercise) => {
+        return {
+          exercise: {
+            id: workoutExercise.exercise.id,
+            displayName: workoutExercise.exercise.displayName ?? undefined,
+          },
+          sets: workoutExercise.sets,
+          reps: workoutExercise.reps,
+        };
+      }),
     },
   });
-
-  const router = useRouter();
 
   const {
     control,
@@ -97,7 +114,7 @@ export function CreateWorkoutForm({
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'workoutExercises',
+    name: "workoutExercises",
   });
 
   const [open, setOpen] = useState(false);
@@ -135,9 +152,9 @@ export function CreateWorkoutForm({
           exercise.muscleGroups.some((muscleGroup) =>
             muscleGroup.name
               .toLowerCase()
-              .includes(searchQuery.trimEnd().toLowerCase()),
-          ),
-      ),
+              .includes(searchQuery.trimEnd().toLowerCase())
+          )
+      )
     );
   }, [searchQuery, exercises]);
 
@@ -145,25 +162,45 @@ export function CreateWorkoutForm({
     setSearchQuery(event.target.value);
   };
 
+  async function handleDeleteWorkout() {
+    const res = await deleteWorkout({ workoutId: workout.id });
+    if (res.type === "success") {
+      setOpen(false);
+      router.refresh();
+      toast({
+        title: "Workout Deleted",
+        description: `Workout ${workout.name} deleted successfully!`,
+        variant: "success",
+      });
+      return;
+    }
+    toast({
+      title: "Error",
+      description: `An unexpected error occurred. Please try again later.`,
+      variant: "destructive",
+    });
+  }
+
   async function onSubmit(workoutData: z.infer<typeof workoutFormSchema>) {
-    const res = await createWorkout({ workoutData });
-    if (res.type === 'success') {
+    console.log({ workoutData });
+    const res = await updateWorkout({ workoutData, workoutId: workout.id });
+    if (res.type === "success") {
       setOpen(false);
       reset({
         workoutExercises: [],
       });
       router.refresh();
       toast({
-        title: 'Workout Created',
-        description: `Workout ${workoutData.name} created successfully!`,
-        variant: 'success',
+        title: "Workout Updated",
+        description: `Workout ${workoutData.name} updated successfully!`,
+        variant: "success",
       });
       return;
     }
     toast({
-      title: 'Error',
+      title: "Error",
       description: `An unexpected error occurred. Please try again later.`,
-      variant: 'destructive',
+      variant: "destructive",
     });
   }
 
@@ -171,24 +208,29 @@ export function CreateWorkoutForm({
     const { id, displayName } = exercise;
     append(
       {
-        exercise: { id, displayName: displayName ?? '' },
+        exercise: { id, displayName: displayName ?? "" },
         sets: 3,
         reps: 10,
       },
-      { shouldFocus: false },
+      { shouldFocus: false }
     );
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className={buttonVariants({ variant: 'default' })}>
-        {mode === 'create' ? 'Create A Workout' : 'Edit Workout'}
+      <DialogTrigger
+        className={cn(
+          buttonVariants({ variant: "secondary" }),
+          "focus:ring-0 focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0"
+        )}
+      >
+        {"Edit Workout"}
       </DialogTrigger>
       <DialogClose
         onClick={() => {
           setSelectedIdArray([]);
           reset({
-            name: '',
+            name: "",
             workoutExercises: [],
           });
         }}
@@ -200,17 +242,15 @@ export function CreateWorkoutForm({
         onInteractOutside={() => {
           setSelectedIdArray([]);
           reset({
-            name: '',
+            name: "",
             workoutExercises: [],
           });
         }}
       >
         <ScrollArea className="pt-8 pb-0 px-4">
           <DialogHeader>
-            <DialogTitle>Create A Workout</DialogTitle>
-            <DialogDescription>
-              You can create a workout from scratch or use an existing template
-            </DialogDescription>
+            <DialogTitle>Edit Workout</DialogTitle>
+            <DialogDescription>Edit workout details below</DialogDescription>
           </DialogHeader>
           <Form {...form} handleSubmit={handleSubmit}>
             <form className="space-y-4 px-1" onSubmit={handleSubmit(onSubmit)}>
@@ -241,14 +281,14 @@ export function CreateWorkoutForm({
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
-                            variant={'outline'}
+                            variant={"outline"}
                             className={cn(
-                              'pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground',
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
                             )}
                           >
                             {field.value ? (
-                              format(field.value, 'PPP')
+                              format(field.value, "PPP")
                             ) : (
                               <span>Pick a date</span>
                             )}
@@ -288,7 +328,7 @@ export function CreateWorkoutForm({
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Table className={'relative'}>
+                  <Table className={"relative"}>
                     {fields.length === 0 ? (
                       <TableBody>
                         <TableRow className="pointer-events-none">
@@ -323,14 +363,14 @@ export function CreateWorkoutForm({
                                   <FormControl>
                                     <Input
                                       className={
-                                        'text-center sm:text-start [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none md:[&::-webkit-inner-spin-button]:appearance-auto md:[&::-webkit-outer-spin-button]:appearance-auto'
+                                        "text-center sm:text-start [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none md:[&::-webkit-inner-spin-button]:appearance-auto md:[&::-webkit-outer-spin-button]:appearance-auto"
                                       }
                                       type="number"
                                       min={1}
                                       id={`workoutExercises.${index}.sets`}
                                       onFocus={(e) => e.target.select()}
                                       {...register(
-                                        `workoutExercises.${index}.sets` as const,
+                                        `workoutExercises.${index}.sets` as const
                                       )}
                                     />
                                   </FormControl>
@@ -357,14 +397,14 @@ export function CreateWorkoutForm({
                                   <FormControl>
                                     <Input
                                       className={
-                                        'text-center sm:text-start [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none md:[&::-webkit-inner-spin-button]:appearance-auto md:[&::-webkit-outer-spin-button]:appearance-auto'
+                                        "text-center sm:text-start [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none md:[&::-webkit-inner-spin-button]:appearance-auto md:[&::-webkit-outer-spin-button]:appearance-auto"
                                       }
                                       type="number"
                                       min={1}
                                       id={`workoutExercises.${index}.reps`}
                                       onFocus={(e) => e.target.select()}
                                       {...register(
-                                        `workoutExercises.${index}.reps` as const,
+                                        `workoutExercises.${index}.reps` as const
                                       )}
                                     />
                                   </FormControl>
@@ -384,9 +424,9 @@ export function CreateWorkoutForm({
                           </TableCell>
                           <TableCell className="p-3">
                             <Button
-                              size={'sm'}
+                              size={"sm"}
                               onClick={() => remove(index)}
-                              variant={'destructive'}
+                              variant={"destructive"}
                             >
                               <Trash2Icon className="size-3.5" />
                             </Button>
@@ -448,9 +488,9 @@ export function CreateWorkoutForm({
                               <button
                                 key={exercise.id}
                                 className={cn(
-                                  'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
+                                  "flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
                                   selectedIdArray.includes(exercise.id) &&
-                                  'bg-muted border-primary',
+                                    "bg-muted border-primary"
                                 )}
                                 onClick={() => handleSelected(exercise.id)}
                               >
@@ -471,7 +511,7 @@ export function CreateWorkoutForm({
                                     return (
                                       <Badge
                                         key={muscleGroup.id}
-                                        variant={'secondary'}
+                                        variant={"secondary"}
                                       >
                                         {muscleGroup.name}
                                       </Badge>
@@ -487,42 +527,60 @@ export function CreateWorkoutForm({
                         <Button
                           type="button"
                           onClick={() => setSelectedIdArray([])}
-                          variant={'destructive'}
-                          className={selectedIdArray.length > 0 ? '' : 'hidden'}
+                          variant={"destructive"}
+                          className={selectedIdArray.length > 0 ? "" : "hidden"}
                         >
                           Clear Selected
                         </Button>
                         <Button
                           type="button"
                           onClick={() => handleAddExercises()}
-                          className={selectedIdArray.length > 0 ? '' : 'hidden'}
+                          className={selectedIdArray.length > 0 ? "" : "hidden"}
                         >
                           {selectedIdArray.length > 0
                             ? `Add ${selectedIdArray.length} Exercises`
-                            : 'Cancel'}
+                            : "Cancel"}
                         </Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
                 </CardFooter>
               </Card>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 pt-4 pb-4">
                 <Button
                   className="w-1/2 flex mx-auto"
                   type="submit"
-                  variant={'default'}
+                  variant={"default"}
                 >
-                  Create Workout
+                  Update Workout
                 </Button>
-                <Link href={'/exercises'} className="mb-4">
-                  <Button
-                    className="w-1/2 flex mx-auto"
-                    type="submit"
-                    variant={'outline'}
-                  >
-                    Manage Exercises
-                  </Button>
-                </Link>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      className="w-1/2 flex mx-auto mb-4"
+                      variant={"destructive"}
+                    >
+                      Delete Workout
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete the workout and all associated exercises.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDeleteWorkout()}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </form>
           </Form>

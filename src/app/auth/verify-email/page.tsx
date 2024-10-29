@@ -14,7 +14,7 @@ import Link from 'next/link';
 import { ResendEmail } from './components/resend-email';
 
 interface VerifyEmailPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 export default async function VerifyEmailPage({

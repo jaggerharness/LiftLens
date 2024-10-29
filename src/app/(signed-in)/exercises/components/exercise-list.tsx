@@ -19,20 +19,21 @@ import {
 import { Input } from '@/components/shad-ui/input';
 import { ExerciseWithMuscleGroups, MuscleGroup } from '@/lib/types';
 import { FilterIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { use, useMemo, useState } from 'react';
 import CreateExerciseForm from './create-new-exercise';
 import { cn } from '@/lib/utils';
 
 export default function ExerciseList({
-  exercises,
+  exercisesPromise,
   muscleGroups,
 }: {
-  exercises: ExerciseWithMuscleGroups[];
+  exercisesPromise: Promise<ExerciseWithMuscleGroups[]>;
   muscleGroups: MuscleGroup[];
 }) {
   const [filters, setFilters] = useState<{ muscleGroups: MuscleGroup[] }>({
     muscleGroups: [],
   });
+  const exercises = use(exercisesPromise);
 
   const [searchQuery, setSearchQuery] = useState('');
 

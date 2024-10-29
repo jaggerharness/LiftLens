@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import { Metadata } from "next";
 
 import {
   Card,
@@ -6,17 +6,18 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/shad-ui/card';
-import { auth } from '@/lib/auth';
-import prisma from '@/lib/prisma';
-import { WorkoutWithExercises } from '@/lib/types';
-import { endOfWeek, startOfWeek } from 'date-fns';
-import { CreateWorkoutDialog } from './components/create-workout-drawer';
-import { WorkoutTable } from './components/workout-table';
+} from "@/components/shad-ui/card";
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { ExerciseWithMuscleGroups, WorkoutWithExercises } from "@/lib/types";
+import { endOfWeek, startOfWeek } from "date-fns";
+import { CreateWorkoutDialog } from "./components/create-workout-drawer";
+import { WorkoutTable } from "./components/workout-table";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: 'Dashboard',
-  description: 'LiftLens Dashboard',
+  title: "Dashboard",
+  description: "LiftLens Dashboard",
 };
 
 const zeroOutTime = (date: Date) => {
@@ -35,14 +36,38 @@ const setEndOfDay = (date: Date) => {
   return date;
 };
 
-async function getWorkouts({start, end} : {start: string | undefined, end: string | undefined}): Promise<WorkoutWithExercises[]> {
+async function getExercises(): Promise<ExerciseWithMuscleGroups[]> {
+  const session = await auth();
+  return prisma.exercise.findMany({
+    where: {
+      OR: [{ isPublic: true }, { createdBy: session?.user?.id }],
+    },
+    include: {
+      muscleGroups: true,
+    },
+  });
+}
+
+async function getWorkouts({
+  start,
+  end,
+}: {
+  start: string | undefined;
+  end: string | undefined;
+}): Promise<WorkoutWithExercises[]> {
   const session = await auth();
   const startParam = start ? zeroOutTime(new Date(start)) : undefined;
-  const endParam = end ? setEndOfDay(new Date(end)) : start ? setEndOfDay(new Date(start)) : undefined;
+  const endParam = end
+    ? setEndOfDay(new Date(end))
+    : start
+      ? setEndOfDay(new Date(start))
+      : undefined;
 
   const currentDate = new Date();
-  const startRangeValue = startParam ?? zeroOutTime(startOfWeek(currentDate, { weekStartsOn: 1 }));
-  const endRangeValue = endParam ?? setEndOfDay(endOfWeek(currentDate, { weekStartsOn: 1 }));
+  const startRangeValue =
+    startParam ?? zeroOutTime(startOfWeek(currentDate, { weekStartsOn: 1 }));
+  const endRangeValue =
+    endParam ?? setEndOfDay(endOfWeek(currentDate, { weekStartsOn: 1 }));
 
   return prisma.workout.findMany({
     where: {
@@ -52,7 +77,7 @@ async function getWorkouts({start, end} : {start: string | undefined, end: strin
         lt: endRangeValue,
       },
     },
-    orderBy: { workoutDate: 'asc' },
+    orderBy: { workoutDate: "asc" },
     include: {
       workoutExercises: {
         include: {
@@ -76,7 +101,11 @@ export default async function DashboardPage(props: {
   }>;
 }) {
   const searchParams = await props.searchParams;
-  const workouts = await getWorkouts({start: searchParams?.start, end: searchParams?.end});
+  const workoutsPromise = getWorkouts({
+    start: searchParams?.start,
+    end: searchParams?.end,
+  });
+  const exercisesPromise = getExercises();
   return (
     <main>
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2 p-6">
@@ -95,7 +124,12 @@ export default async function DashboardPage(props: {
           </Card>
         </div>
         <h2 className="text-3xl font-bold tracking-tight">My Schedule</h2>
-        <WorkoutTable workouts={workouts} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <WorkoutTable
+            workoutsPromise={workoutsPromise}
+            exercisesPromise={exercisesPromise}
+          />
+        </Suspense>
       </div>
     </main>
   );

@@ -218,6 +218,11 @@ export async function registerUser({
   }
 }
 
+interface DecodedToken {
+  id: string;
+  // Add other properties if needed
+}
+
 export async function validateToken({
   token,
 }: {
@@ -237,7 +242,7 @@ export async function validateToken({
       return null;
     }
 
-    const decodedToken = jwt.verify(token, jwtSecret);
+    const decodedToken = jwt.verify(token, jwtSecret) as DecodedToken;
     if (typeof decodedToken !== 'object' || !decodedToken.id) {
       throw new Error('Invalid token format');
     }
@@ -267,7 +272,7 @@ export async function validatePasswordResetToken({
       return null;
     }
 
-    const decodedToken = jwt.verify(token, jwtSecret);
+    const decodedToken = jwt.verify(token, jwtSecret) as DecodedToken;
     if (typeof decodedToken !== 'object' || !decodedToken.id) {
       throw new Error('Invalid token format');
     }
@@ -365,7 +370,7 @@ export async function createWorkout({
 }) {
   const session = await auth();
 
-  if (!session?.user || !session.user.id) {
+  if (!session?.user?.id) {
     throw new Error('User is not authenticated');
   }
 
@@ -391,6 +396,76 @@ export async function createWorkout({
   };
 }
 
+export async function updateWorkout({
+  workoutData,
+  workoutId
+}: {
+  workoutData: z.infer<typeof workoutFormSchema>,
+  workoutId: string
+}) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error('User is not authenticated');
+  }
+
+  await prisma.workout.update({
+    where: { id: workoutId },
+    data: {
+      name: workoutData.name,
+      workoutDate: workoutData.date,
+      createdBy: session.user.id,
+      workoutExercises: {
+        upsert: workoutData.workoutExercises.map((exercise, index) => ({
+          where: {
+            workoutId_exerciseId_sortOrder: {
+              workoutId: workoutId,
+              exerciseId: exercise.exercise.id,
+              sortOrder: index + 1,
+            },
+          },
+          update: {
+            sets: exercise.sets,
+            reps: exercise.reps,
+          },
+          create: {
+            exerciseId: exercise.exercise.id,
+            sets: exercise.sets,
+            reps: exercise.reps,
+            sortOrder: index + 1,
+          },
+        })),
+      },
+    },
+  });
+
+  return {
+    message: 'Workout updated.',
+    type: 'success',
+  };
+}
+
+export async function deleteWorkout({
+  workoutId
+}: {
+  workoutId: string
+}) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error('User is not authenticated');
+  }
+
+  await prisma.workout.delete({
+    where: { id: workoutId }
+  });
+
+  return {
+    message: 'Workout deleted.',
+    type: 'success',
+  };
+}
+
 export async function startWorkout({
   workout,
 }: {
@@ -398,7 +473,7 @@ export async function startWorkout({
 }) {
   const userSession = await auth();
 
-  if (!userSession || !userSession.user || !userSession.user.id) {
+  if (!userSession?.user?.id) {
     throw new Error('User is not authenticated');
   }
 
@@ -450,7 +525,7 @@ export async function pauseWorkout({
 }) {
   const userSession = await auth();
 
-  if (!userSession || !userSession.user || !userSession.user.id) {
+  if (!userSession?.user?.id) {
     throw new Error('User is not authenticated');
   }
 
@@ -500,7 +575,7 @@ export async function completeWorkout({
 }) {
   const userSession = await auth();
 
-  if (!userSession || !userSession.user || !userSession.user.id) {
+  if (!userSession?.user?.id) {
     throw new Error('User is not authenticated');
   }
 
@@ -550,7 +625,7 @@ export async function cancelWorkout({
 }) {
   const userSession = await auth();
 
-  if (!userSession || !userSession.user || !userSession.user.id) {
+  if (!userSession?.user?.id) {
     throw new Error('User is not authenticated');
   }
 
@@ -602,7 +677,7 @@ export async function updateWorkoutNotes({
 }) {
   const session = await auth();
 
-  if (!session || !session.user || !session.user.id) {
+  if (!session?.user?.id) {
     throw new Error('User is not authenticated');
   }
 
@@ -630,7 +705,7 @@ export async function createExercise({
 }) {
   const userSession = await auth();
 
-  if (!userSession || !userSession.user || !userSession.user.id) {
+  if (!userSession?.user?.id) {
     throw new Error('User is not authenticated');
   }
 

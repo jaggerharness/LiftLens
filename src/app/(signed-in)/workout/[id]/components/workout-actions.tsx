@@ -9,11 +9,15 @@ import {
   startWorkout,
 } from '@/server/actions/actions';
 import { useWorkout } from '../active-workout-provider';
+import { WorkoutWithExercises } from '@/lib/types';
+import { use } from 'react';
+import { useRouter } from 'next/navigation';
 
-export function WorkoutActions() {
+export function WorkoutActions({ workoutPromise }: { workoutPromise: Promise<WorkoutWithExercises | null> }) {
   const { toast } = useToast();
   const workoutContext = useWorkout();
-  const workout = workoutContext.workout;
+  const workout = use(workoutPromise);
+  const router = useRouter();
 
   if (!workout) {
     return <div>Loading...</div>;
@@ -28,6 +32,7 @@ export function WorkoutActions() {
         title: 'Workout Resumed',
         description: 'Your workout has been resumed.',
       });
+      router.refresh();
     }
   };
 
@@ -40,6 +45,7 @@ export function WorkoutActions() {
         title: 'Workout Paused',
         description: 'Your workout has been paused.',
       });
+      router.refresh();
     }
   };
 
@@ -52,6 +58,7 @@ export function WorkoutActions() {
         title: 'Workout Completed',
         description: 'Your workout has been completed.',
       });
+      router.refresh();
     }
   };
 
@@ -64,6 +71,7 @@ export function WorkoutActions() {
         title: 'Workout Canceled',
         description: 'Your workout has been canceled.',
       });
+      router.refresh();
     }
   };
 

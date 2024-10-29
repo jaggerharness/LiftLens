@@ -1,10 +1,11 @@
 import prisma from '@/lib/prisma';
 import ExerciseList from './components/exercise-list';
 import { auth } from '@/lib/auth';
+import { cache } from 'react';
 
 export default async function ExercisePage() {
   const session = await auth();
-  const exercises = await prisma.exercise.findMany({
+  const fetchExercise = cache(() => prisma.exercise.findMany({
     where: {
       OR: [
         { isPublic: true },
@@ -14,13 +15,15 @@ export default async function ExercisePage() {
     include: {
       muscleGroups: true,
     },
-  });
+  }));
+
+  const exercisesPromise = fetchExercise();
 
   const muscleGroups = await prisma.muscleGroup.findMany();
 
   return (
     <div>
-      <ExerciseList exercises={exercises} muscleGroups={muscleGroups} />
+      <ExerciseList exercisesPromise={exercisesPromise} muscleGroups={muscleGroups} />
     </div>
   );
 }

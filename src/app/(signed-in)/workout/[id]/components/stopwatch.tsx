@@ -3,18 +3,15 @@
 import { calculateStartedDuration } from '@/lib/helpers';
 import { useEffect, useState } from 'react';
 import { useStopwatch } from 'react-timer-hook';
-import { useWorkout } from '../active-workout-provider';
+import { WorkoutWithExercises } from '@/lib/types';
 
-export function Stopwatch() {
-  const workoutContext = useWorkout();
-  const workout = workoutContext.workout;
-
+export function Stopwatch({ workoutData }: { workoutData: WorkoutWithExercises | null }) {
   const [stopwatchOffset, setStopwatchOffset] = useState(new Date());
 
   useEffect(() => {
-    if (workout) {
+    if (workoutData) {
       const newOffsetSeconds = calculateStartedDuration(
-        workout.WorkoutStatusLog,
+        workoutData.WorkoutStatusLog,
       );
 
       const newStopwatchOffset = new Date();
@@ -23,24 +20,24 @@ export function Stopwatch() {
       );
       setStopwatchOffset(newStopwatchOffset);
     }
-  }, [workout]);
+  }, [workoutData]);
 
   const { seconds, minutes, hours, reset } = useStopwatch({
     autoStart:
-      workout?.WorkoutStatusLog[workout.WorkoutStatusLog.length - 1]
+    workoutData?.WorkoutStatusLog[workoutData.WorkoutStatusLog.length - 1]
         ?.workoutStatusId === 2,
     offsetTimestamp: stopwatchOffset,
   });
 
   useEffect(() => {
-    if (workout) {
+    if (workoutData) {
       reset(
         stopwatchOffset,
-        workout.WorkoutStatusLog[workout.WorkoutStatusLog.length - 1]
+        workoutData.WorkoutStatusLog[workoutData.WorkoutStatusLog.length - 1]
           ?.workoutStatusId === 2,
       );
     }
-  }, [workout, stopwatchOffset, reset]);
+  }, [workoutData, stopwatchOffset, reset]);
 
   return (
     <section className="flex gap-4">

@@ -5,20 +5,19 @@ import { Textarea } from "@/components/shad-ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { WorkoutWithExercises } from "@/lib/types";
 import { updateWorkoutNotes } from "@/server/actions/actions";
-import { useState } from "react";
+import { use, useState } from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function WorkoutNotes({ data }: { data: WorkoutWithExercises }) {
+export function WorkoutNotes({ workoutPromise }: { workoutPromise: Promise<WorkoutWithExercises | null> }) {
     const { toast } = useToast();
+    const data = use(workoutPromise);
     const [notes, setNotes] = useState(data?.notes);
-    console.log(notes);
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setNotes(event.target.value);
     };
 
     async function updateNote(formData: FormData) {
-        const res = await updateWorkoutNotes({ workoutId: data.id, notes: formData.get('notes') as string });
+        const res = await updateWorkoutNotes({ workoutId: data?.id ?? '', notes: formData.get('notes') as string });
         if (res.type === 'success') {
             toast({
                 title: 'Success',

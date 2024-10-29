@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { Badge } from '@/components/shad-ui/badge';
-import { Button } from '@/components/shad-ui/button';
+import { Badge } from "@/components/shad-ui/badge";
+import { Button } from "@/components/shad-ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/shad-ui/card';
+} from "@/components/shad-ui/card";
 import {
   Dialog,
   DialogContent,
@@ -17,8 +17,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/shad-ui/dialog';
-import { ScrollArea } from '@/components/shad-ui/scroll-area';
+} from "@/components/shad-ui/dialog";
+import { ScrollArea } from "@/components/shad-ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -26,23 +26,30 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/shad-ui/table';
-import { WorkoutWithExercises } from '@/lib/types';
-import { format } from 'date-fns';
-import Link from 'next/link';
-import { CalendarDateRangePicker } from './date-range-picker';
+} from "@/components/shad-ui/table";
+import { ExerciseWithMuscleGroups, WorkoutWithExercises } from "@/lib/types";
+import { format } from "date-fns";
+import Link from "next/link";
+import { CalendarDateRangePicker } from "./date-range-picker";
+import { use } from "react";
+import { EditWorkout } from "./edit-workout";
 
 export function WorkoutTable({
-  workouts,
+  workoutsPromise,
+  exercisesPromise,
 }: {
-  workouts: WorkoutWithExercises[];
+  workoutsPromise: Promise<WorkoutWithExercises[]>;
+  exercisesPromise: Promise<ExerciseWithMuscleGroups[]>;
 }) {
+  const workouts = use(workoutsPromise);
   return (
     <Card>
       <CardHeader className="px-7 flex-col md:flex-row justify-between">
-        <div className='flex flex-col'>
+        <div className="flex flex-col">
           <CardTitle>Upcoming Workouts</CardTitle>
-          <CardDescription className='pt-2'>Workouts for the selected date range</CardDescription>
+          <CardDescription className="pt-2">
+            Workouts for the selected date range
+          </CardDescription>
         </div>
         <div className="flex items-center space-x-2 pt-2 md:pt-0">
           <CalendarDateRangePicker />
@@ -71,10 +78,7 @@ export function WorkoutTable({
               workouts.map((workout) => (
                 <Dialog key={workout.id}>
                   <DialogTrigger asChild>
-                    <TableRow
-                      // onClick={() => handleRowClick(workout.id)}
-                      className="cursor-pointer"
-                    >
+                    <TableRow className="cursor-pointer">
                       <TableCell>
                         <div className="font-medium">{workout.name}</div>
                       </TableCell>
@@ -87,7 +91,7 @@ export function WorkoutTable({
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {format(new Date(workout.workoutDate), 'EEEE, MMM do')}
+                        {format(new Date(workout.workoutDate), "EEEE, MMM do")}
                       </TableCell>
                     </TableRow>
                   </DialogTrigger>
@@ -128,23 +132,18 @@ export function WorkoutTable({
                         </TableBody>
                       </Table>
                     </ScrollArea>
-                    <DialogFooter className="gap-2 mt-2">
+                    <DialogFooter className="mt-2">
                       {workout.currentStatusId !== 2 &&
                         workout.currentStatusId !== 3 &&
                         workout.currentStatusId !== 5 && (
-                          <Button
-                            variant="secondary"
-                            type="button"
-                            tabIndex={-1}
-                          >
-                            Edit Workout
-                          </Button>
+                          <EditWorkout
+                            workout={workout}
+                            exercisesPromise={exercisesPromise}
+                          />
                         )}
-                      <Button type="button">
-                        <Link href={`/workout/${workout.id}`}>
-                          View Workout
-                        </Link>
-                      </Button>
+                      <Link tabIndex={-1} href={`/workout/${workout.id}`}>
+                        <Button type="button">View Workout</Button>
+                      </Link>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>

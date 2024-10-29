@@ -118,18 +118,5 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
       return session;
     },
-    async authorized({ auth }) {
-      // if (auth?.user?.emailVerified === null) {
-      //   return Response.redirect(
-      //     new URL('/auth/verify-email', request.nextUrl)
-      //   );
-      // }
-
-      // TODO implement first time profile set up
-      // if (auth?.user?.firstLogin) {
-      //   return Response.redirect(new URL('/first-time-setup', request.nextUrl));
-      // }
-      return !!auth;
-    },
   },
 });
