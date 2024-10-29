@@ -182,7 +182,6 @@ export function EditWorkout({
   }
 
   async function onSubmit(workoutData: z.infer<typeof workoutFormSchema>) {
-    console.log({ workoutData });
     const res = await updateWorkout({ workoutData, workoutId: workout.id });
     if (res.type === "success") {
       setOpen(false);
