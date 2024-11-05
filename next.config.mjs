@@ -22,7 +22,7 @@ const config = {
               },
               {
                 key: 'Permissions-Policy',
-                value: 'interest-cohort=(), geolocation=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), payment=(), usb=(), vr=(), accelerometer=()'
+                value: 'interest-cohort=(), geolocation=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), payment=(), usb=(), accelerometer=()'
               }
             ],
           },
