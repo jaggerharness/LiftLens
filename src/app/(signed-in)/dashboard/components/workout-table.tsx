@@ -28,7 +28,7 @@ import {
   TableRow,
 } from "@/components/shad-ui/table";
 import { ExerciseWithMuscleGroups, WorkoutWithExercises } from "@/lib/types";
-// import { format } from "date-fns";
+import { format } from "date-fns";
 import Link from "next/link";
 import { CalendarDateRangePicker } from "./date-range-picker";
 import { EditWorkout } from "./edit-workout";
@@ -88,8 +88,8 @@ export function WorkoutTable({
                           {workout.status.name}
                         </Badge>
                       </TableCell>
-                      <TableCell>
-                        {/* {format(new Date(workout.workoutDate), "EEEE, MMM do")} */}
+                      <TableCell suppressHydrationWarning>
+                        {format(new Date(workout.workoutDate), "EEEE, MMM do")}
                       </TableCell>
                     </TableRow>
                   </DialogTrigger>
