@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/shad-ui/button';
+import { Button } from "@/components/shad-ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,39 +9,43 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/shad-ui/dialog';
+} from "@/components/shad-ui/dialog";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/shad-ui/form';
-import { Input } from '@/components/shad-ui/input';
+} from "@/components/shad-ui/form";
+import { Input } from "@/components/shad-ui/input";
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from '@/components/shad-ui/toggle-group';
-import { MuscleGroup } from '@/lib/types';
-import { createExerciseFormSchema } from '@/lib/zod';
-import { createExercise } from '@/server/actions/actions';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusCircle } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { toast } from '@/hooks/use-toast';
-import { DialogClose } from '@radix-ui/react-dialog';
-import { useRef } from 'react';
-import { useRouter } from 'next/navigation';
+} from "@/components/shad-ui/toggle-group";
+import { MuscleGroup } from "@/lib/types";
+import { createExerciseFormSchema } from "@/lib/zod";
+import { createExercise } from "@/server/actions/actions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusCircle } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { toast } from "@/hooks/use-toast";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { useRef } from "react";
+import { useRouter } from "next/navigation";
 
 type CreateExerciseFormSchema = z.infer<typeof createExerciseFormSchema>;
 
-export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: MuscleGroup[] }) {
+export default function CreateExerciseForm({
+  muscleGroups,
+}: {
+  muscleGroups: MuscleGroup[];
+}) {
   const form = useForm<CreateExerciseFormSchema>({
     resolver: zodResolver(createExerciseFormSchema),
     defaultValues: {
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       muscleGroups: [],
     },
   });
@@ -51,20 +55,20 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
 
   async function onSubmit(values: z.infer<typeof createExerciseFormSchema>) {
     const res = await createExercise({ exerciseData: values });
-    if (res.type === 'success') {
+    if (res.type === "success") {
       dialogRef.current?.click();
       toast({
-        title: 'Exercise Created',
+        title: "Exercise Created",
         description: `Exercise ${values.name} created successfully!`,
-        variant: 'success',
+        variant: "success",
       });
       router.refresh();
       return;
     }
     toast({
-      title: 'Error',
+      title: "Error",
       description: `An unexpected error occurred. Please try again later.`,
-      variant: 'destructive',
+      variant: "destructive",
     });
   }
 
@@ -77,16 +81,16 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
           Create New Exercise
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]" onOpenAutoFocus={(e) => e.preventDefault()}
-        tabIndex={-1}>
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        tabIndex={-1}
+      >
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(
-              onSubmit,
-              (errors) => {
-                console.error('Form submission errors:', errors);
-              }
-            )}
+            onSubmit={form.handleSubmit(onSubmit, (errors) => {
+              console.error("Form submission errors:", errors);
+            })}
             className="space-y-4"
           >
             <DialogHeader>
@@ -131,7 +135,9 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
                 </FormItem>
               )}
             />
-            <p className='text-sm text-muted-foreground'>Select Targeted Muscles:</p>
+            <p className="text-sm text-muted-foreground">
+              Select Targeted Muscles:
+            </p>
             <FormField
               control={form.control}
               name="muscleGroups"
@@ -139,14 +145,18 @@ export default function CreateExerciseForm({ muscleGroups }: { muscleGroups: Mus
                 <FormItem>
                   <FormControl>
                     <ToggleGroup
-                      variant={'outline'}
+                      variant={"outline"}
                       type="multiple"
                       className="flex-row flex-wrap gap-2"
                       onValueChange={field.onChange}
                       value={field.value}
                     >
                       {muscleGroups.map((group) => (
-                        <ToggleGroupItem key={group.id} value={group.id} className='data-[state=on]:border-primary/30'>
+                        <ToggleGroupItem
+                          key={group.id}
+                          value={group.id}
+                          className="data-[state=on]:border-primary/30"
+                        >
                           {group.name}
                         </ToggleGroupItem>
                       ))}
