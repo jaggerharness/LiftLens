@@ -31,17 +31,15 @@ import { ExerciseWithMuscleGroups, WorkoutWithExercises } from "@/lib/types";
 import { format } from "date-fns";
 import Link from "next/link";
 import { CalendarDateRangePicker } from "./date-range-picker";
-import { use } from "react";
 import { EditWorkout } from "./edit-workout";
 
 export function WorkoutTable({
-  workoutsPromise,
+  workouts,
   exercisesPromise,
 }: {
-  workoutsPromise: Promise<WorkoutWithExercises[]>;
+  workouts: WorkoutWithExercises[];
   exercisesPromise: Promise<ExerciseWithMuscleGroups[]>;
 }) {
-  const workouts = use(workoutsPromise);
   return (
     <Card>
       <CardHeader className="px-7 flex-col md:flex-row justify-between">
