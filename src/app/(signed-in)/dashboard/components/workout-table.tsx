@@ -30,7 +30,7 @@ import {
 import { ExerciseWithMuscleGroups, WorkoutWithExercises } from "@/lib/types";
 import { format } from "date-fns";
 import Link from "next/link";
-import { CalendarDateRangePicker } from "./date-range-picker";
+// import { CalendarDateRangePicker } from "./date-range-picker";
 import { EditWorkout } from "./edit-workout";
 
 export function WorkoutTable({
@@ -50,7 +50,7 @@ export function WorkoutTable({
           </CardDescription>
         </div>
         <div className="flex items-center space-x-2 pt-2 md:pt-0">
-          <CalendarDateRangePicker />
+          {/* <CalendarDateRangePicker /> */}
         </div>
       </CardHeader>
       <CardContent>
