@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/shad-ui/badge";
-import { Button, buttonVariants } from "@/components/shad-ui/button";
+import { Button } from "@/components/shad-ui/button";
 import { Calendar } from "@/components/shad-ui/calendar";
 import {
   Card,
@@ -177,18 +177,9 @@ export function CreateWorkoutForm({ exercises }: CreateWorkoutFormProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className={buttonVariants({ variant: "default" })}>
-        Create A Workout
+      <DialogTrigger asChild>
+        <Button variant="default">Create A Workout</Button>
       </DialogTrigger>
-      <DialogClose
-        onClick={() => {
-          setSelectedIdArray([]);
-          reset({
-            name: "",
-            workoutExercises: [],
-          });
-        }}
-      />
       <DialogContent
         className="h-auto max-h-[85%] md:max-h-[75%] p-1 flex"
         onOpenAutoFocus={(e) => e.preventDefault()}

@@ -74,7 +74,7 @@ export default function CreateExerciseForm({
 
   return (
     <Dialog>
-      <DialogClose ref={dialogRef} />
+      <DialogClose className="hidden" ref={dialogRef} />
       <DialogTrigger asChild>
         <Button size="sm" variant="secondary" className="gap-1">
           <PlusCircle className="size-3.5" />

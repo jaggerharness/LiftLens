@@ -76,7 +76,12 @@ export function WorkoutTable({
               workouts.map((workout) => (
                 <Dialog key={workout.id}>
                   <DialogTrigger asChild>
-                    <TableRow className="cursor-pointer">
+                    <TableRow
+                      className="cursor-pointer"
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`View details for ${workout.name} workout on ${format(new Date(workout.workoutDate), "EEEE, MMM do")}`}
+                    >
                       <TableCell>
                         <div className="font-medium">{workout.name}</div>
                       </TableCell>
@@ -93,7 +98,11 @@ export function WorkoutTable({
                       </TableCell>
                     </TableRow>
                   </DialogTrigger>
-                  <DialogContent className="flex flex-col max-h-full sm:max-h-[85vh]">
+                  <DialogContent
+                    className="flex flex-col max-h-full sm:max-h-[85vh]"
+                    role="dialog"
+                    aria-modal="true"
+                  >
                     <DialogHeader>
                       <DialogTitle>Workout Details</DialogTitle>
                       <DialogDescription>
